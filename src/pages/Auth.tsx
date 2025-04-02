@@ -11,5 +11,5 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
     </div>
   );
 };
-
+ 
 export default Auth;
