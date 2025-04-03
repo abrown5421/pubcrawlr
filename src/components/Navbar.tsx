@@ -2,8 +2,9 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { SxProps, Theme } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 
-const styles: Record<string, SxProps<Theme>> = {
+const useNavbarStyles = (theme: Theme) => ({
   appBar: {
     backgroundColor: "white",
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
@@ -24,11 +25,20 @@ const styles: Record<string, SxProps<Theme>> = {
     borderRadius: "9999px",
     padding: "6px 20px",
     textTransform: "none",
+    backgroundColor: theme.palette.custom?.dark, // Dark background
+    color: theme.palette.custom?.light, // White text
+    border: `2px solid ${theme.palette.custom?.dark}`, // Border with dark color
+    "&:hover": {
+      backgroundColor: theme.palette.custom?.light, // White background
+      color: theme.palette.custom?.dark, // Dark text
+    },
   },
-};
+});
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const styles = useNavbarStyles(theme);
 
   const handleNavClick = (x: string) => (event: React.MouseEvent) => {
     event.preventDefault(); 
@@ -49,7 +59,6 @@ const Navbar: React.FC = () => {
 
         <Box>
           <Button
-            color="primary"
             variant="contained"
             sx={styles.button}
             onClick={handleNavClick("/Login")} 
