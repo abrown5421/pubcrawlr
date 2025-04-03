@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
+import Form, { type FormHandle } from "../components/Form";
 import AnimatedContainer from "../containers/AnimatedContainer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { style, Theme } from "@mui/system";
@@ -9,6 +10,14 @@ import { useNavigate } from 'react-router-dom';
 
 type AuthProps = {
   mode: 'login' | 'signup';
+};
+
+type FormData = {
+  firstName?: string;
+  lastName?: string;
+  email: string;
+  password: string;
+  confirmPassword?: string;
 };
 
 const nestedAnimatedContainerStyles = (theme: Theme) => ({
@@ -55,6 +64,7 @@ const nestedAnimatedContainerStyles = (theme: Theme) => ({
 const Auth: React.FC<AuthProps> = ({ mode }) => {
   const enter = useAppSelector(state => state.activePage);
   const styles = nestedAnimatedContainerStyles(theme);
+  const customForm = useRef<FormHandle>(null)
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -64,10 +74,11 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
   const [lastName, setLastName] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log({ email, password, firstName, lastName, confirmPassword });
-  };
+  function handleSubmit(data: unknown) {
+    const extractedData = data as FormData;
+    console.log(extractedData);
+    customForm.current?.clear();
+  }  
 
   const toggleMode = (x: string, y: string) => {
     dispatch(setActivePage({ key: "In", value: false }));
@@ -82,11 +93,11 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
     <AnimatedContainer entry="animate__slideInUp" exit="animate__slideOutDown" isEntering={enter.In && enter.Name === 'Auth'}>
       <Box sx={styles.authBox}>
         <Typography sx={styles.formTitle} variant="h4">{mode === 'login' ? 'Login' : 'Signup'}</Typography>
-
-        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          <Form onSave={handleSubmit} ref={customForm}>
           {mode === 'signup' && (
             <TextField 
               size="small"
+              name="firstName"
               label="First Name"
               variant="outlined"
               fullWidth
@@ -100,6 +111,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
           {mode === 'signup' && (
             <TextField 
               size="small"
+              name="lastName"
               label="Last Name"
               variant="outlined"
               fullWidth
@@ -111,6 +123,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
 
           <TextField 
             size="small"
+            name="email"
             label="Email"
             type="email"
             variant="outlined"
@@ -123,6 +136,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
 
           <TextField 
             size="small"
+            name="password"
             label="Password"
             type="password"
             variant="outlined"
@@ -136,6 +150,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
           {mode === 'signup' && (
             <TextField 
               size="small"
+              name="confirmPassword"
               label="Confirm Password"
               type="password"
               variant="outlined"
@@ -155,7 +170,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
           >
             {mode === 'login' ? 'Login' : 'Sign Up'}
           </Button>
-        </form>
+        </Form>
 
         {mode === 'login' ? (
             <Button 
