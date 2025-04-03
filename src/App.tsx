@@ -8,6 +8,7 @@ import Auth from './pages/Auth.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import Crawl from './pages/Crawl.tsx';
 import ViewportTracker from './provider/ViewportProvider.tsx';  
+import Notification from './components/Notification.tsx';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
           </ViewportTracker>
         </MainContainer>
       </Router>
+      <Notification />
     </Provider>
   );
 }

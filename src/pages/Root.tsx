@@ -20,9 +20,9 @@ function Root() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.authentication)
 
-  useEffect(()=>{
-    dispatch(setUser(mockUser)); 
-  }, [])
+  // useEffect(()=>{
+  //   dispatch(setUser(mockUser)); 
+  // }, [])
 
   useEffect(()=>{console.log(user)}, [user])
   

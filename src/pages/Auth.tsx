@@ -78,7 +78,6 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
     name: keyof FormData, 
     label: string, 
     type: string = 'text', 
-    required: boolean = false
   ) => (
     <TextField 
       size="small"
@@ -87,7 +86,6 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       type={type}
       variant="outlined"
       fullWidth
-      required={required}
       value={formData[name]}
       onChange={handleChange(name)}
       sx={{ mb: 2 }}
@@ -97,7 +95,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
   return (
     <AnimatedContainer entry="animate__slideInUp" exit="animate__slideOutDown" isEntering={enter.In && enter.Name === 'Auth'}>
       <Box className="auth-box" sx={styles.authBox}>
-        <Typography className="auth-title" sx={styles.formTitle} variant="h4">{mode === 'login' ? 'Login' : 'Signup'}</Typography>
+        <Typography className="auth-title" sx={styles.formTitle} variant="h5">{mode === 'login' ? 'Login' : 'Signup'}</Typography>
         <Form onSave={handleSubmit} ref={customForm}>
           {mode === 'signup' && renderInputField('firstName', 'First Name', 'text', true)}
           {mode === 'signup' && renderInputField('lastName', 'Last Name')}
