@@ -7,12 +7,14 @@ import Root from './pages/Root.tsx';
 import Auth from './pages/Auth.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import Crawl from './pages/Crawl.tsx';
+import ViewportTracker from './provider/ViewportProvider.tsx';  
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
         <MainLayout>
+          <ViewportTracker />
           <Routes>
             <Route path={routes.root} element={<Root />} />
             <Route path={routes.login} element={<Auth mode="login" />} />
