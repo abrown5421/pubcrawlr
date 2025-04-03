@@ -28,13 +28,17 @@ const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
 
   return (
     <Box
-        className={`animate__animated ${
-            isEntering ? "animate__fadeIn" : "animate__fadeOut"
-        } ${className}`.trim()}
-        sx={styles.root}
-    >
-        {children}
-    </Box>
+    className={`animate__animated ${
+        isEntering ? "animate__fadeIn" : "animate__fadeOut"
+    } ${className}`.trim()}
+    sx={{
+        ...styles.root,
+        "--animate-duration": "500ms", 
+    } as React.CSSProperties} 
+>
+    {children}
+</Box>
+
   );
 };
 

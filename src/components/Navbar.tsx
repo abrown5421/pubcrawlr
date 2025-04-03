@@ -3,7 +3,8 @@ import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { Theme } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
-import { ZoomIn } from "@mui/icons-material";
+import { setActivePage } from "../store/slices/activePageSlice";
+import { useAppDispatch } from "../store/hooks";
 
 const useNavbarStyles = (theme: Theme) => ({
   appBar: {
@@ -39,12 +40,19 @@ const useNavbarStyles = (theme: Theme) => ({
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const styles = useNavbarStyles(theme);
 
-  const handleNavClick = (x: string) => (event: React.MouseEvent) => {
+  const handleNavClick = (x: string, y: string) => (event: React.MouseEvent) => {
     event.preventDefault(); 
-    navigate(x);
+    dispatch(setActivePage({ key: "In", value: false }));
+    dispatch(setActivePage({ key: "Name", value: y }));
+    setTimeout(() => {
+      dispatch(setActivePage({ key: "In", value: true }));
+      navigate(x);
+    }, 500)
+    
   };
 
   return (
@@ -54,7 +62,7 @@ const Navbar: React.FC = () => {
           variant="h4"
           component="div"
           sx={styles.logo}
-          onClick={handleNavClick("/")} 
+          onClick={handleNavClick("/", "Root")} 
         >
           Pubcrawlr
         </Typography>
@@ -63,7 +71,7 @@ const Navbar: React.FC = () => {
           <Button
             variant="contained"
             sx={styles.button}
-            onClick={handleNavClick("/Login")} 
+            onClick={handleNavClick("/Login", "Auth")} 
           >
             Login
           </Button>

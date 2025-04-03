@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import viewportReducer from "./slices/viewportSlice";
+import activePageReducer from "./slices/activePageSlice";
 
 export const store = configureStore({
   reducer: {
     viewport: viewportReducer,
+    activePage: activePageReducer,
   },
 });
 
