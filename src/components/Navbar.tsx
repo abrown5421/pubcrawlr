@@ -1,36 +1,23 @@
 import React from "react"; 
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import { Theme } from "@mui/system";
+import { style, Theme } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { setActivePage } from "../store/slices/activePageSlice";
 import { useAppDispatch } from "../store/hooks";
+import '../styles/navbar.css';
 
 const useNavbarStyles = (theme: Theme) => ({
   appBar: {
-    backgroundColor: "white",
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.3)",
-    zIndex:100,
-  },
-  toolbar: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "0px 13px",
+    backgroundColor: theme.palette.custom?.light,
   },
   logo: {
-    color: "black",
-    fontWeight: "bold",
-    cursor: "pointer",
-    fontFamily: "Primary, sans-serif",
+    color: theme.palette.custom?.dark,
+    fontFamily: "Primary", 
   },
   button: {
-    mx: 1,
-    borderRadius: "9999px",
-    padding: "6px 20px",
-    textTransform: "none",
     backgroundColor: theme.palette.custom?.dark,
     color: theme.palette.custom?.light,
-    border: `2px solid ${theme.palette.custom?.dark}`,
     "&:hover": {
       backgroundColor: theme.palette.custom?.light,
       color: theme.palette.custom?.dark,
@@ -56,12 +43,14 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <AppBar position="static" sx={styles.appBar}>
-      <Toolbar disableGutters sx={styles.toolbar}>
+    <AppBar position="static" className="nav-appBar" sx={styles.appBar}>
+      <Toolbar disableGutters className="nav-toolbar">
         <Typography
           variant="h4"
           component="div"
+          fontWeight={700}
           sx={styles.logo}
+          className="nav-logo"
           onClick={handleNavClick("/", "Root")} 
         >
           Pubcrawlr
@@ -70,6 +59,7 @@ const Navbar: React.FC = () => {
         <Box>
           <Button
             variant="contained"
+            className="nav-button"
             sx={styles.button}
             onClick={handleNavClick("/Login", "Auth")} 
           >

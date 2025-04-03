@@ -1,13 +1,12 @@
 import { createTheme, ThemeOptions } from "@mui/material/styles";
 
-// Define a type-safe theme
 const themeOptions: ThemeOptions = {
   palette: {
     custom: {
-      dark: "#00171f", // Added dark color
-      light: "#FFF", // Added white
-      accent: "#277a73", // Reused primary color for consistency
-      highlight: "#00b2a3", // Reused secondary color
+      dark: "#00171f", 
+      light: "#FFF", 
+      accent: "#277a73", 
+      highlight: "#00b2a3", 
     },
   },
 };
