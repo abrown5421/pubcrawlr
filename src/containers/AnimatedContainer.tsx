@@ -6,9 +6,7 @@ import theme from "../styles/theme";
 
 const useAnimatedContainerStyles = (theme: Theme) => ({
     root: {
-      height: "100%",
-      padding: "10px",
-      backgroundColor: theme.palette.custom?.light,
+      height: "100%"
     }
 });
 
@@ -16,12 +14,16 @@ interface AnimatedContainerProps {
   children: React.ReactNode;
   isEntering: boolean;
   className?: string;
+  entry?: string;
+  exit?: string;
 }
 
 const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
   children,
   isEntering,
   className = "",
+  entry = "animate__fadeIn",
+  exit = "animate__fadeOut",
 }) => {
     
   const styles = useAnimatedContainerStyles(theme);
@@ -29,7 +31,7 @@ const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
   return (
     <Box
     className={`animate__animated ${
-        isEntering ? "animate__fadeIn" : "animate__fadeOut"
+        isEntering ? entry : exit
     } ${className}`.trim()}
     sx={{
         ...styles.root,
