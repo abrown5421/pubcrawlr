@@ -10,6 +10,7 @@ import Crawl from './pages/Crawl.tsx';
 import ViewportTracker from './provider/ViewportProvider.tsx';  
 
 function App() {
+
   return (
     <Provider store={store}>
       <Router>

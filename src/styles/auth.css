@@ -14,23 +14,8 @@
   }
   
   .auth-title {
-    font-weight: bold;
-    cursor: pointer;
-    font-family: "Primary, sans-serif";
-    margin-bottom: 13px;
+    cursor: pointer !important;
+    margin-bottom: 15px !important;
   }
   
-  .auth-button {
-    border-radius: 9999px;
-    padding: 6px 20px;
-    text-transform: none;
-    border: 2px solid;
-  }
-  
-  @media (max-width: 600px) {
-    .authBox {
-      width: 90%;
-      padding: 8px;
-    }
-  }
   

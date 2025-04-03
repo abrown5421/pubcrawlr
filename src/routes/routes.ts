@@ -2,7 +2,7 @@ export const routes = {
     root: '/',
     login: '/login',
     signup: '/signup',
-    dashboard: '/dashboard',
+    dashboard: '/Dashboard',
     crawl: (slug: string) => `/Crawl/${slug}`,
 } as const;
   
