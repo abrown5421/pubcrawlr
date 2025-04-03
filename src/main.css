@@ -1,0 +1,31 @@
+body,
+html {
+  margin: 0;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}
+
+a {
+  text-decoration: none !important;
+  color: unset !important;
+}
+
+a:hover {
+  text-decoration: none !important;
+  color: unset !important;
+  background-color: transparent !important;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+@font-face {
+  font-family: 'Primary';
+  src: url('../public/assets/fonts/Primary.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Secondary';
+  src: url('../public/assets/fonts/Secondary.ttf') format('truetype');
+}
