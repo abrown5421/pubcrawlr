@@ -64,21 +64,28 @@ const nestedAnimatedContainerStyles = (theme: Theme) => ({
 const Auth: React.FC<AuthProps> = ({ mode }) => {
   const enter = useAppSelector(state => state.activePage);
   const styles = nestedAnimatedContainerStyles(theme);
-  const customForm = useRef<FormHandle>(null)
+  const customForm = useRef<FormHandle>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [firstName, setFirstName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [formData, setFormData] = useState<FormData>({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    confirmPassword: ''
+  });
 
-  function handleSubmit(data: unknown) {
+  const handleChange = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, [field]: e.target.value }));
+  };
+
+  const handleSubmit = (data: unknown) => {
     const extractedData = data as FormData;
     console.log(extractedData);
+    setFormData({ email: '', password: '', firstName: '', lastName: '', confirmPassword: '' });
     customForm.current?.clear();
-  }  
+  };
 
   const toggleMode = (x: string, y: string) => {
     dispatch(setActivePage({ key: "In", value: false }));
@@ -86,81 +93,39 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
     setTimeout(() => {
       dispatch(setActivePage({ key: "In", value: true }));
       navigate(x);
-    }, 500)
+    }, 500);
   };
+
+  const renderInputField = (
+    name: keyof FormData, 
+    label: string, 
+    type: string = 'text', 
+    required: boolean = false
+  ) => (
+    <TextField 
+      size="small"
+      name={name}
+      label={label}
+      type={type}
+      variant="outlined"
+      fullWidth
+      required={required}
+      value={formData[name]}
+      onChange={handleChange(name)}
+      sx={{ mb: 2 }}
+    />
+  );
 
   return (
     <AnimatedContainer entry="animate__slideInUp" exit="animate__slideOutDown" isEntering={enter.In && enter.Name === 'Auth'}>
       <Box sx={styles.authBox}>
         <Typography sx={styles.formTitle} variant="h4">{mode === 'login' ? 'Login' : 'Signup'}</Typography>
-          <Form onSave={handleSubmit} ref={customForm}>
-          {mode === 'signup' && (
-            <TextField 
-              size="small"
-              name="firstName"
-              label="First Name"
-              variant="outlined"
-              fullWidth
-              required
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-          )}
-
-          {mode === 'signup' && (
-            <TextField 
-              size="small"
-              name="lastName"
-              label="Last Name"
-              variant="outlined"
-              fullWidth
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-          )}
-
-          <TextField 
-            size="small"
-            name="email"
-            label="Email"
-            type="email"
-            variant="outlined"
-            fullWidth
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-
-          <TextField 
-            size="small"
-            name="password"
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-
-          {mode === 'signup' && (
-            <TextField 
-              size="small"
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              variant="outlined"
-              fullWidth
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-          )}
+        <Form onSave={handleSubmit} ref={customForm}>
+          {mode === 'signup' && renderInputField('firstName', 'First Name', 'text', true)}
+          {mode === 'signup' && renderInputField('lastName', 'Last Name')}
+          {renderInputField('email', 'Email', 'email', true)}
+          {renderInputField('password', 'Password', 'password', true)}
+          {mode === 'signup' && renderInputField('confirmPassword', 'Confirm Password', 'password', true)}
 
           <Button 
             type="submit" 
@@ -172,23 +137,13 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
           </Button>
         </Form>
 
-        {mode === 'login' ? (
-            <Button 
-              variant="text" 
-              onClick={() => toggleMode("/signup", "Auth")} 
-              sx={{ mt: 2, color: theme.palette.custom?.dark }}
-            >
-             Don't have an account? Sign up
-            </Button>
-        ) : (
-          <Button 
-            variant="text" 
-            onClick={() => toggleMode("/Login", "Auth")} 
-            sx={{ mt: 2, color: theme.palette.custom?.dark }}
-          >
-           Have an account? Login
-          </Button>
-        )}
+        <Button 
+          variant="text" 
+          onClick={() => toggleMode(mode === 'login' ? "/signup" : "/Login", "Auth")} 
+          sx={{ mt: 2, color: theme.palette.custom?.dark }}
+        >
+          {mode === 'login' ? "Don't have an account? Sign up" : "Have an account? Login"}
+        </Button>
       </Box>
     </AnimatedContainer>
   );

@@ -14,7 +14,7 @@ const Form = forwardRef<FormHandle, FormProps>(function Form({onSave, children, 
     useImperativeHandle(ref, () => {
         return {
             clear() {
-                console.log('CLEARING')
+                console.log('Clearing Form')
                 form.current?.reset();
             },
         };
