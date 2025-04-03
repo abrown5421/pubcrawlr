@@ -1,6 +1,7 @@
-import React from "react";
+import React from "react"; 
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { SxProps, Theme } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
 const styles: Record<string, SxProps<Theme>> = {
   appBar: {
@@ -16,30 +17,44 @@ const styles: Record<string, SxProps<Theme>> = {
     color: "black",
     fontWeight: "bold",
     cursor: "pointer",
-    fontFamily: "Primary, sans-serif", 
+    fontFamily: "Primary, sans-serif",
   },
   button: {
     mx: 1,
     borderRadius: "9999px",
     padding: "6px 20px",
-    textTransform: "none", 
+    textTransform: "none",
   },
 };
 
 const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleNavClick = (x: string) => (event: React.MouseEvent) => {
+    event.preventDefault(); 
+    navigate(x);
+  };
+
   return (
     <AppBar position="static" sx={styles.appBar}>
       <Toolbar disableGutters sx={styles.toolbar}>
-        <Typography variant="h4" component="div" sx={styles.logo}>
+        <Typography
+          variant="h4"
+          component="div"
+          sx={styles.logo}
+          onClick={handleNavClick("/")} 
+        >
           Pubcrawlr
         </Typography>
 
         <Box>
-          <Button color="primary" variant="outlined" sx={styles.button}>
+          <Button
+            color="primary"
+            variant="contained"
+            sx={styles.button}
+            onClick={handleNavClick("/Login")} 
+          >
             Login
-          </Button>
-          <Button color="primary" variant="contained" sx={styles.button}>
-            Sign Up
           </Button>
         </Box>
       </Toolbar>

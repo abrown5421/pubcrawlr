@@ -14,18 +14,20 @@ function App() {
     <Provider store={store}>
       <Router>
         <MainLayout>
-          <ViewportTracker />
-          <Routes>
-            <Route path={routes.root} element={<Root />} />
-            <Route path={routes.login} element={<Auth mode="login" />} />
-            <Route path={routes.signup} element={<Auth mode="signup" />} />
-            <Route path={routes.dashboard} element={<Dashboard />} />
-            <Route path={routes.crawl(':slug')} element={<Crawl />} />
-          </Routes>
+          <ViewportTracker>
+            <Routes>
+              <Route path={routes.root} element={<Root />} />
+              <Route path={routes.login} element={<Auth mode="login" />} />
+              <Route path={routes.signup} element={<Auth mode="signup" />} />
+              <Route path={routes.dashboard} element={<Dashboard />} />
+              <Route path={routes.crawl(':slug')} element={<Crawl />} />
+            </Routes>
+          </ViewportTracker>
         </MainLayout>
       </Router>
     </Provider>
   );
 }
+
 
 export default App;
