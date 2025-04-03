@@ -1,13 +1,13 @@
 import React from "react"; 
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import { SxProps, Theme } from "@mui/system";
+import { Theme } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 
 const useNavbarStyles = (theme: Theme) => ({
   appBar: {
     backgroundColor: "white",
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.3)",
   },
   toolbar: {
     display: "flex",
@@ -25,12 +25,12 @@ const useNavbarStyles = (theme: Theme) => ({
     borderRadius: "9999px",
     padding: "6px 20px",
     textTransform: "none",
-    backgroundColor: theme.palette.custom?.dark, // Dark background
-    color: theme.palette.custom?.light, // White text
-    border: `2px solid ${theme.palette.custom?.dark}`, // Border with dark color
+    backgroundColor: theme.palette.custom?.dark,
+    color: theme.palette.custom?.light,
+    border: `2px solid ${theme.palette.custom?.dark}`,
     "&:hover": {
-      backgroundColor: theme.palette.custom?.light, // White background
-      color: theme.palette.custom?.dark, // Dark text
+      backgroundColor: theme.palette.custom?.light,
+      color: theme.palette.custom?.dark,
     },
   },
 });
