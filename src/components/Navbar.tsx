@@ -3,11 +3,13 @@ import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { Theme } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
+import { ZoomIn } from "@mui/icons-material";
 
 const useNavbarStyles = (theme: Theme) => ({
   appBar: {
     backgroundColor: "white",
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.3)",
+    zIndex:100,
   },
   toolbar: {
     display: "flex",

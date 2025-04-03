@@ -1,9 +1,15 @@
+import AnimatedContainer from "../containers/AnimatedContainer";
+
 function Root() {
+  
   return (
-    <div>
+    <AnimatedContainer isEntering={true}>
+      <div>
         Root
-    </div>
+      </div>
+    </AnimatedContainer>
   );
 }
 
 export default Root;
+

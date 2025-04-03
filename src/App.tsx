@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './store/store.ts';
 import { routes } from './routes/routes.ts';
-import MainContainer from './layouts/MainContainer';
+import MainContainer from './containers/MainContainer.tsx';
 import Root from './pages/Root.tsx';
 import Auth from './pages/Auth.tsx';
 import Dashboard from './pages/Dashboard.tsx';

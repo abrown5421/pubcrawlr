@@ -1,10 +1,15 @@
+import AnimatedContainer from "../containers/AnimatedContainer";
+
 function Dashboard() {
-    return (
+  
+  return (
+    <AnimatedContainer isEntering={true}>
       <div>
-          Dashboard
+        Dashboard
       </div>
-    );
-  }
-  
-  export default Dashboard;
-  
+    </AnimatedContainer>
+  );
+}
+
+export default Dashboard;
+

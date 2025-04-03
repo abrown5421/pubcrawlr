@@ -1,4 +1,5 @@
 import React from 'react';
+import AnimatedContainer from "../containers/AnimatedContainer";
 
 type AuthProps = {
   mode: 'login' | 'signup';
@@ -6,10 +7,13 @@ type AuthProps = {
 
 const Auth: React.FC<AuthProps> = ({ mode }) => {
   return (
-    <div>
-      <h1>{mode === 'login' ? 'Login Page' : 'Signup Page'}</h1>
-    </div>
+    <AnimatedContainer isEntering={true}>
+      <div>
+        <h1>{mode === 'login' ? 'Login Page' : 'Signup Page'}</h1>
+      </div>
+    </AnimatedContainer>
   );
 };
  
 export default Auth;
+

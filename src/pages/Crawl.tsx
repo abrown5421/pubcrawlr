@@ -1,10 +1,15 @@
+import AnimatedContainer from "../containers/AnimatedContainer";
+
 function Crawl() {
-    return (
+  
+  return (
+    <AnimatedContainer isEntering={true}>
       <div>
-          Crawl
+        Crawl
       </div>
-    );
-  }
-  
-  export default Crawl;
-  
+    </AnimatedContainer>
+  );
+}
+
+export default Crawl;
+
