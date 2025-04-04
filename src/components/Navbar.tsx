@@ -4,21 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { setActivePage } from "../store/slices/activePageSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { clearUser, User } from "../store/slices/authenticationSlice";
 import '../styles/navbar.css';
-
-interface UserLocation {
-  latitude: number;
-  longitude: number;
-}
-
-interface User {
-  CreateDate: string;
-  UserAvatarType: string;
-  UserEmail: string;
-  UserFirstName: string;
-  UserLastName: string;
-  userLocation: UserLocation;
-}
 
 interface UserState {
   isAuthenticated: boolean;
@@ -74,7 +61,9 @@ const Navbar: React.FC = () => {
   };
 
   const handleLogout = () => {
-    console.log("Logged out"); 
+    dispatch(clearUser());
+    handleMenuClose(); 
+    handleNavClick("/", "Root")
   };
 
   return (
