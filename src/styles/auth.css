@@ -1,6 +1,6 @@
   .auth-box {
     width: 50%;
-    max-width: 400px;
+    max-width: 500px;
     padding: 16px;
     border-radius: 8px;
     display: flex;
@@ -18,4 +18,8 @@
     margin-bottom: 15px !important;
   }
   
-  
+  @media only screen and (max-width: 600px) {
+    .auth-box {
+        width: 90%;
+    }
+  }

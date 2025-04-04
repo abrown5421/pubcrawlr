@@ -41,6 +41,7 @@ const nestedAnimatedContainerStyles = (theme: Theme) => ({
 
 const Auth: React.FC<AuthProps> = ({ mode }) => {
   const enter = useAppSelector(state => state.activePage);
+  const mobile = useAppSelector(state => state.viewport);
   const styles = nestedAnimatedContainerStyles(theme);
   const customForm = useRef<FormHandle>(null);
   const dispatch = useAppDispatch();
@@ -97,11 +98,11 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       <Box className="auth-box" sx={styles.authBox}>
         <Typography className="auth-title" sx={styles.formTitle} variant="h5">{mode === 'login' ? 'Login' : 'Signup'}</Typography>
         <Form onSave={handleSubmit} ref={customForm}>
-          {mode === 'signup' && renderInputField('firstName', 'First Name', 'text', true)}
+          {mode === 'signup' && renderInputField('firstName', 'First Name', 'text')}
           {mode === 'signup' && renderInputField('lastName', 'Last Name')}
-          {renderInputField('email', 'Email', 'email', true)}
-          {renderInputField('password', 'Password', 'password', true)}
-          {mode === 'signup' && renderInputField('confirmPassword', 'Confirm Password', 'password', true)}
+          {renderInputField('email', 'Email', 'email')}
+          {renderInputField('password', 'Password', 'password')}
+          {mode === 'signup' && renderInputField('confirmPassword', 'Confirm Password', 'password')}
 
           <Button 
             type="submit" 
