@@ -9,7 +9,7 @@ import '../styles/navbar.css';
 import Cookies from 'js-cookie'
 import { useLocation } from "react-router-dom";
 
-interface UserState {
+export interface UserState {
   isAuthenticated: boolean;
   user: User | null;
 }
@@ -39,7 +39,6 @@ const Navbar: React.FC = () => {
   const theme = useTheme();
   const styles = useNavbarStyles(theme);
   const user = useAppSelector((state: { authentication: UserState }) => state.authentication);
-  const activ = useAppSelector((state => state.activePage));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleNavClick = (path: string, pageName: string) => (event: React.MouseEvent) => {
