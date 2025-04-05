@@ -129,7 +129,7 @@ const Navbar: React.FC = () => {
           </Box>
         )}
 
-        {!user?.isAuthenticated && location.pathname !== "/Login" && (
+        {!user?.isAuthenticated && location.pathname !== "/Login" && location.pathname !== "/signup" && (
           <Box>
             <Button
               className="nav-button"
