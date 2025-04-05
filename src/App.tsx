@@ -1,6 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { store } from './store/store.ts';
 import { routes } from './routes/routes.ts';
 import MainContainer from './containers/MainContainer.tsx';
 import Root from './pages/Root.tsx';
@@ -9,11 +7,36 @@ import Dashboard from './pages/Dashboard.tsx';
 import Crawl from './pages/Crawl.tsx';
 import ViewportTracker from './provider/ViewportProvider.tsx';  
 import Notification from './components/Notification.tsx';
+import Cookies from 'js-cookie'
+import { useEffect } from 'react';
+import { getUserDataFromId } from './services/userService.ts';
+import { setUser } from './store/slices/authenticationSlice.ts';
+import { useAppDispatch } from './store/hooks.ts';
 
 function App() {
+  const dispatch = useAppDispatch()
+  const authToken = Cookies.get('authId'); 
+
+  const fetchUserData = async (uid: string) => {
+    const userData = await getUserDataFromId(uid);
+    dispatch(setUser({
+      docId: uid,
+      UserEmail: userData?.UserEmail ?? '',
+      UserFirstName: userData?.UserFirstName ?? '',
+      UserLastName: userData?.UserLastName ?? '',
+    }));
+    
+    console.log(userData);  
+  };
+
+  useEffect(() => {
+    if (authToken) {
+      fetchUserData(authToken);
+    }
+  }, [authToken]);
 
   return (
-    <Provider store={store}>
+    <>
       <Router>
         <MainContainer>
           <ViewportTracker>
@@ -28,7 +51,7 @@ function App() {
         </MainContainer>
       </Router>
       <Notification />
-    </Provider>
+    </>
   );
 }
 

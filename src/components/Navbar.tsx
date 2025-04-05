@@ -6,6 +6,8 @@ import { setActivePage } from "../store/slices/activePageSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { clearUser, User } from "../store/slices/authenticationSlice";
 import '../styles/navbar.css';
+import Cookies from 'js-cookie'
+import { useLocation } from "react-router-dom";
 
 interface UserState {
   isAuthenticated: boolean;
@@ -33,16 +35,16 @@ const useNavbarStyles = (theme: any) => ({
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const location = useLocation();
   const theme = useTheme();
   const styles = useNavbarStyles(theme);
   const user = useAppSelector((state: { authentication: UserState }) => state.authentication);
   const activ = useAppSelector((state => state.activePage));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  useEffect(()=>{console.log(activ)}, [activ])
-
   const handleNavClick = (path: string, pageName: string) => (event: React.MouseEvent) => {
     event.preventDefault();
+    console.log('navclick')
     dispatch(setActivePage({ key: "In", value: false }));
     dispatch(setActivePage({ key: "Name", value: pageName }));
 
@@ -61,10 +63,20 @@ const Navbar: React.FC = () => {
   };
 
   const handleLogout = () => {
+    Cookies.remove('authId');
+  
+    dispatch(setActivePage({ key: "In", value: false }));
+    dispatch(setActivePage({ key: "Name", value: "Root" }));
+  
+    setTimeout(() => {
+      dispatch(setActivePage({ key: "In", value: true }));
+      navigate("/");
+    }, 500);
+  
     dispatch(clearUser());
     handleMenuClose(); 
-    handleNavClick("/", "Root")
   };
+  
 
   return (
     <AppBar position="static" sx={styles.appBar} className="nav-appBar">
@@ -80,7 +92,7 @@ const Navbar: React.FC = () => {
           Pubcrawlr
         </Typography>
 
-        {user?.isAuthenticated ? (
+        {user?.isAuthenticated && (
           <Box display="flex" alignItems="center">
             <Avatar
               className="nav-avatar"
@@ -115,7 +127,9 @@ const Navbar: React.FC = () => {
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>
-        ) : (
+        )}
+
+        {!user?.isAuthenticated && location.pathname !== "/Login" && (
           <Box>
             <Button
               className="nav-button"

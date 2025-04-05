@@ -12,6 +12,7 @@ import "../styles/auth.css";
 import { setAlert } from '../store/slices/notificationSlice';
 import authService from '../services/authService';
 import { setUser } from '../store/slices/authenticationSlice';
+import Cookies from 'js-cookie'
 
 type AuthProps = {
   mode: 'login' | 'signup';
@@ -103,8 +104,20 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
   const handleLogin = async (data: FormData) => {
     try {
       const user = await authService.login(data.email, data.password);
-      console.log(user)
-      dispatch(setUser({UserEmail: user?.UserEmail, UserFirstName: user?.UserFirstName, UserLastName: user?.UserLastName!}))
+  
+      if (!user) {
+        throw new Error("User not found");
+      }
+  
+      dispatch(setUser({
+        docId: user.docId,
+        UserEmail: user.UserEmail,
+        UserFirstName: user.UserFirstName,
+        UserLastName: user.UserLastName,
+      }));
+  
+      Cookies.set('authId', user.docId, { expires: 5 });
+
       dispatch(setActivePage({ key: "In", value: false }));
       dispatch(setActivePage({ key: "Name", value: 'Dashboard' }));
   
@@ -114,12 +127,13 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       }, 500);
     } catch (err: unknown) {
       if (err instanceof Error) {
-        dispatch(setAlert({open: true, message: "Login failed: " + err.message, severity: 'error',}))
+        dispatch(setAlert({ open: true, message: "Login failed: " + err.message, severity: 'error' }));
       } else {
-        dispatch(setAlert({open: true, message: 'Login failed', severity: 'error',}))
+        dispatch(setAlert({ open: true, message: 'Login failed', severity: 'error' }));
       }
     }
   };
+  
   
   const handleRegister = async (data: FormData) => {
     try {
@@ -129,8 +143,19 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
         data.firstName,
         data.lastName!
       );
-      console.log("Registered new user:", user?.uid);
-      dispatch(setUser({UserEmail: data.email, UserFirstName: data.firstName, UserLastName: data.lastName!}))
+      if (!user) {
+        throw new Error("User not found");
+      }
+  
+      dispatch(setUser({
+        docId: user.docId,
+        UserEmail: user.UserEmail,
+        UserFirstName: user.UserFirstName,
+        UserLastName: user.UserLastName,
+      }));
+
+      Cookies.set('authId', user.docId, { expires: 5 });
+
       dispatch(setActivePage({ key: "In", value: false }));
       dispatch(setActivePage({ key: "Name", value: 'Root' }));
   

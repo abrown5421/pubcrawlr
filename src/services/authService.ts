@@ -1,39 +1,38 @@
 import { auth, db } from '../config/Firebase';
 import firebase from 'firebase/compat/app';
+import { User } from '../store/slices/authenticationSlice';
 
 const USERS_COLLECTION = 'Users';
 
-const login = async (email: string, password: string) => {
-    try {
-      const userCredential = await auth.signInWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-  
-      if (user) {
-        const userDocRef = db.collection(USERS_COLLECTION).doc(user.uid);
-        const userDoc = await userDocRef.get();
-  
-        if (userDoc.exists) {
-          const userData = userDoc.data();
-          return {
-            UserEmail: userData?.UserEmail, 
-            UserFirstName: userData?.UserFirstName, 
-            UserLastName: userData?.UserLastName
-          };
-        } else {
-          console.warn("No user document found in Firestore for UID:", user.uid);
-          return {
-            email: user.email,
-          };
-        }
+const login = async (email: string, password: string): Promise<User | null> => {
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+
+    if (user) {
+      const userDocRef = db.collection(USERS_COLLECTION).doc(user.uid);
+      const userDoc = await userDocRef.get();
+
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        return {
+          docId: user.uid,
+          UserEmail: userData?.UserEmail ?? '',
+          UserFirstName: userData?.UserFirstName ?? '',
+          UserLastName: userData?.UserLastName ?? ''
+        };
+      } else {
+        console.warn("No user document found in Firestore for UID:", user.uid);
+        return null;
       }
-  
-      return null;
-    } catch (error) {
-      console.error("Login error:", error);
-      throw error;
     }
+
+    return null;
+  } catch (error) {
+    console.error("Login error:", error);
+    throw error;
+  }
 };
-  
 
 const logout = async () => {
   try {
@@ -45,30 +44,37 @@ const logout = async () => {
 };
 
 const register = async (
-  email: string,
-  password: string,
-  firstName: string,
-  lastName: string,
-) => {
-  try {
-    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-    const user = userCredential.user;
-
-    if (user) {
-      const userDocRef = db.collection(USERS_COLLECTION).doc(user.uid);
-      await userDocRef.set({
-        CreateDate: firebase.firestore.FieldValue.serverTimestamp(),
-        UserEmail: email,
-        UserFirstName: firstName,
-        UserLastName: lastName,
-      });
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+  ): Promise<User | null> => {
+    try {
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+  
+      if (user) {
+        const userDocRef = db.collection(USERS_COLLECTION).doc(user.uid);
+        await userDocRef.set({
+          CreateDate: firebase.firestore.FieldValue.serverTimestamp(),
+          UserEmail: email,
+          UserFirstName: firstName,
+          UserLastName: lastName,
+        });
+  
+        return {
+          docId: user.uid,
+          UserEmail: email,
+          UserFirstName: firstName,
+          UserLastName: lastName
+        };
+      }
+  
+      return null;
+    } catch (error) {
+      console.error("Registration error:", error);
+      throw error;
     }
-
-    return user;
-  } catch (error) {
-    console.error("Registration error:", error);
-    throw error;
-  }
 };
 
 const getCurrentUser = () => {
