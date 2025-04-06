@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { routes } from './routes/routes.ts';
 import MainContainer from './containers/MainContainer.tsx';
 import Root from './pages/Root.tsx';
@@ -12,6 +12,23 @@ import { useEffect } from 'react';
 import { getUserDataFromId } from './services/userService.ts';
 import { setUser } from './store/slices/authenticationSlice.ts';
 import { useAppDispatch } from './store/hooks.ts';
+import { setActivePage } from './store/slices/activePageSlice.ts';
+import { routeToPageName } from './utils/routeToPageName.ts';
+import { Navigate } from 'react-router-dom'; 
+
+function AnimationInitializer() {
+  const location = useLocation();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const pageName = routeToPageName(location.pathname);
+
+    dispatch(setActivePage({ key: "Name", value: pageName }));
+    dispatch(setActivePage({ key: "In", value: true }));
+  }, [location.pathname]);
+
+  return null;
+}
 
 function App() {
   const dispatch = useAppDispatch()
@@ -38,13 +55,23 @@ function App() {
   return (
     <>
       <Router>
+        <AnimationInitializer />
         <MainContainer>
           <ViewportTracker>
             <Routes>
               <Route path={routes.root} element={<Root />} />
-              <Route path={routes.login} element={<Auth mode="login" />} />
-              <Route path={routes.signup} element={<Auth mode="signup" />} />
-              <Route path={routes.dashboard} element={<Dashboard />} />
+              <Route
+                path={routes.login}
+                element={authToken ? <Navigate to={routes.root} replace /> : <Auth mode="login" />}
+              />
+              <Route
+                path={routes.signup}
+                element={authToken ? <Navigate to={routes.root} replace /> : <Auth mode="signup" />}
+              />
+              <Route
+                path={routes.dashboard}
+                element={!authToken ? <Navigate to={routes.root} replace /> : <Dashboard />}
+              />
               <Route path={routes.crawl(':slug')} element={<Crawl />} />
             </Routes>
           </ViewportTracker>

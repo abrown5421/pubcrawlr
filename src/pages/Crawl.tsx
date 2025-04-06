@@ -5,11 +5,11 @@ import { Theme } from "@mui/system";
 import theme from "../styles/theme";
 
 const nestedContainerStyles = (theme: Theme) => ({
-    root: {
-      height: "100%",
-      padding: "10px",
-      backgroundColor: theme.palette.custom?.light,
-    }
+  root: {
+    height: "100%",
+    padding: "10px",
+    backgroundColor: theme.palette.custom?.light,
+  }
 });
 
 function Crawl() {
