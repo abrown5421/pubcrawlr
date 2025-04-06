@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import AnimatedContainer from "../containers/AnimatedContainer";
 import { useAppSelector } from "../store/hooks";
 import { Box, Theme } from "@mui/system";
 import theme from "../styles/theme";
-import '../styles/root.css';
+import PlaceAutocomplete from "../components/PlaceAutocomplete";
+import { loadGoogleMapsScript } from "../utils/loadGoogleScript";
+import "../styles/root.css";
 
 const nestedContainerStyles = (theme: Theme) => ({
   root: {
@@ -20,7 +22,14 @@ function Root() {
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | null>(null);
+  const [googleLoaded, setGoogleLoaded] = useState(false); 
   
+  useEffect(() => {
+    loadGoogleMapsScript().then(() => {
+      setGoogleLoaded(true);
+    }).catch(console.error);
+  }, []);
+
   useEffect(() => {
     if (!mapContainerRef.current || map) return;
 
@@ -36,7 +45,6 @@ function Root() {
         });
 
         new maplibregl.Marker().setLngLat([longitude, latitude]).addTo(mapInstance);
-
         setMap(mapInstance);
       },
       (error) => {
@@ -46,9 +54,21 @@ function Root() {
     );
   }, [map]);
 
+  const handlePlaceSelect = useCallback((lat: number, lng: number) => {
+    if (map) {
+      map.flyTo({ center: [lng, lat], zoom: 14 });
+      new maplibregl.Marker().setLngLat([lng, lat]).addTo(map);
+    }
+  }, [map]);
+
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"}>
-      <Box sx={styles.root}>
+      <Box sx={styles.root} className="rootContainer">
+        <div className="map-controller">
+          {googleLoaded && (
+            <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
+          )}
+        </div>
         <div ref={mapContainerRef} className="map-container" />
       </Box>
     </AnimatedContainer>

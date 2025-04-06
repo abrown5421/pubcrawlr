@@ -3,6 +3,7 @@ import viewportReducer from './slices/viewportSlice';
 import activePageReducer from './slices/activePageSlice';
 import authenticationReducer from './slices/authenticationSlice';
 import notificationReducer from './slices/notificationSlice';  
+import localBarReducer from './slices/localBarSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     activePage: activePageReducer,
     authentication: authenticationReducer,
     notification: notificationReducer, 
+    localBars: localBarReducer,
   },
 });
 

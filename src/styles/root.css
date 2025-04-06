@@ -1,6 +1,18 @@
-.map-container {
+.rootContainer {
+    display: flex;
+    flex-direction: row;
+}
+.map-controller {
+    display: flex;
+    flex-direction: column;
+    flex: 3;
     height: 100%;
-    width: 100%;
-    border-radius: 8px;
+    padding: 10px;
+}
+.map-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 8;
     overflow: hidden;
 }
