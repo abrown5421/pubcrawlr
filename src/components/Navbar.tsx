@@ -43,7 +43,6 @@ const Navbar: React.FC = () => {
 
   const handleNavClick = (path: string, pageName: string) => (event: React.MouseEvent) => {
     event.preventDefault();
-    console.log('navclick')
     dispatch(setActivePage({ key: "In", value: false }));
     dispatch(setActivePage({ key: "Name", value: pageName }));
 
