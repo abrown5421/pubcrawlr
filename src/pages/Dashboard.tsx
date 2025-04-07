@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useAppSelector } from "../store/hooks";
 import { Box, Theme } from "@mui/system";
 import theme from "../styles/theme";
-import "../styles/pages/dashboard.css";
 import PersonalProfile from "./subpages/PersonalProfile";
 import FriendProfile from "./subpages/FriendProfile";
 import StrangerProfile from "./subpages/StrangerProfile";
@@ -23,7 +22,7 @@ function Dashboard() {
   
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === 'Dashboard'}>
-      <Box sx={styles.root} className="root-container">
+      <Box sx={styles.root}>
         {token === slug && <PersonalProfile />}
         {/* {token === check if friend && <FriendProfile />} */}
         {/* for now we are just checking if its not the user profile since we dont have friends setup yet */}
