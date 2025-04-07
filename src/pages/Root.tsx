@@ -43,6 +43,7 @@ function Root() {
           center: [longitude, latitude],
           zoom: 14,
         });
+        mapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
 
         new maplibregl.Marker().setLngLat([longitude, latitude]).addTo(mapInstance);
         setMap(mapInstance);
