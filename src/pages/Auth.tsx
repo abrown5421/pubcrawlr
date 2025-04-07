@@ -45,7 +45,6 @@ const nestedAnimatedContainerStyles = (theme: Theme) => ({
   },
 });
 
-
 const Auth: React.FC<AuthProps> = ({ mode }) => {
   const enter = useAppSelector(state => state.activePage);
   const styles = nestedAnimatedContainerStyles(theme);
@@ -53,6 +52,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [forgotPw, setForgotPw] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
     email: '',
@@ -72,13 +72,15 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
     if (!data.email?.trim()) newErrors.email = "Email is required";
     else if (!/^\S+@\S+\.\S+$/.test(data.email)) newErrors.email = "Please enter a valid email";
   
-    if (!data.password?.trim()) {
-      newErrors.password = "Password is required";
-    } else if (data.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])/.test(data.password)) {
-      newErrors.password = "Password must contain at least one uppercase and one lowercase letter";
-    }    
+    if (mode === 'signup' || (!forgotPw && mode === 'login')) {
+      if (!data.password?.trim()) {
+        newErrors.password = "Password is required";
+      } else if (data.password.length < 6) {
+        newErrors.password = "Password must be at least 6 characters";
+      } else if (!/(?=.*[a-z])(?=.*[A-Z])/.test(data.password)) {
+        newErrors.password = "Password must contain at least one uppercase and one lowercase letter";
+      }
+    }
   
     if (mode === 'signup') {
       if (!data.firstName?.trim()) newErrors.firstName = "First name is required";
@@ -88,6 +90,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
   
     return newErrors;
   };
+  
 
   const handleChange = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -101,6 +104,15 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
     }
   };
   
+  const handleForgotPassword = async (email: string) => {
+    try {
+      await authService.sendPasswordResetEmail(email); 
+      dispatch(setAlert({ open: true, message: 'If the email you entered matches an account we will send further reset instructions.', severity: 'success' }));
+    } catch (err) {
+      dispatch(setAlert({ open: true, message: 'Error sending password reset email', severity: 'error' }));
+    }
+  };
+
   const handleLogin = async (data: FormData) => {
     try {
       const user = await authService.login(data.email, data.password);
@@ -167,6 +179,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       }, 500);
     } catch (err: unknown) {
       if (err instanceof Error) {
+        setForgotPw(false)
         dispatch(setAlert({open: true, message: "Registration failed: " + err.message, severity: 'error',}))
       } else {
         dispatch(setAlert({open: true, message: 'Registration failed', severity: 'error',}))
@@ -181,20 +194,22 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
   
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      dispatch(setAlert({open: true, message: 'Please fix the errors before resubmitting', severity: 'error',}))
+      dispatch(setAlert({ open: true, message: 'Please fix the errors before resubmitting', severity: 'error' }));
       return;
     }
-    if (mode === 'login') {
+  
+    if (mode === 'login' && forgotPw) {
+      handleForgotPassword(extractedData.email);
+    } else if (mode === 'login') {
       handleLogin(extractedData);
     } else {
       handleRegister(extractedData);
     }
-    console.log(extractedData);
+  
     setFormData({ email: '', password: '', firstName: '', lastName: '', confirmPassword: '' });
     setErrors({});
     customForm.current?.clear();
-  };
-  
+  };  
 
   const toggleMode = (x: string, y: string) => {
     dispatch(setActivePage({ key: "In", value: false }));
@@ -241,14 +256,26 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
   return (
     <AnimatedContainer entry="animate__slideInUp" exit="animate__slideOutDown" isEntering={enter.In && enter.Name === 'Auth'}>
       <Box className="auth-box" sx={styles.authBox}>
-        <Typography className="auth-title" sx={styles.formTitle} variant="h5">{mode === 'login' ? 'Login' : 'Signup'}</Typography>
+        <Typography className="auth-title" sx={styles.formTitle} variant="h5">{mode === 'login' ? forgotPw ? "Reset Password" : 'Login' : 'Signup'}</Typography>
         <Form onSave={handleSubmit} ref={customForm}>
           {mode === 'signup' && renderInputField('firstName', 'First Name', 'text')}
           {mode === 'signup' && renderInputField('lastName', 'Last Name')}
           {renderInputField('email', 'Email', 'text')}
-          {renderInputField('password', 'Password', showPassword ? 'text' : 'password')}
+          {!forgotPw && renderInputField('password', 'Password', showPassword ? 'text' : 'password')}
           {mode === 'signup' && renderInputField('confirmPassword', 'Confirm Password', showPassword ? 'text' : 'password')}
-
+          {mode === 'login' && (
+            <Button 
+              variant="text" 
+              size="small" 
+              className="forgot-pw-button"
+              sx={{ 
+                color: theme.palette.custom?.accent,                
+              }} 
+              onClick={() => setForgotPw(prev => !prev)}
+            >
+              {forgotPw ? "Back to Login" : "Forgot Password?"}
+            </Button>
+          )}
           <Button 
             type="submit" 
             variant="contained" 
@@ -256,13 +283,13 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
             sx={styles.button}
             className="auth-button"
           >
-            {mode === 'login' ? 'Login' : 'Sign Up'}
+            {mode === 'login' ? forgotPw ? "Reset Password" : 'Login' : 'Sign Up'}
           </Button>
         </Form>
 
         <Button 
           variant="text" 
-          onClick={() => toggleMode(mode === 'login' ? "/signup" : "/Login", "Auth")} 
+          onClick={() => toggleMode(mode === 'login' ? "/Signup" : "/Login", "Auth")} 
           sx={{ mt: 2, color: theme.palette.custom?.dark }}
         >
           {mode === 'login' ? "Don't have an account? Sign up" : "Have an account? Login"}

@@ -1,4 +1,5 @@
 import { ComponentPropsWithoutRef, FormEvent, forwardRef, useImperativeHandle, useRef } from "react"
+import '../styles/form.css';
 
 export type FormHandle = {
     clear: () => void;
@@ -29,7 +30,7 @@ const Form = forwardRef<FormHandle, FormProps>(function Form({onSave, children, 
     }
 
     return (
-        <form onSubmit={handleSubmit} {...otherProps} ref={form}>
+        <form className="form-element" onSubmit={handleSubmit} {...otherProps} ref={form}>
             {children}
         </form>
     )

@@ -18,6 +18,13 @@
     margin-bottom: 15px !important;
   }
   
+  .forgot-pw-button {
+    text-transform: none !important;       
+    margin-bottom: 1rem !important;                         
+    display: block !important;        
+    margin-left: auto !important;
+  }
+
   @media only screen and (max-width: 600px) {
     .auth-box {
         width: 90%;
