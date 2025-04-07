@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { routes } from './routes/routes.ts';
 import MainContainer from './containers/MainContainer.tsx';
 import Root from './pages/Root.tsx';
@@ -7,14 +7,14 @@ import Dashboard from './pages/Dashboard.tsx';
 import Crawl from './pages/Crawl.tsx';
 import ViewportTracker from './provider/ViewportProvider.tsx';  
 import Notification from './components/Notification.tsx';
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
 import { useEffect } from 'react';
 import { getUserDataFromId } from './services/userService.ts';
 import { setUser } from './store/slices/authenticationSlice.ts';
 import { useAppDispatch, useAppSelector } from './store/hooks.ts';
 import { setActivePage } from './store/slices/activePageSlice.ts';
 import { routeToPageName } from './utils/routeToPageName.ts';
-import { Navigate } from 'react-router-dom'; 
+import NotFound from './pages/NotFound';  
 
 function AnimationInitializer() {
   const location = useLocation();
@@ -74,6 +74,8 @@ function App() {
                 element={!token ? <Navigate to={routes.root} replace /> : <Dashboard />}
               />
               <Route path={routes.crawl(':slug')} element={<Crawl />} />
+              
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </ViewportTracker>
         </MainContainer>

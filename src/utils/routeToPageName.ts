@@ -5,6 +5,6 @@ export const routeToPageName = (pathname: string): string => {
     if (/^\/Dashboard\/.+/.test(pathname)) return "Dashboard";
     if (/^\/Crawl\/.+/.test(pathname)) return "Crawl";
   
-    return "Root"; 
+    return "NotFound"; 
 };
   
