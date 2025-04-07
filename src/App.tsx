@@ -11,7 +11,7 @@ import Cookies from 'js-cookie'
 import { useEffect } from 'react';
 import { getUserDataFromId } from './services/userService.ts';
 import { setUser } from './store/slices/authenticationSlice.ts';
-import { useAppDispatch } from './store/hooks.ts';
+import { useAppDispatch, useAppSelector } from './store/hooks.ts';
 import { setActivePage } from './store/slices/activePageSlice.ts';
 import { routeToPageName } from './utils/routeToPageName.ts';
 import { Navigate } from 'react-router-dom'; 
@@ -19,7 +19,7 @@ import { Navigate } from 'react-router-dom';
 function AnimationInitializer() {
   const location = useLocation();
   const dispatch = useAppDispatch();
-
+  
   useEffect(() => {
     const pageName = routeToPageName(location.pathname);
 
@@ -31,7 +31,8 @@ function AnimationInitializer() {
 }
 
 function App() {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.authentication.token);
   const authToken = Cookies.get('authId'); 
 
   const fetchUserData = async (uid: string) => {
@@ -45,7 +46,7 @@ function App() {
     
     console.log(userData);  
   };
-
+  
   useEffect(() => {
     if (authToken) {
       fetchUserData(authToken);
@@ -62,15 +63,15 @@ function App() {
               <Route path={routes.root} element={<Root />} />
               <Route
                 path={routes.login}
-                element={authToken ? <Navigate to={routes.root} replace /> : <Auth mode="login" />}
+                element={token ? <Navigate to={routes.root} replace /> : <Auth mode="login" />}
               />
               <Route
                 path={routes.signup}
-                element={authToken ? <Navigate to={routes.root} replace /> : <Auth mode="signup" />}
+                element={token ? <Navigate to={routes.root} replace /> : <Auth mode="signup" />}
               />
               <Route
                 path={routes.dashboard}
-                element={!authToken ? <Navigate to={routes.root} replace /> : <Dashboard />}
+                element={!token ? <Navigate to={routes.root} replace /> : <Dashboard />}
               />
               <Route path={routes.crawl(':slug')} element={<Crawl />} />
             </Routes>

@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import "../styles/auth.css";
 import { setAlert } from '../store/slices/notificationSlice';
 import authService from '../services/authService';
-import { setUser } from '../store/slices/authenticationSlice';
+import { setAuthToken, setUser } from '../store/slices/authenticationSlice';
 import Cookies from 'js-cookie'
 
 type AuthProps = {
@@ -117,6 +117,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       }));
   
       Cookies.set('authId', user.docId, { expires: 5 });
+      dispatch(setAuthToken(user.docId));
 
       dispatch(setActivePage({ key: "In", value: false }));
       dispatch(setActivePage({ key: "Name", value: 'Dashboard' }));
@@ -155,6 +156,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       }));
 
       Cookies.set('authId', user.docId, { expires: 5 });
+      dispatch(setAuthToken(user.docId));
 
       dispatch(setActivePage({ key: "In", value: false }));
       dispatch(setActivePage({ key: "Name", value: 'Root' }));

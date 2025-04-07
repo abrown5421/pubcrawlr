@@ -18,3 +18,12 @@
     height: 40px !important; 
     cursor: pointer !important;
 }
+
+.drawer-content {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+  }
+  

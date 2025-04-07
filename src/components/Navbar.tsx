@@ -17,7 +17,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setActivePage } from "../store/slices/activePageSlice";
-import { clearUser, User } from "../store/slices/authenticationSlice";
+import { clearUser, setAuthToken, User } from "../store/slices/authenticationSlice";
 import Cookies from "js-cookie";
 import "../styles/navbar.css";
 
@@ -43,12 +43,7 @@ const useNavbarStyles = (theme: any) => ({
     },
   },
   drawerContent: {
-    width: 250,
     padding: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    justifyContent: 'space-between',
   },
   logoutButton: {
     backgroundColor: theme.palette.custom?.dark,
@@ -67,6 +62,7 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const theme = useTheme();
   const styles = useNavbarStyles(theme);
+  const authToken = Cookies.get('authId'); 
 
   const user = useAppSelector((state: { authentication: UserState }) => state.authentication);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -86,6 +82,7 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
     Cookies.remove("authId");
     dispatch(clearUser());
+    dispatch(setAuthToken(null));
     dispatch(setActivePage({ key: "In", value: false }));
     dispatch(setActivePage({ key: "Name", value: "Root" }));
 
@@ -118,7 +115,7 @@ const Navbar: React.FC = () => {
             Pubcrawlr
           </Typography>
 
-          {user?.isAuthenticated && (
+          {authToken && (
             <Box display="flex" alignItems="center">
               <Avatar
                 className="nav-avatar"
@@ -131,7 +128,7 @@ const Navbar: React.FC = () => {
             </Box>
           )}
 
-          {!user?.isAuthenticated && location.pathname !== "/Login" && location.pathname !== "/signup" && (
+          {!authToken && location.pathname !== "/Login" && location.pathname !== "/signup" && (
             <Box>
               <Button
                 className="nav-button"
@@ -147,7 +144,7 @@ const Navbar: React.FC = () => {
       </AppBar>
 
       <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <Box sx={styles.drawerContent}>
+        <Box className="drawer-content" sx={styles.drawerContent}>
           <Box>
             <Typography variant="h6" gutterBottom>
               Welcome, {getFullName()}
@@ -155,12 +152,12 @@ const Navbar: React.FC = () => {
             <Divider sx={{ mb: 2 }} />
             <List>
               <ListItem disablePadding>
-                <ListItemButton onClick={handleNavClick("/Dashboard", "Dashboard")}>
+                <ListItemButton sx={{paddingLeft: '0px'}} onClick={handleNavClick("/Dashboard", "Dashboard")}>
                   <ListItemText primary="Dashboard" />
                 </ListItemButton>
               </ListItem>
               <ListItem disablePadding>
-                <ListItemButton onClick={handleNavClick("/", "Root")}>
+                <ListItemButton sx={{paddingLeft: '0px'}} onClick={handleNavClick("/", "Root")}>
                   <ListItemText primary="Create a Crawl" />
                 </ListItemButton>
               </ListItem>
