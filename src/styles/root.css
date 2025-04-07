@@ -1,4 +1,4 @@
-.rootContainer {
+.root-container {
     display: flex;
     flex-direction: row;
 }
@@ -15,4 +15,13 @@
     height: 100%;
     flex: 8;
     overflow: hidden;
+}
+@media (max-width: 1024px) {
+    .root-container {
+        display: flex;
+        flex-direction: column;
+    }
+    .map-controller {
+        flex: 0;
+    }
 }

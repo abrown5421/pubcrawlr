@@ -64,7 +64,7 @@ function Root() {
 
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"}>
-      <Box sx={styles.root} className="rootContainer">
+      <Box sx={styles.root} className="root-container">
         <div className="map-controller">
           {googleLoaded && (
             <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
