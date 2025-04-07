@@ -70,7 +70,7 @@ function App() {
                 element={token ? <Navigate to={routes.root} replace /> : <Auth mode="signup" />}
               />
               <Route
-                path={routes.dashboard}
+                path={routes.dashboard(':slug')}
                 element={!token ? <Navigate to={routes.root} replace /> : <Dashboard />}
               />
               <Route path={routes.crawl(':slug')} element={<Crawl />} />
