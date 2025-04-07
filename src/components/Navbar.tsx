@@ -19,7 +19,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setActivePage } from "../store/slices/activePageSlice";
 import { clearUser, setAuthToken, User } from "../store/slices/authenticationSlice";
 import Cookies from "js-cookie";
-import "../styles/navbar.css";
+import "../styles/components/navbar.css";
 
 export interface UserState {
   isAuthenticated: boolean;
@@ -59,6 +59,7 @@ const useNavbarStyles = (theme: any) => ({
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.authentication.token);
   const location = useLocation();
   const theme = useTheme();
   const styles = useNavbarStyles(theme);
@@ -152,7 +153,7 @@ const Navbar: React.FC = () => {
             <Divider sx={{ mb: 2 }} />
             <List>
               <ListItem disablePadding>
-                <ListItemButton sx={{paddingLeft: '0px'}} onClick={handleNavClick("/Dashboard", "Dashboard")}>
+                <ListItemButton sx={{paddingLeft: '0px'}} onClick={handleNavClick(`/Dashboard/${token}`, "Dashboard")}>
                   <ListItemText primary="Dashboard" />
                 </ListItemButton>
               </ListItem>

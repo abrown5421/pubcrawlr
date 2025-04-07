@@ -5,7 +5,7 @@ import AnimatedContainer from "../containers/AnimatedContainer";
 import { useAppSelector } from "../store/hooks";
 import { Theme } from "@mui/system";
 import theme from "../styles/theme";
-import '../styles/not-found.css'
+import '../styles/pages/not-found.css'
 
 const nestedContainerStyles = (theme: Theme) => ({
   root: {

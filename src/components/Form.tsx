@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, FormEvent, forwardRef, useImperativeHandle, useRef } from "react"
-import '../styles/form.css';
+import '../styles/components/form.css';
 
 export type FormHandle = {
     clear: () => void;

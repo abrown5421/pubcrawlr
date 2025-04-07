@@ -8,7 +8,7 @@ import { Theme } from "@mui/system";
 import theme from "../styles/theme";
 import { setActivePage } from '../store/slices/activePageSlice';
 import { useNavigate } from 'react-router-dom';
-import "../styles/auth.css";
+import "../styles/pages/auth.css";
 import { setAlert } from '../store/slices/notificationSlice';
 import authService from '../services/authService';
 import { setAuthToken, setUser } from '../store/slices/authenticationSlice';
@@ -136,7 +136,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
   
       setTimeout(() => {
         dispatch(setActivePage({ key: "In", value: true }));
-        navigate('/Dashboard');
+        navigate('/');
       }, 500);
     } catch (err: unknown) {
       if (err instanceof Error) {

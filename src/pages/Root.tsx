@@ -7,7 +7,7 @@ import { Box, Theme } from "@mui/system";
 import theme from "../styles/theme";
 import PlaceAutocomplete from "../components/PlaceAutocomplete";
 import { loadGoogleMapsScript } from "../utils/loadGoogleScript";
-import "../styles/root.css";
+import "../styles/pages/root.css";
 
 const nestedContainerStyles = (theme: Theme) => ({
   root: {
