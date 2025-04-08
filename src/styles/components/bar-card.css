@@ -19,6 +19,11 @@
     height: 150px;
     object-fit: cover;
 }
+@media (max-width: 1200px) {
+    .bar-card-col {
+        justify-content: start;
+    }
+}
 @media screen and (max-width: 1024px) {
     .bar-card {
         flex-direction: column;

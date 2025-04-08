@@ -162,8 +162,11 @@ function Root() {
           ))}
         </div>
         <div ref={mapContainerRef} className="map-container" />
-        
-        {/* Horizontally scrolling container for BarCards on mobile/tablet */}
+        {viewport === 'desktop'  && (
+          <div className="bar-crawl-form-drawer">
+            test
+          </div>
+        )}
         {viewport !== 'desktop' && (
           <Box
             sx={{
