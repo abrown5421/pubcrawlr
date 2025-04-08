@@ -3,40 +3,80 @@ import * as maplibregl from 'maplibre-gl';
 import "maplibre-gl/dist/maplibre-gl.css";
 import AnimatedContainer from "../containers/AnimatedContainer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { Box, Theme } from "@mui/system";
+import { Box } from "@mui/system";
 import theme from "../styles/theme";
 import PlaceAutocomplete from "../components/PlaceAutocomplete";
 import { loadGoogleMapsScript } from "../utils/loadGoogleScript";
 import "../styles/pages/root.css";
 import { SearchHereButton } from "../utils/CustomMapControls";
 import { fetchBars } from "../utils/fetchBars";
-import { addBars } from "../store/slices/localBarSlice";
-import { Place } from "../store/slices/localBarSlice"; 
+import { addBars, Place } from "../store/slices/localBarSlice";
 import BarCard from "../components/BarCard";
 
-const nestedContainerStyles = (theme: Theme) => ({
-  root: {
-    height: "100%",
-    backgroundColor: theme.palette.custom?.light,
-  },
-});
-
 function Root() {
-  const enter = useAppSelector(state => state.activePage);
-  const barResults = useAppSelector(state => state.localBars.bars);
   const dispatch = useAppDispatch();
-  const styles = nestedContainerStyles(theme);
+  const barResults = useAppSelector(state => state.localBars.bars);
+  const enter = useAppSelector(state => state.activePage);
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const markerRef = useRef<maplibregl.Marker[]>([]);
   const [map, setMap] = useState<maplibregl.Map | null>(null);
   const [googleLoaded, setGoogleLoaded] = useState(false);
+  const [visibleBars, setVisibleBars] = useState<Place[]>([]);
 
-  useEffect(()=>{console.log(barResults)}, [barResults])
-  
+  // --- Helpers ---
+  const normalizePlace = (
+    place: google.maps.places.PlaceResult
+  ): Place | null => {
+    if (!place.name || !place.geometry?.location) return null;
+
+    return {
+      name: place.name,
+      geometry: {
+        location: {
+          lat: () => place.geometry!.location!.lat(),
+          lng: () => place.geometry!.location!.lng(),
+        },
+      },
+      rating: place.rating,
+      user_ratings_total: place.user_ratings_total,
+      vicinity: place.vicinity,
+    };
+  };
+
+  const fetchAndStoreBars = async (lat: number, lng: number) => {
+    try {
+      const results = await fetchBars(lat, lng);
+      const bars = results
+        .map(normalizePlace)
+        .filter((bar): bar is Place => bar !== null);
+      dispatch(addBars(bars));
+    } catch (error) {
+      console.error("Error fetching bars:", error);
+    }
+  };
+
+  const SearchHereClicked = (mapInstance: maplibregl.Map) => {
+    const center = mapInstance.getCenter();
+    new maplibregl.Marker().setLngLat([center.lng, center.lat]).addTo(mapInstance);
+    fetchAndStoreBars(center.lat, center.lng);
+  };
+
+  const handlePlaceSelect = useCallback(
+    async (lat: number, lng: number) => {
+      if (!map) return;
+      map.flyTo({ center: [lng, lat], zoom: 14 });
+      new maplibregl.Marker().setLngLat([lng, lat]).addTo(map);
+      await fetchAndStoreBars(lat, lng);
+    },
+    [map]
+  );
+
+  // --- Effects ---
   useEffect(() => {
-    loadGoogleMapsScript().then(() => {
-      setGoogleLoaded(true);
-    }).catch(console.error);
+    loadGoogleMapsScript()
+      .then(() => setGoogleLoaded(true))
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -53,92 +93,68 @@ function Root() {
           zoom: 14,
         });
 
-        mapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
-        mapInstance.addControl(new SearchHereButton(SearchHereClicked), 'top-right');
+        mapInstance.addControl(new maplibregl.NavigationControl(), "top-right");
+        mapInstance.addControl(new SearchHereButton(SearchHereClicked), "top-right");
         new maplibregl.Marker().setLngLat([longitude, latitude]).addTo(mapInstance);
+
         setMap(mapInstance);
       },
-      (error) => {
-        console.error("Geolocation error:", error);
-      },
+      (err) => console.error("Geolocation error:", err),
       { enableHighAccuracy: true }
     );
   }, [map]);
 
-  const handlePlaceSelect = useCallback(async (lat: number, lng: number) => {
-    if (map) {
-      map.flyTo({ center: [lng, lat], zoom: 14 });
-      new maplibregl.Marker().setLngLat([lng, lat]).addTo(map);
+  useEffect(() => {
+    if (!map) return;
   
-      try {
-        const results = await fetchBars(lat, lng);
-        const bars = results
-          .filter((place): place is google.maps.places.PlaceResult & { name: string, geometry: { location: google.maps.LatLng } } =>
-            !!place.name && !!place.geometry?.location
-          )
-          .map(place => ({
-            name: place.name!,
-            geometry: {
-              location: {
-                lat: () => place.geometry!.location!.lat(),
-                lng: () => place.geometry!.location!.lng(),
-              },
-            },
-            rating: place.rating,
-            user_ratings_total: place.user_ratings_total,
-            vicinity: place.vicinity,
-          }));
+    const updateVisibleBars = () => {
+      const bounds = map.getBounds();
+      const inBounds = barResults.filter(bar => {
+        const lat = bar.geometry.location.lat();
+        const lng = bar.geometry.location.lng();
+        return bounds.contains([lng, lat]);
+      });
+      setVisibleBars(inBounds);
+    };
   
-        dispatch(addBars(bars));
-      } catch (err) {
-        console.error("Error fetching bars:", err);
-      }
-    }
-  }, [map, dispatch]);
+    map.on("moveend", updateVisibleBars);
+    updateVisibleBars();
   
-  const SearchHereClicked = (mapInstance: maplibregl.Map) => {
-    const center = mapInstance.getCenter();
-    console.log('Latitude:', center.lat);
-    console.log('Longitude:', center.lng);
+    return () => {
+      map.off("moveend", updateVisibleBars);
+    };
+  }, [map, barResults]);
   
-    new maplibregl.Marker()
-      .setLngLat([center.lng, center.lat])
-      .addTo(mapInstance);
-  
-    // Optional: fetch bars near center
-    fetchBars(center.lat, center.lng)
-      .then(results => {
-        const bars = results
-          .filter((place): place is google.maps.places.PlaceResult & { name: string, geometry: { location: google.maps.LatLng } } =>
-            !!place.name && !!place.geometry?.location
-          )
-          .map(place => ({
-            name: place.name!,
-            geometry: {
-              location: {
-                lat: () => place.geometry!.location!.lat(),
-                lng: () => place.geometry!.location!.lng(),
-              },
-            },
-            rating: place.rating,
-            user_ratings_total: place.user_ratings_total,
-            vicinity: place.vicinity,
-          }));
-        dispatch(addBars(bars));
-      })
-      .catch(err => console.error("Error fetching bars from center:", err));
-  };
-  
+
+  useEffect(() => {
+    if (!map) return;
+
+    markerRef.current.forEach(marker => marker.remove());
+    markerRef.current = [];
+
+    visibleBars.forEach(bar => {
+      const lat = bar.geometry.location.lat();
+      const lng = bar.geometry.location.lng();
+      const marker = new maplibregl.Marker().setLngLat([lng, lat]).addTo(map);
+      markerRef.current.push(marker);
+    });
+  }, [map, visibleBars]);
 
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"}>
-      <Box sx={styles.root} className="root-container">
+      <Box
+        sx={{
+          height: "100%",
+          backgroundColor: theme.palette.custom?.light,
+        }}
+        className="root-container"
+      >
         <div className="map-controller">
           {googleLoaded && (
             <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
           )}
-          {barResults.map((bar: Place) => (
-            <BarCard bar={bar} />
+          {visibleBars.map((bar) => (
+            <BarCard key={bar.name} bar={bar} />
           ))}
         </div>
         <div ref={mapContainerRef} className="map-container" />
