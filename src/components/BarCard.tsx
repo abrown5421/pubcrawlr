@@ -36,7 +36,11 @@ const BarCard: React.FC<BarCardProps> = ({ bar }) => {
     <>
         <div style={styles.card} className="bar-card">
             <div className="bar-card-col">
-                <img src={placeholderImg} className="card-image" />
+                {bar.photoUrl ? (
+                    <img src={bar.photoUrl} className="card-image" />
+                ) : (
+                    <img src={placeholderImg} className="card-image" />
+                )}
             </div>
             <div className="bar-card-col add-pad fl-1">
                 <div>

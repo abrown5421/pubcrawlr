@@ -17,12 +17,13 @@
 .card-image {
     width: 150px;
     height: 150px;
+    object-fit: cover;
 }
 @media screen and (max-width: 1024px) {
     .bar-card {
         flex-direction: column;
         box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
-        padding: 8px;
+        padding: 0px;
         border-radius: 5px;
         height: 100%;
     }
@@ -30,13 +31,13 @@
         justify-content: space-between;
     }
     .add-pad {
-        padding: 8px 0px 0px 0px;
+        padding: 8px;
     }
     .add-button {
         margin-top: auto;
     }
     .card-image {
         width: 100%;
-        height: auto;
+        height: 150px;
     }
 }

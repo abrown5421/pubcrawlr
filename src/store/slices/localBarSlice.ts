@@ -11,6 +11,7 @@ export interface Place {
   rating?: number;
   user_ratings_total?: number;
   vicinity?: string;
+  photoUrl?: string;
 }
 
 

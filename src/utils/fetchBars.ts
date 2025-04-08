@@ -13,12 +13,6 @@ export const fetchBars = (lat: number, lng: number): Promise<google.maps.places.
 
     service.nearbySearch(request, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        results.forEach(bar => {
-          if (bar.photos && bar.photos.length > 0) {
-            console.log(bar.photos[0].getUrl({ maxWidth: 150, maxHeight: 150 }));
-          }
-        });
-
         resolve(results);
       } else {
         reject(`PlacesService error: ${status}`);

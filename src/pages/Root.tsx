@@ -29,7 +29,9 @@ function Root() {
     place: google.maps.places.PlaceResult
   ): Place | null => {
     if (!place.name || !place.geometry?.location) return null;
-
+  
+    const photoUrl = place.photos?.[0]?.getUrl({ maxHeight: place.photos[0].height });
+  
     return {
       name: place.name,
       geometry: {
@@ -41,8 +43,11 @@ function Root() {
       rating: place.rating,
       user_ratings_total: place.user_ratings_total,
       vicinity: place.vicinity,
+      photoUrl,
     };
   };
+  
+  
 
   const fetchAndStoreBars = async (lat: number, lng: number) => {
     try {
