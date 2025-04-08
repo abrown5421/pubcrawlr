@@ -4,8 +4,9 @@ export const fetchBars = (lat: number, lng: number): Promise<google.maps.places.
 
     const request: google.maps.places.PlaceSearchRequest = {
       location,
-      radius: 1000,
+      rankBy: google.maps.places.RankBy.DISTANCE,
       type: 'bar',
+      keyword: 'bar OR pub OR drinks OR cocktails'
     };
 
     const service = new google.maps.places.PlacesService(document.createElement('div'));

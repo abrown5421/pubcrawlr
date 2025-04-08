@@ -16,6 +16,7 @@ import BarCard from "../components/BarCard";
 function Root() {
   const dispatch = useAppDispatch();
   const barResults = useAppSelector(state => state.localBars.bars);
+  const viewport = useAppSelector(state => state.viewport.type);
   const enter = useAppSelector(state => state.activePage);
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -151,11 +152,32 @@ function Root() {
           {googleLoaded && (
             <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
           )}
-          {visibleBars.map((bar) => (
+          {viewport === 'desktop'  && visibleBars.map((bar) => (
             <BarCard key={bar.name} bar={bar} />
           ))}
         </div>
         <div ref={mapContainerRef} className="map-container" />
+        
+        {/* Horizontally scrolling container for BarCards on mobile/tablet */}
+        {viewport !== 'desktop' && (
+          <Box
+            sx={{
+              display: "flex",
+              overflowX: "auto",
+              position: "absolute",
+              bottom: 0,
+              width: "100%",
+              padding: "8px",
+              zIndex: 1,
+            }}
+          >
+            {visibleBars.map((bar) => (
+              <Box key={bar.name} sx={{ minWidth: 250, marginRight: theme.spacing(2) }}>
+                <BarCard bar={bar} />
+              </Box>
+            ))}
+          </Box>
+        )}
       </Box>
     </AnimatedContainer>
   );

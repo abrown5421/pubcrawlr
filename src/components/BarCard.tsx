@@ -4,6 +4,7 @@ import { Button, Divider, Typography } from "@mui/material";
 import { useTheme } from '@mui/material';
 import "../styles/components/bar-card.css";
 import placeholderImg from "../../public/assets/images/bar-placeholder.png";
+import { useAppSelector } from "../store/hooks";
 
 type BarCardProps = {
   bar: Place;  
@@ -22,44 +23,49 @@ const useBarCardStyles = (theme: any) => ({
       },
       marginTop: theme.spacing(2),
     },
+    card: {
+        backgroundColor: theme.palette.custom?.light,
+    }
 });
 
 const BarCard: React.FC<BarCardProps> = ({ bar }) => {
   const theme = useTheme();
   const styles = useBarCardStyles(theme);
-  
+  const viewport = useAppSelector(state => state.viewport.type)
   return (
     <>
-        <div className="bar-card">
+        <div style={styles.card} className="bar-card">
             <div className="bar-card-col">
-                <img src={placeholderImg} width="150px" />
+                <img src={placeholderImg} className="card-image" />
             </div>
             <div className="bar-card-col add-pad fl-1">
-                <Typography
-                    variant="h6"
-                    component="div"
-                    fontWeight={700}
-                    sx={styles.logo}
-                >
-                    {bar.name}
-                </Typography>
-                <Typography
-                    variant="subtitle1"
-                    component="div"
-                >
-                    {bar.vicinity}
-                </Typography>
-                <Typography
-                    variant="caption"
-                    component="div"
-                >
-                    {bar.rating && <p>Rating: {bar.rating}</p>}
-                </Typography>
+                <div>
+                    <Typography
+                        variant={viewport === 'desktop' ? "h6" : "subtitle1"}
+                        component="div"
+                        fontWeight={700}
+                        sx={styles.logo}
+                    >
+                        {bar.name}
+                    </Typography>
+                    <Typography variant="subtitle1" component="div">
+                        {typeof bar.vicinity === 'string' ? bar.vicinity.length > 40 ? `${bar.vicinity.slice(0, 37)}...` : bar.vicinity : ''}
+                    </Typography>
+
+
+                    <Typography
+                        variant="caption"
+                        component="div"
+                    >
+                        {bar.rating && <>Rating: {bar.rating}</>}
+                    </Typography>
+                </div>
                 <Button
+                    className="add-button"
                     variant="contained"
                     sx={styles.addButton}
                 >
-                    Add to Crawl
+                    Add
                 </Button>
             </div>
         </div>
