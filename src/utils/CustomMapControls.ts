@@ -1,9 +1,9 @@
 export class SearchHereButton {
     private _map?: maplibregl.Map;
     private _container?: HTMLDivElement;
-    private _onClickHandler?: () => void;
+    private _onClickHandler?: (map: maplibregl.Map) => void;
   
-    constructor(onClickHandler: () => void) {
+    constructor(onClickHandler: (map: maplibregl.Map) => void) {
       this._onClickHandler = onClickHandler;
     }
   
@@ -16,7 +16,11 @@ export class SearchHereButton {
         '<span class="maplibregl-ctrl-icon search-img" aria-hidden="true" title="Search this area"></span>' +
         '</button>';
       this._container.addEventListener('contextmenu', (e) => e.preventDefault());
-      this._container.addEventListener('click', () => this._onClickHandler && this._onClickHandler());
+      this._container.addEventListener('click', () => {
+        if (this._map && this._onClickHandler) {
+          this._onClickHandler(this._map);
+        }
+      });
       return this._container;
     }
   

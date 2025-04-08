@@ -11,6 +11,8 @@ import "../styles/pages/root.css";
 import { SearchHereButton } from "../utils/CustomMapControls";
 import { fetchBars } from "../utils/fetchBars";
 import { addBars } from "../store/slices/localBarSlice";
+import { Place } from "../store/slices/localBarSlice"; 
+import BarCard from "../components/BarCard";
 
 const nestedContainerStyles = (theme: Theme) => ({
   root: {
@@ -21,7 +23,7 @@ const nestedContainerStyles = (theme: Theme) => ({
 
 function Root() {
   const enter = useAppSelector(state => state.activePage);
-  const barResults = useAppSelector(state => state.localBars);
+  const barResults = useAppSelector(state => state.localBars.bars);
   const dispatch = useAppDispatch();
   const styles = nestedContainerStyles(theme);
 
@@ -94,9 +96,39 @@ function Root() {
     }
   }, [map, dispatch]);
   
-  const SearchHereClicked = () => {
-    console.log('search here');
+  const SearchHereClicked = (mapInstance: maplibregl.Map) => {
+    const center = mapInstance.getCenter();
+    console.log('Latitude:', center.lat);
+    console.log('Longitude:', center.lng);
+  
+    new maplibregl.Marker()
+      .setLngLat([center.lng, center.lat])
+      .addTo(mapInstance);
+  
+    // Optional: fetch bars near center
+    fetchBars(center.lat, center.lng)
+      .then(results => {
+        const bars = results
+          .filter((place): place is google.maps.places.PlaceResult & { name: string, geometry: { location: google.maps.LatLng } } =>
+            !!place.name && !!place.geometry?.location
+          )
+          .map(place => ({
+            name: place.name!,
+            geometry: {
+              location: {
+                lat: () => place.geometry!.location!.lat(),
+                lng: () => place.geometry!.location!.lng(),
+              },
+            },
+            rating: place.rating,
+            user_ratings_total: place.user_ratings_total,
+            vicinity: place.vicinity,
+          }));
+        dispatch(addBars(bars));
+      })
+      .catch(err => console.error("Error fetching bars from center:", err));
   };
+  
 
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"}>
@@ -105,6 +137,9 @@ function Root() {
           {googleLoaded && (
             <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
           )}
+          {barResults.map((bar: Place) => (
+            <BarCard bar={bar} />
+          ))}
         </div>
         <div ref={mapContainerRef} className="map-container" />
       </Box>
