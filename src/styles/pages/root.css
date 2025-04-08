@@ -25,6 +25,7 @@
         flex-direction: column;
     }
     .map-controller {
-        flex: 0;
+        height: auto;
+        flex: unset;
     }
 }
