@@ -24,7 +24,6 @@ function Root() {
   const [googleLoaded, setGoogleLoaded] = useState(false);
   const [visibleBars, setVisibleBars] = useState<Place[]>([]);
 
-  // --- Helpers ---
   const normalizePlace = (
     place: google.maps.places.PlaceResult
   ): Place | null => {
@@ -72,7 +71,6 @@ function Root() {
     [map]
   );
 
-  // --- Effects ---
   useEffect(() => {
     loadGoogleMapsScript()
       .then(() => setGoogleLoaded(true))
