@@ -4,14 +4,15 @@ export interface Place {
   name: string;
   geometry: {
     location: {
-      lat: number;
-      lng: number;
+      lat: () => number; 
+      lng: () => number;
     };
   };
   rating?: number;
   user_ratings_total?: number;
   vicinity?: string;
 }
+
 
 interface BarsState {
   bars: Place[];
@@ -25,8 +26,8 @@ const barsSlice = createSlice({
   name: 'bars',
   initialState,
   reducers: {
-    addBar: (state, action: PayloadAction<Place>) => {
-      state.bars.push(action.payload);
+    addBars: (state, action: PayloadAction<Place[]>) => {
+      state.bars.push(...action.payload);
     },
     removeBar: (state, action: PayloadAction<string>) => {
       state.bars = state.bars.filter(bar => bar.name !== action.payload);
@@ -37,5 +38,5 @@ const barsSlice = createSlice({
   },
 });
 
-export const { addBar, removeBar, clearBars } = barsSlice.actions;
+export const { addBars, removeBar, clearBars } = barsSlice.actions;
 export default barsSlice.reducer;

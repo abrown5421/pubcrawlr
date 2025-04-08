@@ -5,17 +5,20 @@
 .map-controller {
     display: flex;
     flex-direction: column;
+    overflow: scroll;
     flex: 3;
     height: 100%;
     padding: 10px;
 }
 .map-container {
     display: flex;
+    position: relative !important;
     flex-direction: column;
     height: 100%;
     flex: 8;
     overflow: hidden;
 }
+
 @media (max-width: 1024px) {
     .root-container {
         display: flex;

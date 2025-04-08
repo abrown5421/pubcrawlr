@@ -17,6 +17,7 @@
     "@mui/material": "^7.0.1",
     "@reduxjs/toolkit": "^2.6.1",
     "animate.css": "^4.1.1",
+    "axios": "^1.8.4",
     "firebase": "^11.6.0",
     "js-cookie": "^2.2.1",
     "maplibre-gl": "^5.3.0",

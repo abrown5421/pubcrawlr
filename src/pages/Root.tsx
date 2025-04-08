@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import maplibregl from "maplibre-gl";
+import * as maplibregl from 'maplibre-gl';
 import "maplibre-gl/dist/maplibre-gl.css";
 import AnimatedContainer from "../containers/AnimatedContainer";
 import { useAppSelector } from "../store/hooks";
@@ -8,6 +8,7 @@ import theme from "../styles/theme";
 import PlaceAutocomplete from "../components/PlaceAutocomplete";
 import { loadGoogleMapsScript } from "../utils/loadGoogleScript";
 import "../styles/pages/root.css";
+import { SearchHereButton } from "../utils/CustomMapControls";
 
 const nestedContainerStyles = (theme: Theme) => ({
   root: {
@@ -22,8 +23,8 @@ function Root() {
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | null>(null);
-  const [googleLoaded, setGoogleLoaded] = useState(false); 
-  
+  const [googleLoaded, setGoogleLoaded] = useState(false);
+
   useEffect(() => {
     loadGoogleMapsScript().then(() => {
       setGoogleLoaded(true);
@@ -43,8 +44,9 @@ function Root() {
           center: [longitude, latitude],
           zoom: 14,
         });
-        mapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
 
+        mapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
+        mapInstance.addControl(new SearchHereButton(SearchHereClicked), 'top-right');
         new maplibregl.Marker().setLngLat([longitude, latitude]).addTo(mapInstance);
         setMap(mapInstance);
       },
@@ -61,6 +63,10 @@ function Root() {
       new maplibregl.Marker().setLngLat([lng, lat]).addTo(map);
     }
   }, [map]);
+
+  const SearchHereClicked = () => {
+    console.log('search here');
+  };
 
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"}>

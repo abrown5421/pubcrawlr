@@ -29,3 +29,8 @@ a:hover {
   font-family: 'Secondary';
   src: url('../public/assets/fonts/Secondary.ttf') format('truetype');
 }
+
+.search-img {
+  background-image: url('../public/assets/images/travel-explore.svg');
+  background-size: contain;
+}
