@@ -2,13 +2,15 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import * as maplibregl from 'maplibre-gl';
 import "maplibre-gl/dist/maplibre-gl.css";
 import AnimatedContainer from "../containers/AnimatedContainer";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { Box, Theme } from "@mui/system";
 import theme from "../styles/theme";
 import PlaceAutocomplete from "../components/PlaceAutocomplete";
 import { loadGoogleMapsScript } from "../utils/loadGoogleScript";
 import "../styles/pages/root.css";
 import { SearchHereButton } from "../utils/CustomMapControls";
+import { fetchBars } from "../utils/fetchBars";
+import { addBars } from "../store/slices/localBarSlice";
 
 const nestedContainerStyles = (theme: Theme) => ({
   root: {
@@ -19,12 +21,16 @@ const nestedContainerStyles = (theme: Theme) => ({
 
 function Root() {
   const enter = useAppSelector(state => state.activePage);
+  const barResults = useAppSelector(state => state.localBars);
+  const dispatch = useAppDispatch();
   const styles = nestedContainerStyles(theme);
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | null>(null);
   const [googleLoaded, setGoogleLoaded] = useState(false);
 
+  useEffect(()=>{console.log(barResults)}, [barResults])
+  
   useEffect(() => {
     loadGoogleMapsScript().then(() => {
       setGoogleLoaded(true);
@@ -57,13 +63,37 @@ function Root() {
     );
   }, [map]);
 
-  const handlePlaceSelect = useCallback((lat: number, lng: number) => {
+  const handlePlaceSelect = useCallback(async (lat: number, lng: number) => {
     if (map) {
       map.flyTo({ center: [lng, lat], zoom: 14 });
       new maplibregl.Marker().setLngLat([lng, lat]).addTo(map);
+  
+      try {
+        const results = await fetchBars(lat, lng);
+        const bars = results
+          .filter((place): place is google.maps.places.PlaceResult & { name: string, geometry: { location: google.maps.LatLng } } =>
+            !!place.name && !!place.geometry?.location
+          )
+          .map(place => ({
+            name: place.name!,
+            geometry: {
+              location: {
+                lat: () => place.geometry!.location!.lat(),
+                lng: () => place.geometry!.location!.lng(),
+              },
+            },
+            rating: place.rating,
+            user_ratings_total: place.user_ratings_total,
+            vicinity: place.vicinity,
+          }));
+  
+        dispatch(addBars(bars));
+      } catch (err) {
+        console.error("Error fetching bars:", err);
+      }
     }
-  }, [map]);
-
+  }, [map, dispatch]);
+  
   const SearchHereClicked = () => {
     console.log('search here');
   };
