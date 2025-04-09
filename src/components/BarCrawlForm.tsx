@@ -2,15 +2,10 @@ import { useRef, useState } from "react";
 import { Drawer, TextField, Button } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useTheme } from "@mui/system";
-import Form, { type FormHandle } from "./Form";
+import Form from "./Form";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setAlert } from "../store/slices/notificationSlice";
-
-type ValidationErrors = Partial<Record<keyof FormData, string>>;
-
-type FormData = {
-  barCrawlName: string;
-};
+import { BcFormFormData, BcFormValidationErrors, BarCrawlFormProps, FormHandle} from "../types/globalTypes";
 
 const useBarCrawlStyles = (theme: any) => ({
   openCrawlButton: {
@@ -24,11 +19,6 @@ const useBarCrawlStyles = (theme: any) => ({
   },
 });
 
-type BarCrawlFormProps = {
-  open: boolean;
-  onClose: () => void;
-  drawerWidth: number;
-};
 
 export default function BarCrawlForm({ open, onClose, drawerWidth }: BarCrawlFormProps) {
   const theme = useTheme();
@@ -37,11 +27,11 @@ export default function BarCrawlForm({ open, onClose, drawerWidth }: BarCrawlFor
   const dispatch = useAppDispatch();
   const crawlForm = useRef<FormHandle>(null);
 
-  const [formData, setFormData] = useState<FormData>({ barCrawlName: "" });
-  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [formData, setFormData] = useState<BcFormFormData>({ barCrawlName: "" });
+  const [errors, setErrors] = useState<BcFormValidationErrors>({});
 
-  const validate = (data: FormData): ValidationErrors => {
-    const newErrors: ValidationErrors = {};
+  const validate = (data: BcFormFormData): BcFormValidationErrors => {
+    const newErrors: BcFormValidationErrors = {};
     if (!data.barCrawlName) {
       newErrors.barCrawlName = "Bar crawl name is required";
     }
@@ -49,7 +39,7 @@ export default function BarCrawlForm({ open, onClose, drawerWidth }: BarCrawlFor
   };
 
   const handleSubmit = (data: unknown) => {
-    const extractedData = data as FormData;
+    const extractedData = data as BcFormFormData;
     const validationErrors = validate(extractedData);
 
     if (Object.keys(validationErrors).length > 0) {
@@ -69,17 +59,17 @@ export default function BarCrawlForm({ open, onClose, drawerWidth }: BarCrawlFor
     crawlForm.current?.clear();
   };
 
-  const handleChange = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (field: keyof BcFormFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFormData(prev => ({ ...prev, [field]: value }));
-
-    if (errors[field]) {
+  
+    if (errors.barCrawlName) {
       setErrors(prevErrors => {
-        const { [field]: _, ...rest } = prevErrors;
+        const { barCrawlName: _, ...rest } = prevErrors;
         return rest;
       });
     }
-  };
+  };  
 
   return (
     <>

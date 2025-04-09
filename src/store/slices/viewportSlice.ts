@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface ViewportState {
-  width: number;
-  height: number;
-  type: "mobile" | "tablet" | "desktop";
-}
+import { ViewportState } from "../../types/globalTypes";
 
 const initialState: ViewportState = {
   width: window.innerWidth,

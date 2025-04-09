@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-
-interface ActivePageState {
-  Name: string;
-  In: boolean;
-}
+import { ActivePageState } from "../../types/globalTypes";
 
 const initialState: ActivePageState = {
   Name: "Root",

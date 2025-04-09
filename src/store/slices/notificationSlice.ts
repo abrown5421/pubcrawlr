@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface NotificationState {
-  open: boolean;
-  message: string;
-  severity: 'error' | 'warning' | 'info' | 'success';
-}
+import { NotificationState } from '../../types/globalTypes';
 
 const initialState: NotificationState = {
   open: false,

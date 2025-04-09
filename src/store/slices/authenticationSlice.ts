@@ -1,18 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
-
-export interface User {
-  docId: string;
-  UserEmail: string;
-  UserFirstName: string;
-  UserLastName: string;
-}
-
-interface AuthenticationState {
-  isAuthenticated: boolean;
-  user: User | null;
-  token: string | null;
-}
+import { AuthenticationState, User } from '../../types/globalTypes';
 
 const initialState: AuthenticationState = {
   isAuthenticated: false,

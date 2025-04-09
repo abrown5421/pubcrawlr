@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-import { Place } from "../store/slices/localBarSlice"; 
 import { Button, Divider, Typography } from "@mui/material";
 import { useTheme } from '@mui/material';
 import "../styles/components/bar-card.css";
 import placeholderImg from "../../public/assets/images/bar-placeholder.png";
 import { useAppSelector } from "../store/hooks";
-
-type BarCardProps = {
-  bar: Place;  
-};
+import { BarCardProps } from "../types/globalTypes";
 
 const useBarCardStyles = (theme: any) => ({
     logo: {
@@ -36,7 +32,6 @@ const BarCard: React.FC<BarCardProps> = ({ bar }) => {
 
   const [imageSrc, setImageSrc] = useState(bar.photoUrl || placeholderImg);
 
-  // Fallback to placeholder if image fails to load
   const handleImageError = () => {
     setImageSrc(placeholderImg);
   };
@@ -48,8 +43,8 @@ const BarCard: React.FC<BarCardProps> = ({ bar }) => {
                 <img
                     src={imageSrc}
                     className="card-image"
-                    onError={handleImageError} // Trigger fallback on error
-                    alt={bar.name} // Always a good practice to add an alt text for accessibility
+                    onError={handleImageError} 
+                    alt={bar.name}
                 />
             </div>
             <div className="bar-card-col add-pad fl-1">

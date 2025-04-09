@@ -1,9 +1,6 @@
 import { useEffect, useRef } from "react";
 import { TextField } from "@mui/material";
-
-type PlaceAutocompleteProps = {
-  onPlaceSelected: (lat: number, lng: number) => void;
-};
+import { PlaceAutocompleteProps } from "../types/globalTypes";
 
 const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>(null);

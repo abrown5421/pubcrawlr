@@ -1,23 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-export interface Place {
-  name: string;
-  geometry: {
-    location: {
-      lat: () => number; 
-      lng: () => number;
-    };
-  };
-  rating?: number;
-  user_ratings_total?: number;
-  vicinity?: string;
-  photoUrl?: string;
-}
-
-
-interface BarsState {
-  bars: Place[];
-}
+import { BarsState, Place } from '../../types/globalTypes';
 
 const initialState: BarsState = {
   bars: [],

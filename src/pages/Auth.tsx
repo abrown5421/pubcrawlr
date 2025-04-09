@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { Box, Button, TextField, Typography, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';  
-import Form, { type FormHandle } from "../components/Form";
+import Form from "../components/Form";
+import { FormHandle, AuthProps, ValidationErrors, FormData } from '../types/globalTypes';
 import AnimatedContainer from "../containers/AnimatedContainer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { Theme } from "@mui/system";
@@ -13,20 +14,6 @@ import { setAlert } from '../store/slices/notificationSlice';
 import authService from '../services/authService';
 import { setAuthToken, setUser } from '../store/slices/authenticationSlice';
 import Cookies from 'js-cookie'
-
-type AuthProps = {
-  mode: 'login' | 'signup';
-};
-
-type FormData = {
-  firstName: string;
-  lastName?: string;
-  email: string;
-  password: string;
-  confirmPassword?: string;
-};
-
-type ValidationErrors = Partial<Record<keyof FormData, string>>;
 
 const nestedAnimatedContainerStyles = (theme: Theme) => ({
   authBox: {

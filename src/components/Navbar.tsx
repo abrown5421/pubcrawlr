@@ -17,14 +17,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setActivePage } from "../store/slices/activePageSlice";
-import { clearUser, setAuthToken, User } from "../store/slices/authenticationSlice";
+import { clearUser, setAuthToken } from "../store/slices/authenticationSlice";
 import Cookies from "js-cookie";
+import { User, UserState } from "../types/globalTypes";
 import "../styles/components/navbar.css";
 
-export interface UserState {
-  isAuthenticated: boolean;
-  user: User | null;
-}
 
 const useNavbarStyles = (theme: any) => ({
   appBar: {

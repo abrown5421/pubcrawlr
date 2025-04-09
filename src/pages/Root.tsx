@@ -9,9 +9,10 @@ import { loadGoogleMapsScript } from "../utils/loadGoogleScript";
 import "../styles/pages/root.css";
 import { SearchHereButton } from "../utils/CustomMapControls";
 import { fetchBars } from "../utils/fetchBars";
-import { addBars, Place } from "../store/slices/localBarSlice";
+import { addBars } from "../store/slices/localBarSlice";
+import { Place } from "../types/globalTypes";
 import BarCard from "../components/BarCard";
-import { Button, Drawer, TextField, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import BarCrawlForm from "../components/BarCrawlForm";
 
@@ -149,7 +150,6 @@ function Root() {
     };
   }, [map, barResults]);
   
-
   useEffect(() => {
     if (!map) return;
 

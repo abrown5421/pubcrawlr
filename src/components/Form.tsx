@@ -1,13 +1,7 @@
 import { ComponentPropsWithoutRef, FormEvent, forwardRef, useImperativeHandle, useRef } from "react"
 import '../styles/components/form.css';
+import { FormHandle, FormProps } from "../types/globalTypes";
 
-export type FormHandle = {
-    clear: () => void;
-};
-
-type FormProps = ComponentPropsWithoutRef<'form'> & {
-    onSave: (value: unknown) => void;
-};
 
 const Form = forwardRef<FormHandle, FormProps>(function Form({onSave, children, ...otherProps}, ref) {
     const form = useRef<HTMLFormElement>(null);
