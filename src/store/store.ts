@@ -4,6 +4,7 @@ import activePageReducer from './slices/activePageSlice';
 import authenticationReducer from './slices/authenticationSlice';
 import notificationReducer from './slices/notificationSlice';  
 import localBarReducer from './slices/localBarSlice';
+import selectedBarReducer from './slices/selectedBarSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     authentication: authenticationReducer,
     notification: notificationReducer, 
     localBars: localBarReducer,
+    selectedBars: selectedBarReducer,
   },
 });
 
