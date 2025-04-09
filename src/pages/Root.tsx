@@ -10,11 +10,12 @@ import "../styles/pages/root.css";
 import { SearchHereButton } from "../utils/CustomMapControls";
 import { fetchBars } from "../utils/fetchBars";
 import { addBars } from "../store/slices/localBarSlice";
+import { setDrawerOpen } from '../store/slices/selectedBarSlice';
 import { Place } from "../types/globalTypes";
 import BarCard from "../components/BarCard";
 import { Button } from "@mui/material";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import BarCrawlForm from "../components/BarCrawlForm";
+import BarCrawlBuilder from "../components/BarCrawlBuilder";
 
 const useRootStyles = (theme: any) => ({
   openCrawlButton: {
@@ -33,6 +34,8 @@ function Root() {
   const barResults = useAppSelector(state => state.localBars.bars);
   const viewport = useAppSelector(state => state.viewport.type);
   const enter = useAppSelector(state => state.activePage);
+  const drawerOpen = useAppSelector(state => state.selectedBars.drawerOpen)
+  const selectedBars = useAppSelector(state => state.selectedBars.selectedBars);  
   const theme = useTheme();
   const styles = useRootStyles(theme);
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -41,7 +44,6 @@ function Root() {
   const [map, setMap] = useState<maplibregl.Map | null>(null);
   const [googleLoaded, setGoogleLoaded] = useState(false);
   const [visibleBars, setVisibleBars] = useState<Place[]>([]);
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [drawerWidth, setDrawerWidth] = useState<number>(400);
 
   const normalizePlace = (
@@ -95,7 +97,7 @@ function Root() {
   );
 
   const toggleDrawer = (open: boolean) => () => {
-    setDrawerOpen(open);
+    dispatch(setDrawerOpen(open));
   };
 
   useEffect(() => {
@@ -191,10 +193,22 @@ function Root() {
             <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
           )}
           {viewport === 'desktop'  && visibleBars.map((bar) => (
-            <BarCard key={bar.name} bar={bar} />
+            <BarCard key={bar.name} bar={bar} mode="not-selected" />
           ))}
         </div>
-        <div ref={mapContainerRef} className="map-container" />
+        <div ref={mapContainerRef} className="map-container">
+          {selectedBars.length > 0 && viewport !== "desktop" && (
+            <Button
+              className="open-bar-crawl-button"
+              aria-label="Open Bar Crawl"
+              sx={styles.openCrawlButton}
+              startIcon={<OpenInNewIcon />}
+              onClick={toggleDrawer(true)}
+            >
+              View Bar Crawl
+            </Button>
+          )}
+        </div>
         {viewport !== 'desktop' && (
           <Box
             sx={{
@@ -209,22 +223,24 @@ function Root() {
           >
             {visibleBars.map((bar) => (
               <Box key={bar.name} sx={{ minWidth: 250, marginRight: theme.spacing(2) }}>
-                <BarCard bar={bar} />
+                <BarCard bar={bar} mode="not-selected" />
               </Box>
             ))}
           </Box>
         )}
       </Box>
-      <Button
-        className="open-bar-crawl-button"
-        aria-label="Open Bar Crawl"
-        sx={styles.openCrawlButton}
-        startIcon={<OpenInNewIcon />}
-        onClick={toggleDrawer(true)}
-      >
-        View Bar Crawl
-      </Button>
-      <BarCrawlForm
+      {selectedBars.length > 0 && viewport === "desktop" && (
+        <Button
+          className="open-bar-crawl-button"
+          aria-label="Open Bar Crawl"
+          sx={styles.openCrawlButton}
+          startIcon={<OpenInNewIcon />}
+          onClick={toggleDrawer(true)}
+        >
+          View Bar Crawl
+        </Button>
+      )}
+      <BarCrawlBuilder
         open={drawerOpen}
         onClose={toggleDrawer(false)}
         drawerWidth={drawerWidth}

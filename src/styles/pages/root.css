@@ -38,4 +38,12 @@
         height: auto;
         flex: unset;
     }
+    .open-bar-crawl-button {
+        position: absolute !important;
+        top: 10px;
+        left: 10px;
+        bottom: unset;
+        right: unset;
+        margin-top: 0px !important;
+    }
 }

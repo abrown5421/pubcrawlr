@@ -3,6 +3,7 @@ import { SelectedBarsState, Place } from '../../types/globalTypes';
 
 const initialState: SelectedBarsState = {
   selectedBars: [],
+  drawerOpen: false,
 };
 
 const selectedBarSlice = createSlice({
@@ -20,8 +21,11 @@ const selectedBarSlice = createSlice({
     clearBars: (state) => {
       state.selectedBars = [];
     },
+    setDrawerOpen: (state, action: PayloadAction<boolean>) => {
+      state.drawerOpen = action.payload;
+    },
   },
 });
 
-export const { addBar, removeBar, clearBars } = selectedBarSlice.actions;
+export const { addBar, removeBar, clearBars, setDrawerOpen } = selectedBarSlice.actions;
 export default selectedBarSlice.reducer;

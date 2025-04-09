@@ -77,15 +77,17 @@ export interface Place {
 
 export interface SelectedBarsState {
   selectedBars: Place[];
+  drawerOpen: boolean;
 }
 
 export type BarCardProps = {
-    bar: Place;  
+    bar: Place;
+    mode: String;  
 };
 
 export type ValidationErrors = Partial<Record<keyof FormData, string>>;
 
-export type BarCrawlFormProps = {
+export type SearchHereButtonProps = {
   open: boolean;
   onClose: () => void;
   drawerWidth: number;

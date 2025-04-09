@@ -1,11 +1,23 @@
 .bar-card {
     display: flex;
-    flex-direction: row;
     padding: 8px 0px;
+}
+.bar-card-mobile {
+    flex-direction: column;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+    padding: 0px;
+    border-radius: 5px;
+    height: 100%;
+}
+.bar-card-row {
+    display: flex;
+    flex-direction: row;
 }
 .bar-card-col {
     display: flex;
     flex-direction: column;
+}
+.jc-cent {
     justify-content: center;
 }
 .fl-1 {
@@ -19,19 +31,17 @@
     height: 150px;
     object-fit: cover;
 }
+.card-image-small {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
 @media (max-width: 1200px) {
     .bar-card-col {
         justify-content: start;
     }
 }
 @media screen and (max-width: 1024px) {
-    .bar-card {
-        flex-direction: column;
-        box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
-        padding: 0px;
-        border-radius: 5px;
-        height: 100%;
-    }
     .bar-card-col {
         justify-content: space-between;
     }
