@@ -8,6 +8,7 @@ import { BarCardProps } from "../types/globalTypes";
 import { addBar, setDrawerOpen } from '../store/slices/selectedBarSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { removeBar } from "../store/slices/selectedBarSlice";
+import { setModal } from "../store/slices/modalSlice";
 
 const useBarCardStyles = (theme: any) => ({
     logo: {
@@ -48,6 +49,14 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
   const handleRemoveBar = (x: string) => {
     dispatch(removeBar(x));
   };
+
+  const handleLearnMore = () => {
+    dispatch(setModal({
+        open: true,
+        title: bar.name,
+        body: 'fiddle pop poof ',
+    }))
+  }
 
   return (
     <>
@@ -90,6 +99,20 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
                             component="div"
                         >
                             {bar.rating && <>Rating: {bar.rating}</>}
+                        </Typography>
+                        <div className="pipe">|</div>
+                        <Typography
+                            onClick={handleLearnMore}
+                            variant="caption"
+                            sx={{
+                                color: theme => theme.palette.custom?.accent,
+                                cursor: 'pointer',
+                                '&:hover': {
+                                color: theme => theme.palette.custom?.highlight,
+                                },
+                            }}
+                        >
+                            Learn More
                         </Typography>
                     </div>
                 </div>

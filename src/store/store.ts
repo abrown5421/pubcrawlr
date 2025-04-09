@@ -3,6 +3,7 @@ import viewportReducer from './slices/viewportSlice';
 import activePageReducer from './slices/activePageSlice';
 import authenticationReducer from './slices/authenticationSlice';
 import notificationReducer from './slices/notificationSlice';  
+import modalReducer from './slices/modalSlice';  
 import localBarReducer from './slices/localBarSlice';
 import selectedBarReducer from './slices/selectedBarSlice';
 
@@ -12,6 +13,7 @@ export const store = configureStore({
     activePage: activePageReducer,
     authentication: authenticationReducer,
     notification: notificationReducer, 
+    modal: modalReducer, 
     localBars: localBarReducer,
     selectedBars: selectedBarReducer,
   },

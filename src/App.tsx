@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from './store/hooks.ts';
 import { setActivePage } from './store/slices/activePageSlice.ts';
 import { routeToPageName } from './utils/routeToPageName.ts';
 import NotFound from './pages/NotFound';  
+import Modal from './components/Modal.tsx';
 
 function AnimationInitializer() {
   const location = useLocation();
@@ -81,6 +82,7 @@ function App() {
         </MainContainer>
       </Router>
       <Notification />
+      <Modal />
     </>
   );
 }

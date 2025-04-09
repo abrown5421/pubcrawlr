@@ -56,6 +56,12 @@ export interface BarsState {
     bars: Place[];
 }
 
+export interface ModalState  {
+    open: boolean;
+    title: string;
+    body: string;
+}
+
 export interface NotificationState {
     open: boolean;
     message: string;

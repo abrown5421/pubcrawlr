@@ -5,8 +5,8 @@ const themeOptions: ThemeOptions = {
     custom: {
       dark: "#00171f", 
       light: "#FFF", 
-      accent: "#277a73", 
-      highlight: "#00b2a3", 
+      accent: "#0090c9", 
+      highlight: "#00c3ff", 
       error: "#cc0000",
     },
   },
