@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Place } from "../store/slices/localBarSlice"; 
 import { Button, Divider, Typography } from "@mui/material";
 import { useTheme } from '@mui/material';
@@ -9,6 +9,7 @@ import { useAppSelector } from "../store/hooks";
 type BarCardProps = {
   bar: Place;  
 };
+
 const useBarCardStyles = (theme: any) => ({
     logo: {
       color: theme.palette.custom?.dark,
@@ -31,16 +32,25 @@ const useBarCardStyles = (theme: any) => ({
 const BarCard: React.FC<BarCardProps> = ({ bar }) => {
   const theme = useTheme();
   const styles = useBarCardStyles(theme);
-  const viewport = useAppSelector(state => state.viewport.type)
+  const viewport = useAppSelector(state => state.viewport.type);
+
+  const [imageSrc, setImageSrc] = useState(bar.photoUrl || placeholderImg);
+
+  // Fallback to placeholder if image fails to load
+  const handleImageError = () => {
+    setImageSrc(placeholderImg);
+  };
+
   return (
     <>
         <div style={styles.card} className="bar-card">
             <div className="bar-card-col">
-                {bar.photoUrl ? (
-                    <img src={bar.photoUrl} className="card-image" />
-                ) : (
-                    <img src={placeholderImg} className="card-image" />
-                )}
+                <img
+                    src={imageSrc}
+                    className="card-image"
+                    onError={handleImageError} // Trigger fallback on error
+                    alt={bar.name} // Always a good practice to add an alt text for accessibility
+                />
             </div>
             <div className="bar-card-col add-pad fl-1">
                 <div>
@@ -55,7 +65,6 @@ const BarCard: React.FC<BarCardProps> = ({ bar }) => {
                     <Typography variant="subtitle1" component="div">
                         {typeof bar.vicinity === 'string' ? bar.vicinity.length > 40 ? `${bar.vicinity.slice(0, 37)}...` : bar.vicinity : ''}
                     </Typography>
-
 
                     <Typography
                         variant="caption"

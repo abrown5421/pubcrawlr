@@ -12,6 +12,8 @@ import { SearchHereButton } from "../utils/CustomMapControls";
 import { fetchBars } from "../utils/fetchBars";
 import { addBars, Place } from "../store/slices/localBarSlice";
 import BarCard from "../components/BarCard";
+import personPin from "../../public/assets/images/personPin.png";
+import noPersonPin from "../../public/assets/images/noPersonPin.png";
 
 function Root() {
   const dispatch = useAppDispatch();
@@ -46,8 +48,6 @@ function Root() {
       photoUrl,
     };
   };
-  
-  
 
   const fetchAndStoreBars = async (lat: number, lng: number) => {
     try {
@@ -162,11 +162,6 @@ function Root() {
           ))}
         </div>
         <div ref={mapContainerRef} className="map-container" />
-        {viewport === 'desktop'  && (
-          <div className="bar-crawl-form-drawer">
-            test
-          </div>
-        )}
         {viewport !== 'desktop' && (
           <Box
             sx={{
