@@ -57,6 +57,7 @@ function Root() {
     const photoUrl = place.photos?.[0]?.getUrl({ maxHeight: place.photos[0].height });
 
     return {
+      id: place.place_id,
       name: place.name,
       geometry: {
         location: {
@@ -233,7 +234,7 @@ function Root() {
             <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
           )}
           {viewport === 'desktop' && visibleBars.map((bar) => (
-            <BarCard key={bar.name} bar={bar} mode="not-selected" />
+            <BarCard key={bar.id} bar={bar} mode="not-selected" />
           ))}
         </div>
         <div ref={mapContainerRef} className="map-container">
@@ -252,7 +253,7 @@ function Root() {
         {viewport !== 'desktop' && (
           <Box sx={{ display: "flex", overflowX: "auto", position: "absolute", bottom: 0, width: "100%", padding: "8px", zIndex: 1 }}>
             {visibleBars.map((bar) => (
-              <Box key={bar.name} sx={{ minWidth: viewport !== 'mobile' ? 250 : 215, marginRight: theme.spacing(2) }}>
+              <Box key={bar.id} sx={{ minWidth: viewport !== 'mobile' ? 250 : 215, marginRight: theme.spacing(2) }}>
                 <BarCard bar={bar} mode="not-selected" />
               </Box>
             ))}

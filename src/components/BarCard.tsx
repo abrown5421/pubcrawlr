@@ -54,7 +54,7 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
     dispatch(setModal({
         open: true,
         title: bar.name,
-        body: 'fiddle pop poof ',
+        body: 'fiddle pop',
     }))
   }
 

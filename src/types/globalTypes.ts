@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef } from "react"
+import { ComponentPropsWithoutRef, ReactNode } from "react"
 
 export interface ViewportState {
     width: number;
@@ -59,7 +59,7 @@ export interface BarsState {
 export interface ModalState  {
     open: boolean;
     title: string;
-    body: string;
+    body: ReactNode;
 }
 
 export interface NotificationState {
@@ -69,6 +69,7 @@ export interface NotificationState {
 }
 
 export interface Place {
+  id?: string;
   name: string;
   geometry: {
     location: {
