@@ -7,6 +7,7 @@ const themeOptions: ThemeOptions = {
       light: "#FFF", 
       accent: "#277a73", 
       highlight: "#00b2a3", 
+      error: "#cc0000",
     },
   },
 };
@@ -18,6 +19,7 @@ declare module "@mui/material/styles" {
       light: string;
       accent: string;
       highlight: string;
+      error: string;
     };
   }
   interface PaletteOptions {
@@ -26,6 +28,7 @@ declare module "@mui/material/styles" {
       light: string;
       accent: string;
       highlight: string;
+      error: string;
     };
   }
 }

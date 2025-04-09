@@ -16,6 +16,7 @@ import BarCard from "../components/BarCard";
 import { Button } from "@mui/material";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import BarCrawlBuilder from "../components/BarCrawlBuilder";
+import { getMarkerPopup } from "../utils/getMarkerPopup";
 
 const useRootStyles = (theme: any) => ({
   openCrawlButton: {
@@ -34,25 +35,27 @@ function Root() {
   const barResults = useAppSelector(state => state.localBars.bars);
   const viewport = useAppSelector(state => state.viewport.type);
   const enter = useAppSelector(state => state.activePage);
-  const drawerOpen = useAppSelector(state => state.selectedBars.drawerOpen)
-  const selectedBars = useAppSelector(state => state.selectedBars.selectedBars);  
+  const drawerOpen = useAppSelector(state => state.selectedBars.drawerOpen);
+  const selectedBars = useAppSelector(state => state.selectedBars.selectedBars);
   const theme = useTheme();
   const styles = useRootStyles(theme);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<maplibregl.Marker[]>([]);
+  const accentPinRef = useRef<maplibregl.Marker | null>(null); // Ref for tracking accent pin
   const mapControllerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | null>(null);
   const [googleLoaded, setGoogleLoaded] = useState(false);
   const [visibleBars, setVisibleBars] = useState<Place[]>([]);
   const [drawerWidth, setDrawerWidth] = useState<number>(400);
 
+  // Function to normalize Google Place data into the Place type from globalTypes
   const normalizePlace = (
     place: google.maps.places.PlaceResult
   ): Place | null => {
     if (!place.name || !place.geometry?.location) return null;
-  
+
     const photoUrl = place.photos?.[0]?.getUrl({ maxHeight: place.photos[0].height });
-  
+
     return {
       name: place.name,
       geometry: {
@@ -68,6 +71,7 @@ function Root() {
     };
   };
 
+  // Fetch bars from fetchBars hook based on latitude and longitude
   const fetchAndStoreBars = async (lat: number, lng: number) => {
     try {
       const results = await fetchBars(lat, lng);
@@ -80,49 +84,71 @@ function Root() {
     }
   };
 
+  // Function to add a marker at the center of the map and fetch bars in that area
   const SearchHereClicked = (mapInstance: maplibregl.Map) => {
     const center = mapInstance.getCenter();
-    new maplibregl.Marker().setLngLat([center.lng, center.lat]).addTo(mapInstance);
+    
+    if (accentPinRef.current) {
+      accentPinRef.current.remove();
+    }
+
+    accentPinRef.current = new maplibregl.Marker({
+      color: theme.palette.custom.highlight
+    }).setLngLat([center.lng, center.lat]).addTo(mapInstance);
+
     fetchAndStoreBars(center.lat, center.lng);
   };
 
+  // Handle place selection from autocomplete input list
   const handlePlaceSelect = useCallback(
     async (lat: number, lng: number) => {
       if (!map) return;
       map.flyTo({ center: [lng, lat], zoom: 14 });
-      new maplibregl.Marker().setLngLat([lng, lat]).addTo(map);
+
+      if (accentPinRef.current) {
+        accentPinRef.current.remove();
+      }
+
+      accentPinRef.current = new maplibregl.Marker({
+        color: theme.palette.custom.highlight
+      }).setLngLat([lng, lat]).addTo(map);
+
       await fetchAndStoreBars(lat, lng);
     },
     [map]
   );
 
+  // Toggle the drawer open/closed
   const toggleDrawer = (open: boolean) => () => {
-    dispatch(setDrawerOpen(open));
+    dispatch(setDrawerOpen(open)); 
   };
 
+  // Load the Google Maps script for the autocomplete input when the component mounts
   useEffect(() => {
     loadGoogleMapsScript()
       .then(() => setGoogleLoaded(true))
       .catch(console.error);
   }, []);
 
+  // Initialize the map and set user's location
   useEffect(() => {
     if (!mapContainerRef.current || map) return;
-
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-
         const mapInstance = new maplibregl.Map({
           container: mapContainerRef.current!,
           style: `https://api.maptiler.com/maps/openstreetmap/style.json?key=${import.meta.env.VITE_MAP_TILER_KEY}`,
           center: [longitude, latitude],
           zoom: 14,
         });
-
         mapInstance.addControl(new maplibregl.NavigationControl(), "top-right");
         mapInstance.addControl(new SearchHereButton(SearchHereClicked), "top-right");
-        new maplibregl.Marker().setLngLat([longitude, latitude]).addTo(mapInstance);
+
+        // Add error pin
+        new maplibregl.Marker({
+          color: theme.palette.custom.error
+        }).setLngLat([longitude, latitude]).addTo(mapInstance);
 
         setMap(mapInstance);
       },
@@ -131,9 +157,10 @@ function Root() {
     );
   }, [map]);
 
+  // Update the visible pins based on map movements
   useEffect(() => {
     if (!map) return;
-  
+
     const updateVisibleBars = () => {
       const bounds = map.getBounds();
       const inBounds = barResults.filter(bar => {
@@ -143,56 +170,68 @@ function Root() {
       });
       setVisibleBars(inBounds);
     };
-  
+
     map.on("moveend", updateVisibleBars);
     updateVisibleBars();
-  
     return () => {
       map.off("moveend", updateVisibleBars);
     };
   }, [map, barResults]);
-  
+
+  // Add and remove markers based on the bars visible within the map. This is also where we are handling marker clicks
   useEffect(() => {
     if (!map) return;
-
     markerRef.current.forEach(marker => marker.remove());
     markerRef.current = [];
 
     visibleBars.forEach(bar => {
       const lat = bar.geometry.location.lat();
       const lng = bar.geometry.location.lng();
-      const marker = new maplibregl.Marker().setLngLat([lng, lat]).addTo(map);
+
+      const marker = new maplibregl.Marker({
+        color: theme.palette.custom.dark
+      })
+        .setLngLat([lng, lat])
+        .setPopup(new maplibregl.Popup().setHTML(getMarkerPopup({
+          imageUrl: bar.photoUrl,
+          name: bar.name,
+          rating: bar.rating,
+          includeAddBtn: true
+        })))        
+        .addTo(map);
+
+
+      marker.getElement().addEventListener('click', () => {
+        map.flyTo({
+          center: [lng, lat],
+          speed: 0.5,
+        });
+      });
+
       markerRef.current.push(marker);
     });
   }, [map, visibleBars]);
 
+  // Adjust drawer width based on map container size
   useEffect(() => {
     if (mapControllerRef.current) {
       const observer = new ResizeObserver(() => {
         const width = mapControllerRef.current?.offsetWidth ?? 400;
         setDrawerWidth(width);
       });
-  
       observer.observe(mapControllerRef.current);
-  
       return () => observer.disconnect();
     }
   }, []);
-  
+
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"}>
-      <Box
-        sx={{
-          height: "100%",
-          backgroundColor: theme.palette.custom?.light,
-        }}
-        className="root-container"
-      >
+      <Box sx={{ height: "100%", backgroundColor: theme.palette.custom?.light }} className="root-container">
         <div ref={mapControllerRef} className="map-controller">
           {googleLoaded && (
             <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
           )}
-          {viewport === 'desktop'  && visibleBars.map((bar) => (
+          {viewport === 'desktop' && visibleBars.map((bar) => (
             <BarCard key={bar.name} bar={bar} mode="not-selected" />
           ))}
         </div>
@@ -210,17 +249,7 @@ function Root() {
           )}
         </div>
         {viewport !== 'desktop' && (
-          <Box
-            sx={{
-              display: "flex",
-              overflowX: "auto",
-              position: "absolute",
-              bottom: 0,
-              width: "100%",
-              padding: "8px",
-              zIndex: 1,
-            }}
-          >
+          <Box sx={{ display: "flex", overflowX: "auto", position: "absolute", bottom: 0, width: "100%", padding: "8px", zIndex: 1 }}>
             {visibleBars.map((bar) => (
               <Box key={bar.name} sx={{ minWidth: 250, marginRight: theme.spacing(2) }}>
                 <BarCard bar={bar} mode="not-selected" />

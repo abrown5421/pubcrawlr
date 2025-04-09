@@ -80,6 +80,13 @@ export interface SelectedBarsState {
   drawerOpen: boolean;
 }
 
+export interface MarkerPopupProps {
+    imageUrl?: string;
+    name: string;
+    rating?: number;
+    includeAddBtn: boolean;
+}
+
 export type BarCardProps = {
     bar: Place;
     mode: String;  
@@ -122,3 +129,4 @@ export type BcFormValidationErrors = Partial<Record<keyof BcFormFormData, string
 export type BcFormFormData = {
   barCrawlName: string;
 };
+
