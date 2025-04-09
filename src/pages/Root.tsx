@@ -3,8 +3,7 @@ import * as maplibregl from 'maplibre-gl';
 import "maplibre-gl/dist/maplibre-gl.css";
 import AnimatedContainer from "../containers/AnimatedContainer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { Box } from "@mui/system";
-import theme from "../styles/theme";
+import { Box, useTheme } from "@mui/system";
 import PlaceAutocomplete from "../components/PlaceAutocomplete";
 import { loadGoogleMapsScript } from "../utils/loadGoogleScript";
 import "../styles/pages/root.css";
@@ -12,20 +11,37 @@ import { SearchHereButton } from "../utils/CustomMapControls";
 import { fetchBars } from "../utils/fetchBars";
 import { addBars, Place } from "../store/slices/localBarSlice";
 import BarCard from "../components/BarCard";
-import personPin from "../../public/assets/images/personPin.png";
-import noPersonPin from "../../public/assets/images/noPersonPin.png";
+import { Button, Drawer, TextField, Typography } from "@mui/material";
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import BarCrawlForm from "../components/BarCrawlForm";
+
+const useRootStyles = (theme: any) => ({
+  openCrawlButton: {
+    backgroundColor: theme.palette.custom?.dark,
+    color: theme.palette.custom?.light,
+    "&:hover": {
+      backgroundColor: theme.palette.custom?.light,
+      color: theme.palette.custom?.dark,
+    },
+    marginTop: theme.spacing(2),
+  },
+});
 
 function Root() {
   const dispatch = useAppDispatch();
   const barResults = useAppSelector(state => state.localBars.bars);
   const viewport = useAppSelector(state => state.viewport.type);
   const enter = useAppSelector(state => state.activePage);
-
+  const theme = useTheme();
+  const styles = useRootStyles(theme);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<maplibregl.Marker[]>([]);
+  const mapControllerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | null>(null);
   const [googleLoaded, setGoogleLoaded] = useState(false);
   const [visibleBars, setVisibleBars] = useState<Place[]>([]);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [drawerWidth, setDrawerWidth] = useState<number>(400);
 
   const normalizePlace = (
     place: google.maps.places.PlaceResult
@@ -76,6 +92,10 @@ function Root() {
     },
     [map]
   );
+
+  const toggleDrawer = (open: boolean) => () => {
+    setDrawerOpen(open);
+  };
 
   useEffect(() => {
     loadGoogleMapsScript()
@@ -144,6 +164,19 @@ function Root() {
     });
   }, [map, visibleBars]);
 
+  useEffect(() => {
+    if (mapControllerRef.current) {
+      const observer = new ResizeObserver(() => {
+        const width = mapControllerRef.current?.offsetWidth ?? 400;
+        setDrawerWidth(width);
+      });
+  
+      observer.observe(mapControllerRef.current);
+  
+      return () => observer.disconnect();
+    }
+  }, []);
+  
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"}>
       <Box
@@ -153,7 +186,7 @@ function Root() {
         }}
         className="root-container"
       >
-        <div className="map-controller">
+        <div ref={mapControllerRef} className="map-controller">
           {googleLoaded && (
             <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
           )}
@@ -182,6 +215,20 @@ function Root() {
           </Box>
         )}
       </Box>
+      <Button
+        className="open-bar-crawl-button"
+        aria-label="Open Bar Crawl"
+        sx={styles.openCrawlButton}
+        startIcon={<OpenInNewIcon />}
+        onClick={toggleDrawer(true)}
+      >
+        View Bar Crawl
+      </Button>
+      <BarCrawlForm
+        open={drawerOpen}
+        onClose={toggleDrawer(false)}
+        drawerWidth={drawerWidth}
+      />
     </AnimatedContainer>
   );
 }
