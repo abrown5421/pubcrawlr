@@ -68,6 +68,7 @@ function Root() {
       user_ratings_total: place.user_ratings_total,
       vicinity: place.vicinity,
       photoUrl,
+      price: place.price_level,
     };
   };
 
@@ -251,7 +252,7 @@ function Root() {
         {viewport !== 'desktop' && (
           <Box sx={{ display: "flex", overflowX: "auto", position: "absolute", bottom: 0, width: "100%", padding: "8px", zIndex: 1 }}>
             {visibleBars.map((bar) => (
-              <Box key={bar.name} sx={{ minWidth: 250, marginRight: theme.spacing(2) }}>
+              <Box key={bar.name} sx={{ minWidth: viewport !== 'mobile' ? 250 : 215, marginRight: theme.spacing(2) }}>
                 <BarCard bar={bar} mode="not-selected" />
               </Box>
             ))}

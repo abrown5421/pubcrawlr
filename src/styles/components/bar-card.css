@@ -20,6 +20,9 @@
 .jc-cent {
     justify-content: center;
 }
+.ai-cent {
+    align-items: center;
+}
 .fl-1 {
     flex: 1;
 }
@@ -35,6 +38,9 @@
     width: 100px;
     height: 100px;
     object-fit: cover;
+}
+.pipe {
+    margin: 0px 7px;
 }
 @media (max-width: 1200px) {
     .bar-card-col {
@@ -54,5 +60,11 @@
     .card-image {
         width: 100%;
         height: 150px;
+    }
+}
+@media screen and (max-width: 600px) {
+    .card-image {
+        width: 100%;
+        height: 115px;
     }
 }

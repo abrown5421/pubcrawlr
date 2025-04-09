@@ -49,6 +49,7 @@ export interface Place {
     user_ratings_total?: number;
     vicinity?: string;
     photoUrl?: string;
+    price?: number;
 }
 
 export interface BarsState {

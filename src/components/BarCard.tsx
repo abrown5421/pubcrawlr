@@ -73,13 +73,25 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
                     <Typography variant="subtitle1" component="div">
                         {typeof bar.vicinity === 'string' ? bar.vicinity.length > 40 ? `${bar.vicinity.slice(0, 37)}...` : bar.vicinity : ''}
                     </Typography>
-
-                    <Typography
-                        variant="caption"
-                        component="div"
-                    >
-                        {bar.rating && <>Rating: {bar.rating}</>}
-                    </Typography>
+                    <div className="bar-card-row ai-cent">
+                        {bar.price && (
+                            <>
+                                <Typography
+                                    variant="caption"
+                                    component="div"
+                                >
+                                    <span>{'$'.repeat(bar.price)}</span>
+                                </Typography>
+                                <div className="pipe">|</div>
+                            </>
+                        )}
+                        <Typography
+                            variant="caption"
+                            component="div"
+                        >
+                            {bar.rating && <>Rating: {bar.rating}</>}
+                        </Typography>
+                    </div>
                 </div>
                 {mode !== 'selected' && (
                     <Button
