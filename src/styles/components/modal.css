@@ -1,15 +1,14 @@
 .modal-container {
     border-radius: 6px;
     padding: 16px;
-    background-color: #fefefe;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    position: relative;
+    position: relative !important;
   }
   
   .modal-close-button {
-    position: absolute;
-    top: 8px;
-    right: 8px;
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
     color: #888;
     transition: color 0.2s ease;
   }
