@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Drawer, TextField, Button, Typography, MenuItem } from "@mui/material";
+import { Drawer, TextField, Button, Typography, MenuItem, CircularProgress } from "@mui/material";
 import { useTheme } from "@mui/system";
 import Form from "./Form";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -11,6 +11,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import LockPersonIcon from '@mui/icons-material/LockPerson';
 import '../styles/components/bar-crawl-builder.css';
 import { saveBarCrawl } from "../services/barCrawlService";
+import { setLoading } from "../store/slices/buttonLoadSlice";
 
 const useBarCrawlStyles = (theme: any) => ({
   logo: {
@@ -34,6 +35,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
   const viewport = useAppSelector(state => state.viewport.type);
   const selectedBars = useAppSelector(state => state.selectedBars.selectedBars);
   const token = useAppSelector((state) => state.authentication.token);
+  const isLoading = useAppSelector((state) => state.buttonLoad['saveCrawl'] ?? false);
   const dispatch = useAppDispatch();
   const crawlForm = useRef<FormHandle>(null);
 
@@ -80,10 +82,12 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
   };
 
   const handleSubmit = (data: unknown) => {
+    dispatch(setLoading({ key: 'saveCrawl', value: true }));
     const extractedData = data as BcFormFormData;
     const validationErrors = validate(extractedData);
 
     if (Object.keys(validationErrors).length > 0) {
+      dispatch(setLoading({ key: 'saveCrawl', value: false }));
       setErrors(validationErrors);
       dispatch(
         setAlert({
@@ -115,7 +119,10 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
       })
       .catch(error => {
         console.error('Failed to save bar crawl:', error);
-    });
+      })
+      .finally(() => {
+        dispatch(setLoading({ key: 'saveCrawl', value: false }));
+      })
 };
 
   const handleTextFieldChange = (field: keyof BcFormFormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -260,12 +267,13 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
         )}
         <Button
           type="submit"
+          loading={isLoading}
           variant="contained"
           fullWidth
           className="save-crawl-button"
           sx={styles.openCrawlButton}
         >
-          Save Bar Crawl
+          {isLoading ? <CircularProgress size="24px" sx={{ color: theme.palette.custom?.light }} /> :  'Save Bar Crawl'}
         </Button>
       </Form>
     </Drawer>

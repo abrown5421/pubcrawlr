@@ -6,6 +6,7 @@ import notificationReducer from './slices/notificationSlice';
 import modalReducer from './slices/modalSlice';  
 import localBarReducer from './slices/localBarSlice';
 import selectedBarReducer from './slices/selectedBarSlice';
+import buttonLoadReducer from './slices/buttonLoadSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     modal: modalReducer, 
     localBars: localBarReducer,
     selectedBars: selectedBarReducer,
+    buttonLoad: buttonLoadReducer,
   },
 });
 

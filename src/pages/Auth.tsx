@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Box, Button, TextField, Typography, IconButton, InputAdornment } from '@mui/material';
+import { Box, Button, TextField, Typography, IconButton, InputAdornment, CircularProgress } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';  
 import Form from "../components/Form";
 import { FormHandle, AuthProps, ValidationErrors, FormData } from '../types/globalTypes';
@@ -14,6 +14,7 @@ import { setAlert } from '../store/slices/notificationSlice';
 import authService from '../services/authService';
 import { setAuthToken, setUser } from '../store/slices/authenticationSlice';
 import Cookies from 'js-cookie'
+import { setLoading } from '../store/slices/buttonLoadSlice';
 
 const nestedAnimatedContainerStyles = (theme: Theme) => ({
   authBox: {
@@ -34,6 +35,7 @@ const nestedAnimatedContainerStyles = (theme: Theme) => ({
 
 const Auth: React.FC<AuthProps> = ({ mode }) => {
   const enter = useAppSelector(state => state.activePage);
+  const isLoading = useAppSelector((state) => state.buttonLoad['saveAuth'] ?? false);
   const styles = nestedAnimatedContainerStyles(theme);
   const customForm = useRef<FormHandle>(null);
   const dispatch = useAppDispatch();
@@ -101,13 +103,15 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
   };
 
   const handleLogin = async (data: FormData) => {
+    dispatch(setLoading({ key: 'saveAuth', value: true }));
     try {
       const user = await authService.login(data.email, data.password);
   
       if (!user) {
         throw new Error("User not found");
       }
-  
+      
+      dispatch(setLoading({ key: 'saveAuth', value: false }));
       dispatch(setUser({
         docId: user.docId,
         UserEmail: user.UserEmail,
@@ -128,14 +132,17 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
     } catch (err: unknown) {
       if (err instanceof Error) {
         dispatch(setAlert({ open: true, message: "Login failed: " + err.message, severity: 'error' }));
+        dispatch(setLoading({ key: 'saveAuth', value: false }));
       } else {
         dispatch(setAlert({ open: true, message: 'Login failed', severity: 'error' }));
+        dispatch(setLoading({ key: 'saveAuth', value: false }));
       }
     }
   };
   
   
   const handleRegister = async (data: FormData) => {
+    dispatch(setLoading({ key: 'saveAuth', value: true }));
     try {
       const user = await authService.register(
         data.email,
@@ -147,6 +154,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
         throw new Error("User not found");
       }
   
+      dispatch(setLoading({ key: 'saveAuth', value: false }));
       dispatch(setUser({
         docId: user.docId,
         UserEmail: user.UserEmail,
@@ -168,8 +176,10 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       if (err instanceof Error) {
         setForgotPw(false)
         dispatch(setAlert({open: true, message: "Registration failed: " + err.message, severity: 'error',}))
+        dispatch(setLoading({ key: 'saveAuth', value: false }));
       } else {
         dispatch(setAlert({open: true, message: 'Registration failed', severity: 'error',}))
+        dispatch(setLoading({ key: 'saveAuth', value: false }));
       }
     }
   };
@@ -180,6 +190,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
     const validationErrors = validate(extractedData, mode);
   
     if (Object.keys(validationErrors).length > 0) {
+      dispatch(setLoading({ key: 'saveAuth', value: false }));
       setErrors(validationErrors);
       dispatch(setAlert({ open: true, message: 'Please fix the errors before resubmitting', severity: 'error' }));
       return;
@@ -192,7 +203,6 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
     } else {
       handleRegister(extractedData);
     }
-  
     setFormData({ email: '', password: '', firstName: '', lastName: '', confirmPassword: '' });
     setErrors({});
     customForm.current?.clear();
@@ -270,7 +280,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
             sx={styles.button}
             className="auth-button"
           >
-            {mode === 'login' ? forgotPw ? "Reset Password" : 'Login' : 'Sign Up'}
+            {mode === 'login' ? forgotPw ? "Reset Password" : (isLoading ? <CircularProgress size="24px" sx={{ color: theme.palette.custom?.light }} /> :  'Login') : (isLoading ? <CircularProgress size="24px" sx={{ color: theme.palette.custom?.light }} /> : 'Sign Up')}
           </Button>
         </Form>
 
