@@ -241,7 +241,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
   );
 
   return (
-    <AnimatedContainer entry="animate__slideInUp" exit="animate__slideOutDown" isEntering={enter.In && enter.Name === 'Auth'}>
+    <AnimatedContainer entry="animate__slideInUp" exit="animate__slideOutDown" isEntering={enter.In && enter.Name === 'Auth'} sx={{height: '100%'}}>
       <Box className="auth-box" sx={styles.authBox}>
         <Typography className="auth-title" sx={styles.formTitle} variant="h5">{mode === 'login' ? forgotPw ? "Reset Password" : 'Login' : 'Signup'}</Typography>
         <Form onSave={handleSubmit} ref={customForm}>

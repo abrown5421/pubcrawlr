@@ -252,7 +252,7 @@ function Root() {
   
   
   return (
-    <AnimatedContainer isEntering={enter.In && enter.Name === "Root"}>
+    <AnimatedContainer isEntering={enter.In && enter.Name === "Root"} sx={{height: '100%'}}>
       <Box sx={{ height: "100%", backgroundColor: theme.palette.custom?.light }} className="root-container">
         <div ref={mapControllerRef} className="map-controller">
           {googleLoaded && (
@@ -263,7 +263,17 @@ function Root() {
           ))}
         </div>
         <div ref={mapContainerRef} className="map-container">
-          {selectedBars.length > 0 && viewport !== "desktop" && (
+          <AnimatedContainer 
+            entry="animate__slideInRight" 
+            exit="animate__slideOutRight" 
+            isEntering={selectedBars.length > 0 && viewport !== "desktop"}
+            sx={{
+              position: 'absolute',
+              minWidth: '200px',
+              bottom: 0,
+              right: 0
+            }}
+          >
             <Button
               className="open-bar-crawl-button"
               aria-label="Open Bar Crawl"
@@ -273,7 +283,7 @@ function Root() {
             >
               View Bar Crawl
             </Button>
-          )}
+          </AnimatedContainer>
         </div>
         {viewport !== 'desktop' && (
           <Box sx={{ display: "flex", overflowX: "auto", position: "absolute", bottom: 0, width: "100%", padding: "8px", zIndex: 1 }}>
@@ -285,7 +295,17 @@ function Root() {
           </Box>
         )}
       </Box>
-      {selectedBars.length > 0 && viewport === "desktop" && (
+      <AnimatedContainer 
+        entry="animate__slideInRight" 
+        exit="animate__slideOutRight" 
+        isEntering={selectedBars.length > 0 && viewport === "desktop"}
+        sx={{
+          position: 'absolute',
+          minWidth: '200px',
+          bottom: 0,
+          right: 0
+        }}
+      >
         <Button
           className="open-bar-crawl-button"
           aria-label="Open Bar Crawl"
@@ -295,7 +315,7 @@ function Root() {
         >
           View Bar Crawl
         </Button>
-      )}
+      </AnimatedContainer>
       <BarCrawlBuilder
         open={drawerOpen}
         onClose={toggleDrawer(false)}

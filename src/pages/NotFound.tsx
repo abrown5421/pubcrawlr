@@ -16,7 +16,7 @@ const NotFound = () => {
   const enter = useAppSelector(state => state.activePage);
   const styles = nestedContainerStyles(theme);
   return (
-    <AnimatedContainer isEntering={enter.In && enter.Name === 'NotFound'}>
+    <AnimatedContainer isEntering={enter.In && enter.Name === 'NotFound'} sx={{height: '100%'}}>
       <Box className="not-found-container" sx={styles.root}>
         <Typography variant="h1">
             404

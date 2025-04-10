@@ -17,7 +17,7 @@ function Crawl() {
   const styles = nestedContainerStyles(theme);
   
   return (
-    <AnimatedContainer isEntering={enter.In && enter.Name === 'Crawl'}>
+    <AnimatedContainer isEntering={enter.In && enter.Name === 'Crawl'} sx={{height: '100%'}}>
       <Box sx={styles.root}>
         Crawl
       </Box>

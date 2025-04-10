@@ -30,6 +30,7 @@ export interface AnimatedContainerProps {
   className?: string;
   entry?: string;
   exit?: string;
+  sx?: React.CSSProperties;
 }
 
 export interface ActivePageState {

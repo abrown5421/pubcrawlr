@@ -21,7 +21,7 @@ function Dashboard() {
   const { slug } = useParams();
   
   return (
-    <AnimatedContainer isEntering={enter.In && enter.Name === 'Dashboard'}>
+    <AnimatedContainer isEntering={enter.In && enter.Name === 'Dashboard'} sx={{height: '100%'}}>
       <Box sx={styles.root}>
         {token === slug && <PersonalProfile />}
         {/* {token === check if friend && <FriendProfile />} */}
