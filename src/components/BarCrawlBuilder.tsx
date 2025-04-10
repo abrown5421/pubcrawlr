@@ -10,6 +10,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import GroupsIcon from '@mui/icons-material/Groups';
 import LockPersonIcon from '@mui/icons-material/LockPerson';
 import '../styles/components/bar-crawl-builder.css';
+import { saveBarCrawl } from "../services/barCrawlService";
 
 const useBarCrawlStyles = (theme: any) => ({
   logo: {
@@ -32,6 +33,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
   const styles = useBarCrawlStyles(theme);
   const viewport = useAppSelector(state => state.viewport.type);
   const selectedBars = useAppSelector(state => state.selectedBars.selectedBars);
+  const token = useAppSelector((state) => state.authentication.token);
   const dispatch = useAppDispatch();
   const crawlForm = useRef<FormHandle>(null);
 
@@ -92,11 +94,29 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
       );
       return;
     }
-    console.log(formData);
-    setFormData({ barCrawlName: "", intimacyLevel: "Public", selectedBars: selectedBars, startDate: "", endDate: "" });
-    setErrors({});
-    crawlForm.current?.clear();
-  };
+
+    const startDate = formData.startDate ? new Date(formData.startDate) : undefined;
+    const endDate = formData.endDate ? new Date(formData.endDate) : undefined;
+
+    const barCrawlData = {
+      userID: token,
+      selectedBars: selectedBars,
+      crawlName: formData.barCrawlName,
+      startDate,
+      endDate,
+      intimacyLevel: formData.intimacyLevel
+    };
+
+    saveBarCrawl(barCrawlData)
+      .then(() => {
+        setFormData({ barCrawlName: "", intimacyLevel: "Public", selectedBars: selectedBars, startDate: "", endDate: "" });
+        setErrors({});
+        crawlForm.current?.clear();
+      })
+      .catch(error => {
+        console.error('Failed to save bar crawl:', error);
+    });
+};
 
   const handleTextFieldChange = (field: keyof BcFormFormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = e.target.value;

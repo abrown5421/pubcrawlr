@@ -19,9 +19,8 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setActivePage } from "../store/slices/activePageSlice";
 import { clearUser, setAuthToken } from "../store/slices/authenticationSlice";
 import Cookies from "js-cookie";
-import { User, UserState } from "../types/globalTypes";
+import { UserState } from "../types/globalTypes";
 import "../styles/components/navbar.css";
-
 
 const useNavbarStyles = (theme: any) => ({
   appBar: {

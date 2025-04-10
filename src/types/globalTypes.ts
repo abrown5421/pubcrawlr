@@ -96,6 +96,15 @@ export interface MarkerPopupProps {
     includeAddBtn: boolean;
 }
 
+export interface BarCrawlInfo {
+  userID: string | null;
+  selectedBars: Place[];
+  crawlName: string;
+  startDate?: Date; 
+  endDate?: Date;   
+  intimacyLevel: string;
+}
+
 export type BarCardProps = {
     bar: Place;
     mode: String;  
@@ -142,5 +151,3 @@ export type BcFormFormData = {
   startDate?: string;  
   endDate?: string;    
 };
-
-
