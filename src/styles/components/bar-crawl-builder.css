@@ -1,3 +1,12 @@
 .save-crawl-button {
  margin-top: 0px !important; 
 }
+.bcb-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+.bcb-col {
+    display: flex;
+    flex-direction: column;
+}
