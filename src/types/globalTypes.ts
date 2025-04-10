@@ -136,5 +136,6 @@ export type BcFormValidationErrors = Partial<Record<keyof BcFormFormData, string
 
 export type BcFormFormData = {
   barCrawlName: string;
+  selectedBars?: any[];
 };
 

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Drawer, TextField, Button, Typography, Divider } from "@mui/material";
 import { useTheme } from "@mui/system";
 import Form from "./Form";
@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setAlert } from "../store/slices/notificationSlice";
 import { BcFormFormData, BcFormValidationErrors, SearchHereButtonProps, FormHandle} from "../types/globalTypes";
 import BarCard from "./BarCard";
-
+import '../styles/components/bar-crawl-builder.css'
 const useBarCrawlStyles = (theme: any) => ({
     logo: {
         color: theme.palette.custom?.dark,
@@ -23,7 +23,7 @@ const useBarCrawlStyles = (theme: any) => ({
   },
 });
 
-export default function SearchHereButton({ open, onClose, drawerWidth }: SearchHereButtonProps) {
+export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHereButtonProps) {
   const theme = useTheme();
   const styles = useBarCrawlStyles(theme);
   const viewport = useAppSelector(state => state.viewport.type);
@@ -31,7 +31,7 @@ export default function SearchHereButton({ open, onClose, drawerWidth }: SearchH
   const dispatch = useAppDispatch();
   const crawlForm = useRef<FormHandle>(null);
 
-  const [formData, setFormData] = useState<BcFormFormData>({ barCrawlName: "" });
+  const [formData, setFormData] = useState<BcFormFormData>({ barCrawlName: "", selectedBars: selectedBars });
   const [errors, setErrors] = useState<BcFormValidationErrors>({});
 
   const validate = (data: BcFormFormData): BcFormValidationErrors => {
@@ -39,8 +39,11 @@ export default function SearchHereButton({ open, onClose, drawerWidth }: SearchH
     if (!data.barCrawlName) {
       newErrors.barCrawlName = "Bar crawl name is required";
     }
+    if (selectedBars.length < 2) {
+      newErrors.selectedBars = "Please select at least 2 bars";
+    }
     return newErrors;
-  };
+  };  
 
   const handleSubmit = (data: unknown) => {
     const extractedData = data as BcFormFormData;
@@ -75,6 +78,15 @@ export default function SearchHereButton({ open, onClose, drawerWidth }: SearchH
     }
   };  
 
+  useEffect(() => {
+    if (selectedBars.length >= 2 && errors.selectedBars) {
+      setErrors(prevErrors => {
+        const { selectedBars, ...rest } = prevErrors;
+        return rest;
+      });
+    }
+  }, [selectedBars, errors.selectedBars]);
+  
   return (
     <>
       <Drawer
@@ -118,7 +130,24 @@ export default function SearchHereButton({ open, onClose, drawerWidth }: SearchH
                 ))}
             </div>
           )}
-
+          {errors.selectedBars && (
+            <Typography
+              variant="caption"
+              color="error"
+              sx={{ mb: 1, mt: -1 }}
+            >
+              {errors.selectedBars}
+            </Typography>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            className="save-crawl-button"
+            sx={styles.openCrawlButton}
+          >
+            Save Bar Crawl
+          </Button>
         </Form>
       </Drawer>
     </>
