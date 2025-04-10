@@ -16,6 +16,7 @@ import BarCard from "../components/BarCard";
 import { Button } from "@mui/material";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import BarCrawlBuilder from "../components/BarCrawlBuilder";
+import MapLibreGlDirections, { LoadingIndicatorControl } from "@maplibre/maplibre-gl-directions";
 import { getMarkerPopup } from "../utils/getMarkerPopup";
 
 const useRootStyles = (theme: any) => ({
@@ -44,9 +45,10 @@ function Root() {
   const accentPinRef = useRef<maplibregl.Marker | null>(null); // Ref for tracking accent pin
   const mapControllerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | null>(null);
-  const [googleLoaded, setGoogleLoaded] = useState(false);
+  const [googleLoaded, setGoogleLoaded] = useState<boolean>(false);
   const [visibleBars, setVisibleBars] = useState<Place[]>([]);
   const [drawerWidth, setDrawerWidth] = useState<number>(400);
+  const [directions, setDirections] = useState<MapLibreGlDirections | null>(null);
 
   // Function to normalize Google Place data into the Place type from globalTypes
   const normalizePlace = (
@@ -146,6 +148,13 @@ function Root() {
         });
         mapInstance.addControl(new maplibregl.NavigationControl(), "top-right");
         mapInstance.addControl(new SearchHereButton(SearchHereClicked), "top-right");
+        mapInstance.on('load', () => {
+          const newDirections = new MapLibreGlDirections(mapInstance, {
+            profile: 'foot'
+          });
+          mapInstance.addControl(new LoadingIndicatorControl(newDirections));
+          setDirections(newDirections);
+        });
 
         // Add error pin
         new maplibregl.Marker({
@@ -226,6 +235,22 @@ function Root() {
     }
   }, []);
 
+  useEffect(() => {
+    if (selectedBars.length > 1 && directions) {
+      directions.setWaypoints(
+        selectedBars.map((x): [number, number] => [
+          x.geometry.location.lng(),
+          x.geometry.location.lat(),
+        ])
+      );
+    } else {
+      if (directions) {
+        directions.setWaypoints([]);
+      }
+    }
+  }, [selectedBars, directions]);
+  
+  
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"}>
       <Box sx={{ height: "100%", backgroundColor: theme.palette.custom?.light }} className="root-container">

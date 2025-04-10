@@ -1,6 +1,6 @@
 import { auth, db } from '../config/Firebase';
 import firebase from 'firebase/compat/app';
-import { User } from '../store/slices/authenticationSlice';
+import { User } from '../types/globalTypes';
 
 const USERS_COLLECTION = 'Users';
 

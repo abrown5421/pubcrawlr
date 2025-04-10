@@ -1,5 +1,5 @@
 import { doc, getDoc } from 'firebase/firestore';
-import { User } from '../store/slices/authenticationSlice';
+import { User } from '../types/globalTypes';
 import { db } from '../config/Firebase';
 
 export const getUserDataFromId = async (uid: string): Promise<User | null> => {
