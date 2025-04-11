@@ -2,6 +2,7 @@ import { Box, Theme } from "@mui/material";
 import ProfileContainer from "../../containers/ProfileContainer";
 import "../../styles/containers/profile-container.css";
 import theme from "../../styles/theme";
+import ProfileManager from "../../components/ProfileManager";
 
 const nestedContainerStyles = (theme: Theme) => ({
   root: {
@@ -17,7 +18,7 @@ function PersonalProfile() {
   return (
     <Box sx={styles.root}>
         <ProfileContainer mode="personal">
-            <h2>Personal Profile</h2>
+            <ProfileManager />
         </ProfileContainer>
     </Box>
   );
