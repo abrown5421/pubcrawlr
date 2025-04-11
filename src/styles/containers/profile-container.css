@@ -15,8 +15,14 @@
     height: auto;
     object-fit: cover;
     max-height: 250px;
+    position: relative;
 }
-
+.profile-banner-upload {
+    position: absolute !important;
+    z-index: 90 !important;
+    bottom: 10px;
+    right: 10px;
+}
 .profile-avatar {
     position: absolute !important;
     bottom: -75px !important; 
