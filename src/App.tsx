@@ -18,6 +18,8 @@ import NotFound from './pages/NotFound';
 import Modal from './components/Modal.tsx';
 import { fetchTrianglifyConfig } from './services/tryianglifyService.ts';
 import { setMultipleTrianglifyValues } from './store/slices/trianglifySlice.ts';
+import { CircularProgress, useTheme } from '@mui/material';
+import { setLoading } from './store/slices/buttonLoadSlice.ts';
 
 function AnimationInitializer() {
   const location = useLocation();
@@ -37,6 +39,8 @@ function App() {
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.authentication.token);
   const authToken = Cookies.get('authId'); 
+  const theme = useTheme();
+  const isLoading = useAppSelector((state) => state.buttonLoad['mainApp'] ?? false);
 
   const fetchUserData = async (uid: string) => {
     const userData = await getUserDataFromId(uid);
@@ -61,10 +65,21 @@ function App() {
   };
   
   useEffect(() => {
+    dispatch(setLoading({ key: 'mainApp', value: true }));
     if (authToken) {
       fetchUserData(authToken);
       fetchTrianglifyData(authToken);
+      setTimeout(() => {
+        dispatch(setLoading({ key: 'mainApp', value: false }));
+      }, 1000)
+      
+    } else {
+      dispatch(setLoading({ key: 'mainApp', value: true }));
+      setTimeout(() => {
+        dispatch(setLoading({ key: 'mainApp', value: false }));
+      }, 1000)
     }
+
   }, [authToken]);
 
   return (
@@ -73,24 +88,31 @@ function App() {
         <AnimationInitializer />
         <MainContainer>
           <ViewportTracker>
-            <Routes>
-              <Route path={routes.root} element={<Root />} />
-              <Route
-                path={routes.login}
-                element={token ? <Navigate to={routes.root} replace /> : <Auth mode="login" />}
-              />
-              <Route
-                path={routes.signup}
-                element={token ? <Navigate to={routes.root} replace /> : <Auth mode="signup" />}
-              />
-              <Route
-                path={routes.dashboard(':slug')}
-                element={!token ? <Navigate to={routes.root} replace /> : <Dashboard />}
-              />
-              <Route path={routes.crawl(':slug')} element={<Crawl />} />
-              
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            {isLoading ? (
+              <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%'}}>
+                <CircularProgress size="24px" sx={{ color: "#FFF" }} />
+              </div>
+
+            ) : (
+              <Routes>
+                <Route path={routes.root} element={<Root />} />
+                <Route
+                  path={routes.login}
+                  element={token ? <Navigate to={routes.root} replace /> : <Auth mode="login" />}
+                />
+                <Route
+                  path={routes.signup}
+                  element={token ? <Navigate to={routes.root} replace /> : <Auth mode="signup" />}
+                />
+                <Route
+                  path={routes.dashboard(':slug')}
+                  element={!token ? <Navigate to={routes.root} replace /> : <Dashboard />}
+                />
+                <Route path={routes.crawl(':slug')} element={<Crawl />} />
+                
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            )}
           </ViewportTracker>
         </MainContainer>
       </Router>
