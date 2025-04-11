@@ -105,6 +105,10 @@ export interface BarCrawlInfo {
   intimacyLevel: string;
 }
 
+export interface TrianglifyBannerProps {
+  token?: string; 
+}
+
 export type BarCardProps = {
     bar: Place;
     mode: String;  
@@ -150,4 +154,11 @@ export type BcFormFormData = {
   intimacyLevel: "Public" | "Friends" | "Private";  
   startDate?: string;  
   endDate?: string;    
+};
+
+export type TrianglifyState = {
+  cellSize: number;
+  variance: number;
+  xColors: string[];
+  yColors: string[];
 };

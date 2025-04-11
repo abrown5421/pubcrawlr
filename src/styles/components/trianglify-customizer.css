@@ -1,0 +1,21 @@
+.tc-row {
+    display: flex;
+    flex-direction: row;
+}
+.tc-row-rev {
+    display: flex;
+    flex-direction: row-reverse;
+}
+.tc-col {
+    display: flex;
+    flex-direction: column;
+}
+.mr-2 {
+    margin-right: 2rem;
+}
+.flx-1 {
+    flex: 1;
+}
+.flx-3 {
+    flex: 3;
+}

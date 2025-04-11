@@ -16,6 +16,8 @@ import { setActivePage } from './store/slices/activePageSlice.ts';
 import { routeToPageName } from './utils/routeToPageName.ts';
 import NotFound from './pages/NotFound';  
 import Modal from './components/Modal.tsx';
+import { fetchTrianglifyConfig } from './services/tryianglifyService.ts';
+import { setMultipleTrianglifyValues } from './store/slices/trianglifySlice.ts';
 
 function AnimationInitializer() {
   const location = useLocation();
@@ -48,9 +50,20 @@ function App() {
     console.log(userData);  
   };
   
+  const fetchTrianglifyData = async (uid: string) => {
+    const trianglifyData = await fetchTrianglifyConfig(uid);
+    if (trianglifyData) {
+      dispatch(setMultipleTrianglifyValues(trianglifyData));
+      console.log(trianglifyData);
+    } else {
+      console.log("No trianglify config found for this user.");
+    }
+  };
+  
   useEffect(() => {
     if (authToken) {
       fetchUserData(authToken);
+      fetchTrianglifyData(authToken);
     }
   }, [authToken]);
 

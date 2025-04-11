@@ -7,6 +7,7 @@ import modalReducer from './slices/modalSlice';
 import localBarReducer from './slices/localBarSlice';
 import selectedBarReducer from './slices/selectedBarSlice';
 import buttonLoadReducer from './slices/buttonLoadSlice';
+import trianglifyReducer from './slices/trianglifySlice';
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     localBars: localBarReducer,
     selectedBars: selectedBarReducer,
     buttonLoad: buttonLoadReducer,
+    trianglify: trianglifyReducer,
   },
 });
 

@@ -15,6 +15,8 @@ import authService from '../services/authService';
 import { setAuthToken, setUser } from '../store/slices/authenticationSlice';
 import Cookies from 'js-cookie'
 import { setLoading } from '../store/slices/buttonLoadSlice';
+import { fetchTrianglifyConfig } from '../services/tryianglifyService';
+import { setMultipleTrianglifyValues } from '../store/slices/trianglifySlice';
 
 const nestedAnimatedContainerStyles = (theme: Theme) => ({
   authBox: {
@@ -118,6 +120,14 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
         UserFirstName: user.UserFirstName,
         UserLastName: user.UserLastName,
       }));
+
+      const trianglifyData = await fetchTrianglifyConfig(user.docId);
+      if (trianglifyData) {
+        dispatch(setMultipleTrianglifyValues(trianglifyData));
+        console.log(trianglifyData);
+      } else {
+        console.log("No trianglify config found for this user.");
+      }
   
       Cookies.set('authId', user.docId, { expires: 5 });
       dispatch(setAuthToken(user.docId));

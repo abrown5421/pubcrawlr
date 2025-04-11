@@ -6,6 +6,7 @@ import theme from "../../styles/theme";
 const nestedContainerStyles = (theme: Theme) => ({
   root: {
     height: "100%",
+    overflow: "scroll",
     backgroundColor: theme.palette.custom?.light,
   },
 });

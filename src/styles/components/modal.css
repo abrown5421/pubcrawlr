@@ -1,6 +1,7 @@
 .modal-container {
     border-radius: 6px;
     padding: 16px;
+    margin: 0px !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     position: relative !important;
   }
@@ -30,4 +31,8 @@
     line-height: 1.6;
     margin-bottom: 16px;
   }
-  
+  @media screen and (max-width: 600px) {
+    .modal-container {
+      width: 95% !important;
+    }
+  }
