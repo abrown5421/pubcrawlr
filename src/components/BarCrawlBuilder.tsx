@@ -4,6 +4,7 @@ import { useTheme } from "@mui/system";
 import Form from "./Form";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setAlert } from "../store/slices/notificationSlice";
+import { setDrawerOpen } from '../store/slices/selectedBarSlice';
 import { BcFormFormData, BcFormValidationErrors, SearchHereButtonProps, FormHandle } from "../types/globalTypes";
 import BarCard from "./BarCard";
 import PublicIcon from '@mui/icons-material/Public';
@@ -12,11 +13,24 @@ import LockPersonIcon from '@mui/icons-material/LockPerson';
 import '../styles/components/bar-crawl-builder.css';
 import { saveBarCrawl } from "../services/barCrawlService";
 import { setLoading } from "../store/slices/buttonLoadSlice";
+import { setModal } from "../store/slices/modalSlice";
+import { setActivePage } from "../store/slices/activePageSlice";
+import { useNavigate } from "react-router-dom";
 
 const useBarCrawlStyles = (theme: any) => ({
   logo: {
     color: theme.palette.custom?.dark,
     fontFamily: "Primary",
+  },
+  loginButton: {
+    marginRight: "8px",
+    backgroundColor: theme.palette.custom?.grey,
+    color: theme.palette.custom?.dark,
+    "&:hover": {
+      backgroundColor: theme.palette.custom?.light,
+      color: theme.palette.custom?.dark,
+    },
+    marginTop: theme.spacing(2),
   },
   openCrawlButton: {
     backgroundColor: theme.palette.custom?.dark,
@@ -37,8 +51,9 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
   const token = useAppSelector((state) => state.authentication.token);
   const isLoading = useAppSelector((state) => state.buttonLoad['saveCrawl'] ?? false);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const crawlForm = useRef<FormHandle>(null);
-
+  
   const [formData, setFormData] = useState<BcFormFormData>({
     barCrawlName: "",
     selectedBars: selectedBars,
@@ -81,6 +96,22 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
     return newErrors;
   };
 
+  const handleAuthFromMod = (path: string, pageName: string) => {
+    dispatch(setModal({
+      open: false,
+      title: '',
+      body:''
+    }))
+    dispatch(setDrawerOpen(false));
+    dispatch(setActivePage({ key: "In", value: false }));
+    dispatch(setActivePage({ key: "Name", value: pageName }));
+
+    setTimeout(() => {
+      dispatch(setActivePage({ key: "In", value: true }));
+      navigate( path);
+    }, 500);
+  }
+
   const handleSubmit = (data: unknown) => {
     dispatch(setLoading({ key: 'saveCrawl', value: true }));
     const extractedData = data as BcFormFormData;
@@ -99,6 +130,45 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
       return;
     }
 
+    if (!token) {
+      dispatch(setLoading({ key: 'saveCrawl', value: false }));
+      dispatch(setModal({
+        open: true,
+        title: 'Nice Looking Crawl, Log in to save it!',
+        body: (
+          <div>
+            <Typography id="auth-modal-description" sx={{ mb: 3 }}>
+              Log into your account to save it and start inviting friends. Or alternatively, you can create an account and save it then!
+            </Typography>
+            <div className="bcb-row">
+            <Button
+              type="submit"
+              loading={isLoading}
+              variant="contained"
+              fullWidth
+              onClick={() => handleAuthFromMod("/Login", "Auth")}
+              className="save-crawl-button"
+              sx={styles.loginButton}
+            >
+                Login
+              </Button>
+              <Button
+                type="submit"
+                loading={isLoading}
+                variant="contained"
+                fullWidth
+                onClick={() => handleAuthFromMod("/Signup", "Auth")}
+                className="save-crawl-button"
+                sx={styles.openCrawlButton}
+              >
+                Sign Up
+              </Button>
+            </div>
+          </div>
+        ),
+      }))
+      return;
+    }
     const startDate = formData.startDate ? new Date(formData.startDate) : undefined;
     const endDate = formData.endDate ? new Date(formData.endDate) : undefined;
 

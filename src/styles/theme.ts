@@ -4,6 +4,7 @@ const themeOptions: ThemeOptions = {
   palette: {
     custom: {
       dark: "#00171f", 
+      grey: "#e0e0e0",
       light: "#FFF", 
       accent: "#0090c9", 
       highlight: "#00c3ff", 
@@ -16,6 +17,7 @@ declare module "@mui/material/styles" {
   interface Palette {
     custom?: {
       dark: string;
+      grey: string;
       light: string;
       accent: string;
       highlight: string;
@@ -25,6 +27,7 @@ declare module "@mui/material/styles" {
   interface PaletteOptions {
     custom?: {
       dark: string;
+      grey: string;
       light: string;
       accent: string;
       highlight: string;
