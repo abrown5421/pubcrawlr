@@ -16,7 +16,7 @@ function PersonalProfile() {
 
   return (
     <Box sx={styles.root}>
-        <ProfileContainer>
+        <ProfileContainer mode="personal">
             <h2>Personal Profile</h2>
         </ProfileContainer>
     </Box>

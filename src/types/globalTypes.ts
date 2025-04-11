@@ -13,6 +13,10 @@ export interface User {
   UserLastName: string;
 }
 
+export interface profileUserState {
+  profileUser: User | null;
+}
+
 export interface AuthenticationState {
   isAuthenticated: boolean;
   user: User | null;
@@ -142,11 +146,19 @@ export type FormData = {
   confirmPassword?: string;
 };
 
+export type PersonalInfoFormData = {
+  firstName: string;
+  lastName?: string;
+  email: string;
+};
+
 export type PlaceAutocompleteProps = {
   onPlaceSelected: (lat: number, lng: number) => void;
 };
 
 export type BcFormValidationErrors = Partial<Record<keyof BcFormFormData, string>>;
+
+export type PersonalInfoValidationErrors = Partial<Record<keyof PersonalInfoFormData, string>>;
 
 export type BcFormFormData = {
   barCrawlName: string;

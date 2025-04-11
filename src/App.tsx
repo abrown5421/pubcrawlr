@@ -54,21 +54,10 @@ function App() {
     console.log(userData);  
   };
   
-  const fetchTrianglifyData = async (uid: string) => {
-    const trianglifyData = await fetchTrianglifyConfig(uid);
-    if (trianglifyData) {
-      dispatch(setMultipleTrianglifyValues(trianglifyData));
-      console.log(trianglifyData);
-    } else {
-      console.log("No trianglify config found for this user.");
-    }
-  };
-  
   useEffect(() => {
     dispatch(setLoading({ key: 'mainApp', value: true }));
     if (authToken) {
       fetchUserData(authToken);
-      fetchTrianglifyData(authToken);
       setTimeout(() => {
         dispatch(setLoading({ key: 'mainApp', value: false }));
       }, 1000)

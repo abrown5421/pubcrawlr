@@ -23,6 +23,12 @@
     bottom: 10px;
     right: 10px;
 }
+.profile-info-edit {
+    position: absolute !important;
+    z-index: 90 !important;
+    top: 10px;
+    right: 10px;
+}
 .profile-avatar {
     position: absolute !important;
     bottom: -75px !important; 
@@ -42,6 +48,7 @@
 }
 
 .profile-sidebar {
+    position: relative;
     display: flex;
     flex-direction: column;
     flex: 3;
@@ -56,6 +63,7 @@
 
 .profile-stat-container {
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    margin-top: 16px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
