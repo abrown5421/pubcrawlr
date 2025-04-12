@@ -1,7 +1,6 @@
 import { db } from '../config/Firebase';
 import { BarCrawlInfo } from '../types/globalTypes';
 
-// Helper to sanitize undefined -> null
 const sanitizeUndefined = (obj: any): any => {
   if (Array.isArray(obj)) {
     return obj.map(sanitizeUndefined);
@@ -56,11 +55,29 @@ export const saveBarCrawl = async ({
 
     barCrawlData = sanitizeUndefined(barCrawlData);
 
-    console.log(barCrawlData);
-
     await db.collection('BarCrawls').add(barCrawlData); 
   } catch (error) {
     console.error('Error saving bar crawl:', error);
     throw new Error('Error saving bar crawl');
   }
 };
+
+export const getUserBarCrawls = async (userID: string): Promise<BarCrawlInfo[]> => {
+  try {
+    const snapshot = await db
+      .collection("BarCrawls")
+      .where("userID", "==", userID)
+      .get();
+
+    const barCrawls: BarCrawlInfo[] = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...(doc.data() as BarCrawlInfo),
+    }));
+
+    return barCrawls;
+  } catch (error) {
+    console.error('Error fetching user bar crawls:', error);
+    throw new Error('Error fetching user bar crawls');
+  }
+};
+

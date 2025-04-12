@@ -13,8 +13,32 @@ export interface User {
   UserLastName: string;
 }
 
+export interface Bar {
+  geometry: {
+    location: {
+      lat: number;
+      lng: number;
+    };
+  };
+  id: string;
+  name: string;
+  photoUrl: string;
+  price: number | null;
+  rating: number;
+  user_ratings_total: number;
+  vicinity: string;
+}
+
+export interface BarCrawl {
+  crawlName: string;
+  intimacyLevel: string;
+  selectedBars: Bar[];
+  userID: string;
+}
+
 export interface profileUserState {
   profileUser: User | null;
+  barCrawls: BarCrawl[];
 }
 
 export interface AuthenticationState {

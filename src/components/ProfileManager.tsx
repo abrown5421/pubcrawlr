@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Box, Tabs, Tab, Typography } from '@mui/material';
+import { useAppSelector } from '../store/hooks';
+import BarCrawlCard from './BarCrawlCard';
 
 function TabPanel(props: { children?: React.ReactNode; value: number; index: number }) {
   const { children, value, index, ...other } = props;
@@ -20,6 +22,7 @@ function TabPanel(props: { children?: React.ReactNode; value: number; index: num
 }
 
 export default function ProfileManager() {
+  const userProfile = useAppSelector((state) => state.userProfile);
   const [tab, setTab] = useState(0);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -33,7 +36,11 @@ export default function ProfileManager() {
         <Tab label="Friends" />
       </Tabs>
       <TabPanel value={tab} index={0}>
-        Your Bar Crawls will appear here.
+          <>
+            {userProfile.barCrawls.map((crawl) => (
+              <BarCrawlCard key={crawl.crawlName} crawl={crawl} />
+            ))}
+          </>
       </TabPanel>
       <TabPanel value={tab} index={1}>
         Your Friends will appear here.

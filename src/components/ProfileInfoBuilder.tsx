@@ -56,7 +56,6 @@ const ProfileInfoBuilder: React.FC = () => {
         try {
             if (token) {
                 await updateUserData(token, formValues.firstName, formValues.lastName, formValues.email);
-                console.log('User updated successfully');
                 dispatch(setAlert({ open: true, message: 'Profile Updated Successful!', severity: 'success' }));   
                 dispatch(setLoading({ key: 'saveInfo', value: false }));
             }

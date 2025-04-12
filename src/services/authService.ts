@@ -84,7 +84,6 @@ const getCurrentUser = () => {
 const sendPasswordResetEmail = async (email: string): Promise<void> => {
   try {
     await auth.sendPasswordResetEmail(email);
-    console.log(`Password reset email sent to ${email}`);
   } catch (error) {
     console.error("Password reset error:", error);
     throw error;

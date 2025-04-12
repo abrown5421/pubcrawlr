@@ -1,4 +1,4 @@
-import { Slider, Typography, IconButton, Button, Stack, TextField, InputAdornment, CircularProgress } from '@mui/material';
+import { Slider, Typography, IconButton, Button, TextField, InputAdornment, CircularProgress } from '@mui/material';
 import { SketchPicker, ColorResult } from 'react-color';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { setTrianglifyValue } from '../store/slices/trianglifySlice';

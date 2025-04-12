@@ -1,0 +1,97 @@
+.bar-crawl-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .bar-crawl-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+  
+  .bar-crawl-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .intimacy {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+  }
+  
+  .bar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .bar-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .bar-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .bar-details h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #222;
+  }
+  
+  .bar-details p {
+    margin: 2px 0;
+    color: #555;
+    font-size: 0.9rem;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  
+  .edit-btn,
+  .delete-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+  }
+  
+  .edit-btn {
+    background-color: #1976d2;
+    color: #fff;
+  }
+  
+  .edit-btn:hover {
+    background-color: #1565c0;
+  }
+  
+  .delete-btn {
+    background-color: #d32f2f;
+    color: #fff;
+  }
+  
+  .delete-btn:hover {
+    background-color: #b71c1c;
+  }
+  

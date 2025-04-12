@@ -8,11 +8,12 @@ import TrianglifyBanner from '../components/TrianglifyBanner';
 import TrianglifyCustomizer from '../components/TrianglifyCustomizer';
 import { useParams } from 'react-router-dom';
 import { getUserDataFromId } from '../services/userService';
-import { setProfileUser } from '../store/slices/userProfileSlice';
+import { setBarCrawls, setProfileUser } from '../store/slices/userProfileSlice';
 import { setMultipleTrianglifyValues } from '../store/slices/trianglifySlice';
 import { setLoading } from '../store/slices/buttonLoadSlice';
 import { fetchTrianglifyConfig } from '../services/tryianglifyService';
 import ProfileInfoBuilder from '../components/ProfileInfoBuilder';
+import { getUserBarCrawls } from '../services/barCrawlService';
 
 const useProfileStyles = (theme: any) => ({
   logo: {
@@ -34,7 +35,6 @@ const ProfileContainer = ({ children, mode }: { children: ReactNode, mode?: "per
     const trianglifyData = await fetchTrianglifyConfig(uid);
     if (trianglifyData) {
       dispatch(setMultipleTrianglifyValues(trianglifyData));
-      console.log(trianglifyData);
     } else {
       console.log("No trianglify config found for this user.");
     }
@@ -50,6 +50,42 @@ const ProfileContainer = ({ children, mode }: { children: ReactNode, mode?: "per
     }));
   }
   
+  const fetchUserbarCrawls = async (uid: string) => {
+    const userBarCrawls = await getUserBarCrawls(uid);
+  
+    const formattedCrawls = userBarCrawls.map(crawl => ({
+      crawlName: crawl.crawlName,
+      intimacyLevel: crawl.intimacyLevel,
+      userID: crawl.userID ?? "", 
+      selectedBars: crawl.selectedBars.map(place => {
+        const location = place.geometry.location;
+  
+        const lat = typeof location.lat === "function" ? location.lat() : location.lat;
+        const lng = typeof location.lng === "function" ? location.lng() : location.lng;
+  
+        return {
+          id: place.id ?? "",
+          name: place.name,
+          photoUrl: place.photoUrl ?? "",
+          price: place.price ?? null,
+          rating: place.rating ?? 0,
+          user_ratings_total: place.user_ratings_total ?? 0,
+          vicinity: place.vicinity ?? "",
+          geometry: {
+            location: {
+              lat,
+              lng,
+            },
+          },
+        };
+      }),
+    }));
+  
+    console.log(formattedCrawls);
+    dispatch(setBarCrawls(formattedCrawls));
+  };  
+
+  useEffect(()=>{console.log(userProfile.barCrawls)}, [userProfile.barCrawls])
   const handleImageChange = () => {
     dispatch(setModal({
       open: true,
@@ -75,6 +111,7 @@ const ProfileContainer = ({ children, mode }: { children: ReactNode, mode?: "per
     if (slug) {
       fetchUserData(slug);
       fetchTrianglifyData(slug);
+      fetchUserbarCrawls(slug);
       setTimeout(() => {
         dispatch(setLoading({ key: 'profilePage', value: false }));
       }, 1000)

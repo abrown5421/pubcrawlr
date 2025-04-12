@@ -10,10 +10,8 @@ export const saveTrianglifyConfig = async (userID: string, trianglifyState: Tria
     
     if (docSnap.exists()) {
       await updateDoc(docRef, trianglifyState);
-      console.log("Config updated successfully.");
     } else {
       await setDoc(docRef, trianglifyState);
-      console.log("Config created successfully.");
     }
   } catch (error) {
     console.error("Error saving/updating trianglify config:", error);

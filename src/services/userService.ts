@@ -34,8 +34,6 @@ export const updateUserData = async (
         } else {
             console.warn('No matching authenticated user for email update.');
         }
-
-        console.log(`User ${uid} updated successfully.`);
     } catch (error) {
         console.error('Error updating user:', error);
         throw error;

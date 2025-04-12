@@ -4,7 +4,7 @@ import { useTheme } from "@mui/system";
 import Form from "./Form";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setAlert } from "../store/slices/notificationSlice";
-import { setDrawerOpen } from '../store/slices/selectedBarSlice';
+import { clearBars, setDrawerOpen } from '../store/slices/selectedBarSlice';
 import { BcFormFormData, BcFormValidationErrors, SearchHereButtonProps, FormHandle } from "../types/globalTypes";
 import BarCard from "./BarCard";
 import PublicIcon from '@mui/icons-material/Public';
@@ -186,9 +186,25 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
         setFormData({ barCrawlName: "", intimacyLevel: "Public", selectedBars: selectedBars, startDate: "", endDate: "" });
         setErrors({});
         crawlForm.current?.clear();
+        dispatch(clearBars())
+        dispatch(setDrawerOpen(false));
+        dispatch(
+          setAlert({
+            open: true,
+            message: "Bar crawl saved successfully",
+            severity: "success",
+          })
+        );
       })
       .catch(error => {
         console.error('Failed to save bar crawl:', error);
+        dispatch(
+          setAlert({
+            open: true,
+            message: "Bar crawl failed to save, please try again later",
+            severity: "error",
+          })
+        );
       })
       .finally(() => {
         dispatch(setLoading({ key: 'saveCrawl', value: false }));

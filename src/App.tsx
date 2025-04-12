@@ -50,8 +50,6 @@ function App() {
       UserFirstName: userData?.UserFirstName ?? '',
       UserLastName: userData?.UserLastName ?? '',
     }));
-    
-    console.log(userData);  
   };
   
   useEffect(() => {

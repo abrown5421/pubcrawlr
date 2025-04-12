@@ -124,7 +124,6 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       const trianglifyData = await fetchTrianglifyConfig(user.docId);
       if (trianglifyData) {
         dispatch(setMultipleTrianglifyValues(trianglifyData));
-        console.log(trianglifyData);
       } else {
         console.log("No trianglify config found for this user.");
       }
