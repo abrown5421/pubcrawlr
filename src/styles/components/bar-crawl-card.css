@@ -1,33 +1,25 @@
 .bar-crawl-card {
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
     padding: 16px;
     margin: 16px 0;
     background-color: #fff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   }
   
   .bar-crawl-header {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #eee;
+    align-items: start;
     margin-bottom: 12px;
     padding-bottom: 8px;
   }
   
-  .bar-crawl-header h2 {
-    margin: 0;
-    font-size: 1.5rem;
-    color: #333;
+  .bar-crawl-header-col {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
-  
-  .intimacy {
-    font-size: 0.9rem;
-    color: #666;
-    font-weight: 500;
-  }
-  
+
   .bar-list {
     display: flex;
     flex-direction: column;

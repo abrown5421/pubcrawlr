@@ -198,3 +198,7 @@ export type TrianglifyState = {
   xColors: string[];
   yColors: string[];
 };
+
+export type BarCrawlCardProps = {
+  crawl: BarCrawl;
+};
