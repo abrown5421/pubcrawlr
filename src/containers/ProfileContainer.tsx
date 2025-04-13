@@ -157,7 +157,12 @@ const ProfileContainer = ({ children, mode }: { children: ReactNode, mode?: "per
               </Typography>
               <Typography variant="caption"> {userProfile.profileUser?.UserEmail}</Typography>
               <div className="profile-stat-container">
-                {['Bar Crawls', 'Groups', 'Friends'].map((label, index) => (
+              <div className="profile-stat-column">
+              <Typography variant="h5" fontWeight={700} sx={styles.logo}>{userProfile.barCrawls.length}</Typography>
+                <Typography variant="caption">Bar Crawls</Typography>
+              </div>
+                
+                {['Groups', 'Friends'].map((label, index) => (
                   <div className="profile-stat-column" key={index}>
                     <Typography variant="h5" fontWeight={700} sx={styles.logo}>
                       0
