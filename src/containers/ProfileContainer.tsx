@@ -54,6 +54,7 @@ const ProfileContainer = ({ children, mode }: { children: ReactNode, mode?: "per
     const userBarCrawls = await getUserBarCrawls(uid);
   
     const formattedCrawls = userBarCrawls.map(crawl => ({
+      id: crawl.id,
       crawlName: crawl.crawlName,
       intimacyLevel: crawl.intimacyLevel,
       userID: crawl.userID ?? "", 
@@ -81,7 +82,6 @@ const ProfileContainer = ({ children, mode }: { children: ReactNode, mode?: "per
       }),
     }));
   
-    console.log(formattedCrawls);
     dispatch(setBarCrawls(formattedCrawls));
   };  
 
@@ -124,7 +124,6 @@ const ProfileContainer = ({ children, mode }: { children: ReactNode, mode?: "per
 
   }, [slug]);
 
-  useEffect(()=>{console.log(userProfile)}, [userProfile])
   return (
     <Box className="prof-container">
       {isLoading ?

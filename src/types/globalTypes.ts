@@ -30,6 +30,7 @@ export interface Bar {
 }
 
 export interface BarCrawl {
+  id: string | null;
   crawlName: string;
   intimacyLevel: string;
   selectedBars: Bar[];
@@ -125,6 +126,7 @@ export interface MarkerPopupProps {
 }
 
 export interface BarCrawlInfo {
+  id: string | null;
   userID: string | null;
   selectedBars: Place[];
   crawlName: string;

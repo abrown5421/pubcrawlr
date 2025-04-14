@@ -37,7 +37,8 @@ export default function ProfileManager() {
       </Tabs>
       <TabPanel value={tab} index={0}>
           <>
-            {userProfile.barCrawls.map((crawl) => (
+            {userProfile.barCrawls.length < 1 && <Typography variant="caption">You don't currently have any bar crawls saved.</Typography>}
+            {userProfile.barCrawls.length > 1 && userProfile.barCrawls.map((crawl) => (
               <BarCrawlCard key={crawl.crawlName} crawl={crawl} />
             ))}
           </>
