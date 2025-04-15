@@ -1,22 +1,23 @@
-export const fetchBars = (lat: number, lng: number): Promise<google.maps.places.PlaceResult[]> => {
-  return new Promise((resolve, reject) => {
-    const location = new google.maps.LatLng(lat, lng);
+export const fetchBars = async (lat: number, lng: number): Promise<any[]> => {
+  const radius = 1000; 
+  const query = `
+    [out:json];
+    (
+      node(around:${radius},${lat},${lng})["amenity"~"bar|pub"];
+      way(around:${radius},${lat},${lng})["amenity"~"bar|pub"];
+      relation(around:${radius},${lat},${lng})["amenity"~"bar|pub"];
+    );
+    out center tags;
+  `;
 
-    const request: google.maps.places.PlaceSearchRequest = {
-      location,
-      rankBy: google.maps.places.RankBy.DISTANCE,
-      type: 'bar',
-      keyword: 'bar OR pub OR drinks OR cocktails'
-    };
+  const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
 
-    const service = new google.maps.places.PlacesService(document.createElement('div'));
-
-    service.nearbySearch(request, (results, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        resolve(results);
-      } else {
-        reject(`PlacesService error: ${status}`);
-      }
-    });
-  });
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.elements;
+  } catch (error) {
+    console.error("Overpass fetch error:", error);
+    return [];
+  }
 };

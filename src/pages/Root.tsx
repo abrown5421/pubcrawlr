@@ -49,42 +49,43 @@ function Root() {
   const [directions, setDirections] = useState<MapLibreGlDirections | null>(null);
 
   // Function to normalize Google Place data into the Place type from globalTypes
-  // const normalizePlace = (
-  //   place: google.maps.places.PlaceResult
-  // ): Place | null => {
-  //   if (!place.name || !place.geometry?.location) return null;
-
-  //   const photoUrl = place.photos?.[0]?.getUrl({ maxHeight: place.photos[0].height });
-
-  //   return {
-  //     id: place.place_id,
-  //     name: place.name,
-  //     geometry: {
-  //       location: {
-  //         lat: () => place.geometry!.location!.lat(),
-  //         lng: () => place.geometry!.location!.lng(),
-  //       },
-  //     },
-  //     rating: place.rating,
-  //     user_ratings_total: place.user_ratings_total,
-  //     vicinity: place.vicinity,
-  //     photoUrl,
-  //     price: place.price_level,
-  //   };
-  // };
+  const normalizePlace = (place: any): Place | null => {
+    const name = place.tags?.name;
+    const lat = place.lat ?? place.center?.lat;
+    const lng = place.lon ?? place.center?.lon;
+  
+    if (!name || !lat || !lng) return null;
+  
+    return {
+      id: place.id.toString(),
+      name,
+      geometry: {
+        location: {
+          lat: () => lat,
+          lng: () => lng,
+        },
+      },
+      rating: undefined, 
+      user_ratings_total: undefined,
+      vicinity: place.tags["addr:street"] || "",
+      photoUrl: undefined, 
+      price: undefined,
+    };
+  };
+  
 
   // Fetch bars from fetchBars hook based on latitude and longitude
-  // const fetchAndStoreBars = async (lat: number, lng: number) => {
-  //   try {
-  //     const results = await fetchBars(lat, lng);
-  //     const bars = results
-  //       .map(normalizePlace)
-  //       .filter((bar): bar is Place => bar !== null);
-  //     dispatch(addBars(bars));
-  //   } catch (error) {
-  //     console.error("Error fetching bars:", error);
-  //   }
-  // };
+  const fetchAndStoreBars = async (lat: number, lng: number) => {
+    try {
+      const results = await fetchBars(lat, lng);
+      const bars = results
+        .map(normalizePlace)
+        .filter((bar): bar is Place => bar !== null);
+      dispatch(addBars(bars));
+    } catch (error) {
+      console.error("Error fetching bars:", error);
+    }
+  };
 
   // Function to add a marker at the center of the map and fetch bars in that area
   const SearchHereClicked = (mapInstance: maplibregl.Map) => {
@@ -98,7 +99,7 @@ function Root() {
       color: theme.palette.custom.highlight
     }).setLngLat([center.lng, center.lat]).addTo(mapInstance);
 
-    // fetchAndStoreBars(center.lat, center.lng);
+    fetchAndStoreBars(center.lat, center.lng);
   };
 
   // Handle place selection from autocomplete input list
@@ -115,7 +116,7 @@ function Root() {
         color: theme.palette.custom.highlight
       }).setLngLat([lng, lat]).addTo(map);
 
-      // await fetchAndStoreBars(lat, lng);
+      await fetchAndStoreBars(lat, lng);
     },
     [map]
   );
