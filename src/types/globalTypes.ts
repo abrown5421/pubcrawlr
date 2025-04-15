@@ -139,6 +139,18 @@ export interface TrianglifyBannerProps {
   token?: string; 
 }
 
+export interface Feature {
+  properties: {
+    name: string;
+    city?: string;
+    state?: string;
+    country?: string;
+  };
+  geometry: {
+    coordinates: [number, number]; 
+  };
+}
+
 export type BarCardProps = {
     bar: Place;
     mode: String;  

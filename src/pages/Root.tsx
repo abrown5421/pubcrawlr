@@ -5,7 +5,6 @@ import AnimatedContainer from "../containers/AnimatedContainer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { Box, useTheme } from "@mui/system";
 import PlaceAutocomplete from "../components/PlaceAutocomplete";
-import { loadGoogleMapsScript } from "../utils/loadGoogleScript";
 import "../styles/pages/root.css";
 import { SearchHereButton } from "../utils/CustomMapControls";
 import { fetchBars } from "../utils/fetchBars";
@@ -42,51 +41,50 @@ function Root() {
   const styles = useRootStyles(theme);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<maplibregl.Marker[]>([]);
-  const accentPinRef = useRef<maplibregl.Marker | null>(null); // Ref for tracking accent pin
+  const accentPinRef = useRef<maplibregl.Marker | null>(null); 
   const mapControllerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maplibregl.Map | null>(null);
-  const [googleLoaded, setGoogleLoaded] = useState<boolean>(false);
   const [visibleBars, setVisibleBars] = useState<Place[]>([]);
   const [drawerWidth, setDrawerWidth] = useState<number>(400);
   const [directions, setDirections] = useState<MapLibreGlDirections | null>(null);
 
   // Function to normalize Google Place data into the Place type from globalTypes
-  const normalizePlace = (
-    place: google.maps.places.PlaceResult
-  ): Place | null => {
-    if (!place.name || !place.geometry?.location) return null;
+  // const normalizePlace = (
+  //   place: google.maps.places.PlaceResult
+  // ): Place | null => {
+  //   if (!place.name || !place.geometry?.location) return null;
 
-    const photoUrl = place.photos?.[0]?.getUrl({ maxHeight: place.photos[0].height });
+  //   const photoUrl = place.photos?.[0]?.getUrl({ maxHeight: place.photos[0].height });
 
-    return {
-      id: place.place_id,
-      name: place.name,
-      geometry: {
-        location: {
-          lat: () => place.geometry!.location!.lat(),
-          lng: () => place.geometry!.location!.lng(),
-        },
-      },
-      rating: place.rating,
-      user_ratings_total: place.user_ratings_total,
-      vicinity: place.vicinity,
-      photoUrl,
-      price: place.price_level,
-    };
-  };
+  //   return {
+  //     id: place.place_id,
+  //     name: place.name,
+  //     geometry: {
+  //       location: {
+  //         lat: () => place.geometry!.location!.lat(),
+  //         lng: () => place.geometry!.location!.lng(),
+  //       },
+  //     },
+  //     rating: place.rating,
+  //     user_ratings_total: place.user_ratings_total,
+  //     vicinity: place.vicinity,
+  //     photoUrl,
+  //     price: place.price_level,
+  //   };
+  // };
 
   // Fetch bars from fetchBars hook based on latitude and longitude
-  const fetchAndStoreBars = async (lat: number, lng: number) => {
-    try {
-      const results = await fetchBars(lat, lng);
-      const bars = results
-        .map(normalizePlace)
-        .filter((bar): bar is Place => bar !== null);
-      dispatch(addBars(bars));
-    } catch (error) {
-      console.error("Error fetching bars:", error);
-    }
-  };
+  // const fetchAndStoreBars = async (lat: number, lng: number) => {
+  //   try {
+  //     const results = await fetchBars(lat, lng);
+  //     const bars = results
+  //       .map(normalizePlace)
+  //       .filter((bar): bar is Place => bar !== null);
+  //     dispatch(addBars(bars));
+  //   } catch (error) {
+  //     console.error("Error fetching bars:", error);
+  //   }
+  // };
 
   // Function to add a marker at the center of the map and fetch bars in that area
   const SearchHereClicked = (mapInstance: maplibregl.Map) => {
@@ -100,7 +98,7 @@ function Root() {
       color: theme.palette.custom.highlight
     }).setLngLat([center.lng, center.lat]).addTo(mapInstance);
 
-    fetchAndStoreBars(center.lat, center.lng);
+    // fetchAndStoreBars(center.lat, center.lng);
   };
 
   // Handle place selection from autocomplete input list
@@ -117,7 +115,7 @@ function Root() {
         color: theme.palette.custom.highlight
       }).setLngLat([lng, lat]).addTo(map);
 
-      await fetchAndStoreBars(lat, lng);
+      // await fetchAndStoreBars(lat, lng);
     },
     [map]
   );
@@ -126,13 +124,6 @@ function Root() {
   const toggleDrawer = (open: boolean) => () => {
     dispatch(setDrawerOpen(open)); 
   };
-
-  // Load the Google Maps script for the autocomplete input when the component mounts
-  useEffect(() => {
-    loadGoogleMapsScript()
-      .then(() => setGoogleLoaded(true))
-      .catch(console.error);
-  }, []);
 
   // Initialize the map and set user's location
   useEffect(() => {
@@ -255,9 +246,7 @@ function Root() {
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"} sx={{height: '100%'}}>
       <Box sx={{ height: "100%", backgroundColor: theme.palette.custom?.light }} className="root-container">
         <div ref={mapControllerRef} className="map-controller">
-          {googleLoaded && (
-            <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
-          )}
+          <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
           {viewport === 'desktop' && visibleBars.map((bar) => (
             <BarCard key={bar.id} bar={bar} mode="not-selected" />
           ))}
