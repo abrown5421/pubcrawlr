@@ -61,8 +61,8 @@ const ProfileContainer = ({ children, mode }: { children: ReactNode, mode?: "per
       selectedBars: crawl.selectedBars.map(place => {
         const location = place.geometry.location;
   
-        const lat = typeof location.lat === "function" ? location.lat() : location.lat;
-        const lng = typeof location.lng === "function" ? location.lng() : location.lng;
+        const lat = typeof location.lat === "function" ? location.lat : location.lat;
+        const lng = typeof location.lng === "function" ? location.lng : location.lng;
   
         return {
           id: place.id ?? "",

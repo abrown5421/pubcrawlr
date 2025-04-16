@@ -48,32 +48,37 @@ function Root() {
   const [drawerWidth, setDrawerWidth] = useState<number>(400);
   const [directions, setDirections] = useState<MapLibreGlDirections | null>(null);
 
-  // Function to normalize Google Place data into the Place type from globalTypes
   const normalizePlace = (place: any): Place | null => {
+    console.log(place);
+  
     const name = place.tags?.name;
     const lat = place.lat ?? place.center?.lat;
     const lng = place.lon ?? place.center?.lon;
   
     if (!name || !lat || !lng) return null;
   
+    const addressParts = [
+      place.tags?.["addr:housenumber"],
+      place.tags?.["addr:street"],
+      place.tags?.["addr:city"],
+      place.tags?.["addr:state"],
+    ].filter(Boolean); 
+  
+    const vicinity = addressParts.join(' '); 
+  
     return {
       id: place.id.toString(),
       name,
       geometry: {
         location: {
-          lat: () => lat,
-          lng: () => lng,
+          lat,
+          lng,
         },
       },
-      rating: undefined, 
-      user_ratings_total: undefined,
-      vicinity: place.tags["addr:street"] || "",
-      photoUrl: undefined, 
-      price: undefined,
+      vicinity,
     };
   };
   
-
   // Fetch bars from fetchBars hook based on latitude and longitude
   const fetchAndStoreBars = async (lat: number, lng: number) => {
     try {
@@ -167,8 +172,8 @@ function Root() {
     const updateVisibleBars = () => {
       const bounds = map.getBounds();
       const inBounds = barResults.filter(bar => {
-        const lat = bar.geometry.location.lat();
-        const lng = bar.geometry.location.lng();
+        const lat = bar.geometry.location.lat;
+        const lng = bar.geometry.location.lng;
         return bounds.contains([lng, lat]);
       });
       setVisibleBars(inBounds);
@@ -188,8 +193,8 @@ function Root() {
     markerRef.current = [];
 
     visibleBars.forEach(bar => {
-      const lat = bar.geometry.location.lat();
-      const lng = bar.geometry.location.lng();
+      const lat = bar.geometry.location.lat;
+      const lng = bar.geometry.location.lng;
 
       const marker = new maplibregl.Marker({
         color: theme.palette.custom.dark
@@ -231,8 +236,8 @@ function Root() {
     if (selectedBars.length > 1 && directions) {
       directions.setWaypoints(
         selectedBars.map((x): [number, number] => [
-          x.geometry.location.lng(),
-          x.geometry.location.lat(),
+          x.geometry.location.lng,
+          x.geometry.location.lat,
         ])
       );
     } else {
@@ -248,9 +253,11 @@ function Root() {
       <Box sx={{ height: "100%", backgroundColor: theme.palette.custom?.light }} className="root-container">
         <div ref={mapControllerRef} className="map-controller">
           <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
-          {viewport === 'desktop' && visibleBars.map((bar) => (
+          {viewport === 'desktop' && visibleBars.map((bar) => {
+            console.log(bar)
+          return (
             <BarCard key={bar.id} bar={bar} mode="not-selected" />
-          ))}
+          )})}
         </div>
         <div ref={mapContainerRef} className="map-container">
           <AnimatedContainer 

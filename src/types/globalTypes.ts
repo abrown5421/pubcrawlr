@@ -68,11 +68,12 @@ export interface ActivePageState {
 }
 
 export interface Place {
+    id?: string;
     name: string;
     geometry: {
       location: {
-        lat: () => number; 
-        lng: () => number;
+        lat: number; 
+        lng: number;
       };
     };
     rating?: number;
@@ -96,21 +97,6 @@ export interface NotificationState {
     open: boolean;
     message: string;
     severity: 'error' | 'warning' | 'info' | 'success';
-}
-
-export interface Place {
-  id?: string;
-  name: string;
-  geometry: {
-    location: {
-      lat: () => number;
-      lng: () => number;
-    };
-  };
-  rating?: number;
-  user_ratings_total?: number;
-  vicinity?: string;
-  photoUrl?: string;
 }
 
 export interface SelectedBarsState {
