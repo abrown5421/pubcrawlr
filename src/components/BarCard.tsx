@@ -7,7 +7,6 @@ import { BarCardProps } from "../types/globalTypes";
 import { addBar, setDrawerOpen } from '../store/slices/selectedBarSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { removeBar } from "../store/slices/selectedBarSlice";
-import { setModal } from "../store/slices/modalSlice";
 
 const useBarCardStyles = (theme: any) => ({
     logo: {
@@ -42,34 +41,10 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
     dispatch(removeBar(x));
   };
 
-  const handleLearnMore = async (name: string, lat: number, lng: number) => {
-    try {
-      const queryParams = new URLSearchParams({
-        name: name,
-        lat: lat.toString(),
-        lng: lng.toString(),
-      });
-  
-      const res = await fetch(`/api/place?${queryParams.toString()}`);
-  
-      if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
-      }
-  
-      const data = await res.json();
-      console.log("Fetched place data:", data);
-  
-      dispatch(setModal({
-        open: true,
-        title: name,
-        body: 'fiddle pop',
-      }));
-  
-      return data;
-    } catch (err) {
-      console.error("Failed to fetch rich place data:", err);
-      return null;
-    }
+  const handleLearnMore = async (name: string, vicinity: string) => {
+    const query = `${name} ${vicinity}`;
+    const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -89,7 +64,7 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
                 </Typography>
                 <div className="bar-card-row ai-cent">
                     <Typography
-                        onClick={() => handleLearnMore(bar.name, bar.geometry.location.lat, bar.geometry.location.lng)}
+                        onClick={() => handleLearnMore(bar.name, bar.vicinity ?? '')}
                         variant={viewport === "mobile" ? "subtitle1" : "caption"}
                         sx={{
                             color: theme => theme.palette.custom?.accent,
