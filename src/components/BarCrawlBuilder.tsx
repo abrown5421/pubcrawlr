@@ -327,14 +327,6 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
             helperText={errors.endDate || ""}
           />
         </div>
-        <Typography
-          variant={viewport === 'desktop' ? "h6" : "subtitle1"}
-          component="div"
-          fontWeight={700}
-          sx={styles.logo}
-        >
-          Bar List:
-        </Typography>
         {selectedBars.length > 0 && (
           <div style={{ marginBottom: theme.spacing(2) }}>
             {selectedBars.map((bar, index) => (
