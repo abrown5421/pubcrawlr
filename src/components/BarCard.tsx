@@ -42,12 +42,27 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
     dispatch(removeBar(x));
   };
 
-  const handleLearnMore = () => {
-    dispatch(setModal({
-        open: true,
-        title: bar.name,
-        body: 'fiddle pop',
-    }))
+  const handleLearnMore = async () => {
+    try {
+        const res = await fetch(`/api/place?lat=40.7128&lng=-74.006`);
+    
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+    
+        const data = await res.json();
+        console.log("Fetched place data:", data);
+        dispatch(setModal({
+            open: true,
+            title: bar.name,
+            body: 'fiddle pop',
+        }))
+        return data;
+    } catch (err) {
+        console.error("Failed to fetch rich place data:", err);
+        return null;
+    }
+    
   }
 
   return (
