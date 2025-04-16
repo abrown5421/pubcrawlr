@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, Divider, IconButton, Typography } from "@mui/material";
 import { useTheme } from '@mui/material';
 import "../styles/components/bar-card.css";
-import placeholderImg from "../../public/assets/images/bar-placeholder.png";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { BarCardProps } from "../types/globalTypes";
 import { addBar, setDrawerOpen } from '../store/slices/selectedBarSlice';
@@ -21,8 +20,7 @@ const useBarCardStyles = (theme: any) => ({
       "&:hover": {
         backgroundColor: theme.palette.custom?.light,
         color: theme.palette.custom?.dark,
-      },
-      marginTop: theme.spacing(2),
+      }
     },
     card: {
         backgroundColor: theme.palette.custom?.light,
@@ -34,12 +32,6 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
   const styles = useBarCardStyles(theme);
   const viewport = useAppSelector(state => state.viewport.type);
   const dispatch = useAppDispatch();
-
-  const [imageSrc, setImageSrc] = useState(bar.photoUrl || placeholderImg);
-
-  const handleImageError = () => {
-    setImageSrc(placeholderImg);
-  };
 
   const handleAddBar = () => {
     dispatch(addBar(bar));
@@ -61,61 +53,35 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
   return (
     <>
         <div style={styles.card} className={mode === 'selected' ? "bar-card bar-card-row" : (viewport === 'desktop' ? "bar-card bar-card-row" : "bar-card bar-card-mobile")}>
-            <div className="bar-card-col">
-                <img
-                    src={imageSrc}
-                    className={mode === 'selected' ? "card-image-small" : "card-image"}
-                    onError={handleImageError} 
-                    alt={bar.name}
-                />
-            </div>
-            <div className={mode === 'selected' ? "bar-card-col add-pad fl-1" : "bar-card-col add-pad fl-1 jc-cent"}>
-                <div>
+            <div className="bar-card-col fl-6">
+                <Typography
+                    variant="h6"
+                    component="div"
+                    fontWeight={700}
+                    sx={styles.logo}
+                >
+                    {bar.name}
+                </Typography>
+                <Typography variant="subtitle1" component="div">
+                    {typeof bar.vicinity === 'string' ? bar.vicinity.length > 40 ? `${bar.vicinity.slice(0, 37)}...` : bar.vicinity : ''}
+                </Typography>
+                <div className="bar-card-row ai-cent">
                     <Typography
-                        variant={viewport === 'desktop' ? "h6" : "subtitle1"}
-                        component="div"
-                        fontWeight={700}
-                        sx={styles.logo}
+                        onClick={handleLearnMore}
+                        variant={viewport === "mobile" ? "subtitle1" : "caption"}
+                        sx={{
+                            color: theme => theme.palette.custom?.accent,
+                            cursor: 'pointer',
+                            '&:hover': {
+                            color: theme => theme.palette.custom?.highlight,
+                            },
+                        }}
                     >
-                        {bar.name}
+                        Learn More
                     </Typography>
-                    <Typography variant="subtitle1" component="div">
-                        {typeof bar.vicinity === 'string' ? bar.vicinity.length > 40 ? `${bar.vicinity.slice(0, 37)}...` : bar.vicinity : ''}
-                    </Typography>
-                    <div className="bar-card-row ai-cent">
-                        {bar.price && (
-                            <>
-                                <Typography
-                                    variant="caption"
-                                    component="div"
-                                >
-                                    <span>{'$'.repeat(bar.price)}</span>
-                                </Typography>
-                                <div className="pipe">|</div>
-                            </>
-                        )}
-                        <Typography
-                            variant="caption"
-                            component="div"
-                        >
-                            {bar.rating && <>Rating: {bar.rating}</>}
-                        </Typography>
-                        <div className="pipe">|</div>
-                        <Typography
-                            onClick={handleLearnMore}
-                            variant="caption"
-                            sx={{
-                                color: theme => theme.palette.custom?.accent,
-                                cursor: 'pointer',
-                                '&:hover': {
-                                color: theme => theme.palette.custom?.highlight,
-                                },
-                            }}
-                        >
-                            Learn More
-                        </Typography>
-                    </div>
                 </div>
+            </div>
+            <div className={mode === 'selected' ? "bar-card-col add-pad fl-1 jc-cent" : "bar-card-col fl-1 jc-cent"}>
                 {mode !== 'selected' && (
                     <Button
                         className="add-button"

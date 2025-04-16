@@ -32,11 +32,11 @@
 @media (max-width: 1024px) {
     .root-container {
         display: flex;
-        flex-direction: column;
     }
     .map-controller {
-        height: auto;
-        flex: unset;
+        height: unset !important;
+        flex: unset !important;
+        overflow: unset !important;
     }
     .open-bar-crawl-button {
         position: absolute !important;
@@ -45,5 +45,10 @@
         bottom: unset;
         right: unset;
         margin-top: 0px !important;
+    }
+}
+@media (max-width: 1024px) {
+    .root-container {
+        flex-direction: column;
     }
 }

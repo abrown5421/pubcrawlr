@@ -3,15 +3,17 @@ import {
   TextField,
   List,
   ListItemButton,
-  Paper,
+  Collapse,
   ClickAwayListener,
   InputAdornment,
   CircularProgress,
+  Box,
 } from "@mui/material";
 import { PlaceAutocompleteProps } from "../types/globalTypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setLoading } from "../store/slices/buttonLoadSlice";
 import { Feature } from "../types/globalTypes";
+import theme from "../styles/theme";
 
 const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
   const dispatch = useAppDispatch();
@@ -28,19 +30,19 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
       skipFetchRef.current = false;
       return;
     }
-  
+
     if (!inputValue.trim()) {
       dispatch(setLoading({ key: "searchForPlace", value: false }));
       setSuggestions([]);
       return;
     }
-  
+
     if (controller.current) {
       controller.current.abort();
     }
-  
+
     controller.current = new AbortController();
-  
+
     const fetchSuggestions = async () => {
       try {
         const res = await fetch(
@@ -58,10 +60,10 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
         dispatch(setLoading({ key: "searchForPlace", value: false }));
       }
     };
-  
+
     const debounce = setTimeout(fetchSuggestions, 300);
     return () => clearTimeout(debounce);
-  }, [inputValue, dispatch]);  
+  }, [inputValue, dispatch]);
 
   const handleSelect = (feature: Feature) => {
     skipFetchRef.current = true;
@@ -76,7 +78,7 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
     setShowDropdown(false);
 
     const [lng, lat] = feature.geometry.coordinates;
-    onPlaceSelected(lat, lng); 
+    onPlaceSelected(lat, lng);
   };
 
   const handleClickAway = () => setShowDropdown(false);
@@ -103,28 +105,30 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
             ),
           }}
         />
-        {showDropdown && suggestions.length > 0 && (
-          <Paper
-            style={{
-              position: "absolute",
-              width: "100%",
-              zIndex: 10,
-              maxHeight: 200,
-              overflowY: "auto",
-            }}
-          >
-            <List dense>
-              {suggestions.map((feature, index) => (
-                <ListItemButton key={index} onClick={() => {handleSelect(feature)}}>
-                  {feature.properties.name}
-                  {feature.properties.city && `, ${feature.properties.city}`}
-                  {feature.properties.state && `, ${feature.properties.state}`}
-                  {feature.properties.country && `, ${feature.properties.country}`}
-                </ListItemButton>
-              ))}
-            </List>
-          </Paper>
-        )}
+        <div
+          style={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            right: 0,
+            zIndex: 10000,
+          }}
+        >
+          <Collapse in={showDropdown && suggestions.length > 0}>
+            <Box sx={{backgroundColor: theme.palette.custom?.light }}>
+              <List dense>
+                {suggestions.map((feature, index) => (
+                  <ListItemButton key={index} onClick={() => handleSelect(feature)}>
+                    {feature.properties.name}
+                    {feature.properties.city && `, ${feature.properties.city}`}
+                    {feature.properties.state && `, ${feature.properties.state}`}
+                    {feature.properties.country && `, ${feature.properties.country}`}
+                  </ListItemButton>
+                ))}
+              </List>
+            </Box>
+          </Collapse>
+        </div>
       </div>
     </ClickAwayListener>
   );

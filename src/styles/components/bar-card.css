@@ -5,9 +5,10 @@
 .bar-card-mobile {
     flex-direction: column;
     box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
-    padding: 0px;
+    padding: 8px;
     border-radius: 5px;
     height: 100%;
+    min-width: 150px;
 }
 .bar-card-row {
     display: flex;
@@ -26,6 +27,9 @@
 .fl-1 {
     flex: 1;
 }
+.fl-6 {
+    flex: 6;
+}
 .add-pad {
     padding-left: 18px;
 }
@@ -41,30 +45,4 @@
 }
 .pipe {
     margin: 0px 7px;
-}
-@media (max-width: 1200px) {
-    .bar-card-col {
-        justify-content: start;
-    }
-}
-@media screen and (max-width: 1024px) {
-    .bar-card-col {
-        justify-content: space-between;
-    }
-    .add-pad {
-        padding: 8px;
-    }
-    .add-button {
-        margin-top: auto;
-    }
-    .card-image {
-        width: 100%;
-        height: 150px;
-    }
-}
-@media screen and (max-width: 600px) {
-    .card-image {
-        width: 100%;
-        height: 115px;
-    }
 }
