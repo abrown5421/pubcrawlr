@@ -68,19 +68,15 @@ export interface ActivePageState {
 }
 
 export interface Place {
-    id?: string;
-    name: string;
-    geometry: {
-      location: {
-        lat: number; 
-        lng: number;
-      };
+  id: string;
+  name: string;
+  geometry: {
+    location: {
+      lat: number;
+      lng: number;
     };
-    rating?: number;
-    user_ratings_total?: number;
-    vicinity?: string;
-    photoUrl?: string;
-    price?: number;
+  };
+  vicinity?: string;
 }
 
 export interface BarsState {

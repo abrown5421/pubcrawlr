@@ -48,23 +48,30 @@ function Root() {
   const [drawerWidth, setDrawerWidth] = useState<number>(400);
   const [directions, setDirections] = useState<MapLibreGlDirections | null>(null);
 
-  const normalizePlace = (place: any): Place | null => {
-    console.log(place);
-  
+  const normalizePlace = async (place: any): Promise<Place | null> => {
     const name = place.tags?.name;
     const lat = place.lat ?? place.center?.lat;
     const lng = place.lon ?? place.center?.lon;
   
     if (!name || !lat || !lng) return null;
   
-    const addressParts = [
-      place.tags?.["addr:housenumber"],
-      place.tags?.["addr:street"],
-      place.tags?.["addr:city"],
-      place.tags?.["addr:state"],
-    ].filter(Boolean); 
+    let vicinity = '';
   
-    const vicinity = addressParts.join(' '); 
+    try {
+      const response = await fetch(`/api/reverse-geocode?lat=${lat}&lng=${lng}`);
+      const data = await response.json();
+      const { city, state, zipCode } = data.address;
+  
+      vicinity = [city, state, zipCode].filter(Boolean).join(', ');
+    } catch (error) {
+      console.error('Failed to fetch reverse geocode data:', error);
+      const fallbackParts = [
+        place.tags?.["addr:housenumber"],
+        place.tags?.["addr:street"],
+        place.tags?.["addr:city"],
+      ].filter(Boolean);
+      vicinity = fallbackParts.join(' ');
+    }
   
     return {
       id: place.id.toString(),
@@ -77,15 +84,17 @@ function Root() {
       },
       vicinity,
     };
-  };
+  };  
   
   // Fetch bars from fetchBars hook based on latitude and longitude
   const fetchAndStoreBars = async (lat: number, lng: number) => {
     try {
       const results = await fetchBars(lat, lng);
-      const bars = results
-        .map(normalizePlace)
-        .filter((bar): bar is Place => bar !== null);
+      const normalizedPlaces = await Promise.all(results.map(normalizePlace));
+      const bars: Place[] = normalizedPlaces.filter(
+        (bar): bar is Place => bar !== null
+      );
+  
       dispatch(addBars(bars));
     } catch (error) {
       console.error("Error fetching bars:", error);
@@ -201,9 +210,7 @@ function Root() {
       })
         .setLngLat([lng, lat])
         .setPopup(new maplibregl.Popup().setHTML(getMarkerPopup({
-          imageUrl: bar.photoUrl,
           name: bar.name,
-          rating: bar.rating,
           includeAddBtn: true
         })))        
         .addTo(map);
