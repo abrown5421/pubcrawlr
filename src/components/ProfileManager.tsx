@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Tabs, Tab, Typography } from '@mui/material';
 import { useAppSelector } from '../store/hooks';
 import BarCrawlCard from './BarCrawlCard';
+import "../styles/components/profile-manager.css";
 
 function TabPanel(props: { children?: React.ReactNode; value: number; index: number }) {
   const { children, value, index, ...other } = props;
@@ -36,12 +37,12 @@ export default function ProfileManager() {
         <Tab label="Friends" />
       </Tabs>
       <TabPanel value={tab} index={0}>
-          <>
+          <Box className="bar-crawl-deck">
             {userProfile.barCrawls.length < 1 && <Typography variant="caption">You don't currently have any bar crawls saved.</Typography>}
-            {userProfile.barCrawls.length > 1 && userProfile.barCrawls.map((crawl) => (
+            {userProfile.barCrawls.length > 0 && userProfile.barCrawls.map((crawl) => (
               <BarCrawlCard key={crawl.crawlName} crawl={crawl} />
             ))}
-          </>
+          </Box>
       </TabPanel>
       <TabPanel value={tab} index={1}>
         Your Friends will appear here.

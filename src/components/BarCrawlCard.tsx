@@ -52,31 +52,10 @@ const useBarCrawlCardStyles = (theme: any) => ({
 });
 
 const BarItem: React.FC<{ bar: any }> = ({ bar }) => {
-  const [imageSrc, setImageSrc] = useState(bar.photoUrl || placeholderImg);
-
-  const handleImageError = () => {
-    setImageSrc(placeholderImg);
-  };
-
   return (
     <Box className="bar-item" display="flex" mb={2}>
-      <img
-        src={imageSrc}
-        alt={bar.name}
-        className="bar-image"
-        onError={handleImageError}
-        style={{ width: 100, height: 100, objectFit: "cover", marginRight: 16 }}
-      />
-      <Box className="bar-details">
         <Typography variant="subtitle1">{bar.name}</Typography>
         <Typography variant="body2">{bar.vicinity}</Typography>
-        <Typography variant="body2">
-            {bar.rating} ({bar.user_ratings_total} reviews)
-        </Typography>
-        {bar.price !== null && (
-          <Typography variant="body2">Price Level: {bar.price}</Typography>
-        )}
-      </Box>
     </Box>
   );
 };
@@ -121,7 +100,7 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl }) => {
 
   return (
     <Card className="bar-crawl-card" variant="outlined">
-      <CardContent>
+      <CardContent className="mui-cc-ovrd">
         <Box
           className="bar-crawl-header"
           display="flex"

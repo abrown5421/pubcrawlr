@@ -1,16 +1,16 @@
-.bar-crawl-card {
-    padding: 16px;
-    margin: 16px 0;
+  .bar-crawl-card {
+    width: calc(33.333% - 10.67px);
+    box-sizing: border-box; 
     background-color: #fff;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
   }
   
   .bar-crawl-header {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
     align-items: start;
-    margin-bottom: 12px;
     padding-bottom: 8px;
   }
   
@@ -18,6 +18,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    width: 100%;
   }
 
   .bar-list {
@@ -28,8 +29,7 @@
   
   .bar-item {
     display: flex;
-    gap: 12px;
-    align-items: center;
+    flex-direction: column;
   }
   
   .bar-image {
@@ -87,3 +87,8 @@
     background-color: #b71c1c;
   }
   
+  .mui-cc-ovrd {
+    display: flex !important;
+    justify-content: start !important;
+    padding: 8px !important;
+  }

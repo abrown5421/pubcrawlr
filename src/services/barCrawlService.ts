@@ -34,8 +34,8 @@ export const saveBarCrawl = async ({
 }: BarCrawlInfo): Promise<void> => {
   try {
     const updatedSelectedBars = selectedBars.map(bar => {
-      const barLat = bar.geometry.location.lat();
-      const barLng = bar.geometry.location.lng(); 
+      const barLat = bar.geometry.location.lat;
+      const barLng = bar.geometry.location.lng; 
 
       const updatedGeometry = {
         location: {

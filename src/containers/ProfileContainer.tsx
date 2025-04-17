@@ -57,33 +57,23 @@ const ProfileContainer = ({ children, mode }: { children: ReactNode, mode?: "per
       id: crawl.id,
       crawlName: crawl.crawlName,
       intimacyLevel: crawl.intimacyLevel,
-      userID: crawl.userID ?? "", 
-      selectedBars: crawl.selectedBars.map(place => {
-        const location = place.geometry.location;
-  
-        const lat = typeof location.lat === "function" ? location.lat : location.lat;
-        const lng = typeof location.lng === "function" ? location.lng : location.lng;
-  
-        return {
-          id: place.id ?? "",
-          name: place.name,
-          photoUrl: place.photoUrl ?? "",
-          price: place.price ?? null,
-          rating: place.rating ?? 0,
-          user_ratings_total: place.user_ratings_total ?? 0,
-          vicinity: place.vicinity ?? "",
-          geometry: {
-            location: {
-              lat,
-              lng,
-            },
-          },
-        };
-      }),
+      userID: crawl.userID ?? "",
+      selectedBars: crawl.selectedBars.map(place => ({
+        id: place.id,
+        name: place.name,
+        vicinity: place.vicinity,
+        geometry: {
+          location: {
+            lat: place.geometry.location.lat,
+            lng: place.geometry.location.lng,
+          }
+        }
+      }))
     }));
   
-    dispatch(setBarCrawls(formattedCrawls));
-  };  
+    dispatch(setBarCrawls(formattedCrawls)); 
+  };
+  
 
   useEffect(()=>{console.log(userProfile.barCrawls)}, [userProfile.barCrawls])
   const handleImageChange = () => {

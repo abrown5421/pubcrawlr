@@ -22,11 +22,7 @@ export interface Bar {
   };
   id: string;
   name: string;
-  photoUrl: string;
-  price: number | null;
-  rating: number;
-  user_ratings_total: number;
-  vicinity: string;
+  vicinity?: string;
 }
 
 export interface BarCrawl {
