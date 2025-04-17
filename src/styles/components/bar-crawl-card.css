@@ -92,3 +92,9 @@
     justify-content: start !important;
     padding: 8px !important;
   }
+
+  @media only screen and (max-width: 600px) {
+    .bar-crawl-card {
+      width: 100% !important;
+    }
+  }

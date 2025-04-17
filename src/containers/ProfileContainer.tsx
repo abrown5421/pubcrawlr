@@ -136,14 +136,16 @@ const ProfileContainer = ({ children, mode }: { children: ReactNode, mode?: "per
 
           <div className='profile-container-content'>
             <div className='profile-sidebar'>
+              <div className='profile-container-row'>
+              <Typography variant="h5" fontWeight={700} sx={styles.logo}>
+                {userProfile.profileUser?.UserFirstName} {userProfile.profileUser?.UserLastName}
+              </Typography>
               {mode === "personal" &&  
                 <IconButton onClick={handleInfoChange} sx={{backgroundColor: theme.palette.custom?.light}} className="profile-info-edit">
                   <EditIcon />
                 </IconButton>
               }
-              <Typography variant="h5" fontWeight={700} sx={styles.logo}>
-                {userProfile.profileUser?.UserFirstName} {userProfile.profileUser?.UserLastName}
-              </Typography>
+              </div>
               <Typography variant="caption"> {userProfile.profileUser?.UserEmail}</Typography>
               <div className="profile-stat-container">
               <div className="profile-stat-column">
