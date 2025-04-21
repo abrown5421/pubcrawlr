@@ -30,7 +30,8 @@ export const saveBarCrawl = async ({
   crawlName,
   startDate,
   endDate,
-  intimacyLevel
+  intimacyLevel,
+  attendees
 }: BarCrawlInfo): Promise<void> => {
   try {
     const updatedSelectedBars = selectedBars.map(bar => {
@@ -52,6 +53,7 @@ export const saveBarCrawl = async ({
       selectedBars: updatedSelectedBars,
       crawlName,
       intimacyLevel,
+      attendees
     };
 
     if (startDate) {

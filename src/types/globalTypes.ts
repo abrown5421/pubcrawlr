@@ -104,6 +104,14 @@ export interface MarkerPopupProps {
     includeAddBtn: boolean;
 }
 
+export interface Attendee {
+  docId: string | null;
+  UserFirstName: string | null; 
+  UserLastName: string | null; 
+  invited: boolean;
+  attending: boolean;
+}
+
 export interface BarCrawlInfo {
   id?: string | null;
   userID: string | null;
@@ -112,6 +120,7 @@ export interface BarCrawlInfo {
   startDate?: Date; 
   endDate?: Date;   
   intimacyLevel: string;
+  attendees: Attendee[] | string;
 }
 
 export interface TrianglifyBannerProps {

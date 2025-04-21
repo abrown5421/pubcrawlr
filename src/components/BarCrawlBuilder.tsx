@@ -5,7 +5,7 @@ import Form from "./Form";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setAlert } from "../store/slices/notificationSlice";
 import { clearBars, setDrawerOpen } from '../store/slices/selectedBarSlice';
-import { BcFormFormData, BcFormValidationErrors, SearchHereButtonProps, FormHandle } from "../types/globalTypes";
+import { BcFormFormData, BcFormValidationErrors, SearchHereButtonProps, FormHandle, Attendee } from "../types/globalTypes";
 import BarCard from "./BarCard";
 import PublicIcon from '@mui/icons-material/Public';
 import GroupsIcon from '@mui/icons-material/Groups';
@@ -53,7 +53,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const crawlForm = useRef<FormHandle>(null);
-  
+  const [attendees, setAttendees] = useState<Attendee[]>([]);
   const [formData, setFormData] = useState<BcFormFormData>({
     barCrawlName: "",
     selectedBars: selectedBars,
@@ -61,6 +61,9 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
     startDate: "",
     endDate: ""
   });
+
+  useEffect(()=>{console.log(attendees)}, [attendees])
+
   const [errors, setErrors] = useState<BcFormValidationErrors>({});
 
   const validate = (data: BcFormFormData): BcFormValidationErrors => {
@@ -171,6 +174,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
     }
     const startDate = formData.startDate ? new Date(formData.startDate) : undefined;
     const endDate = formData.endDate ? new Date(formData.endDate) : undefined;
+    const attendeesField = formData.intimacyLevel === "Public" ? "Public" : attendees;
 
     const barCrawlData = {
       userID: token,
@@ -178,7 +182,8 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
       crawlName: formData.barCrawlName,
       startDate,
       endDate,
-      intimacyLevel: formData.intimacyLevel
+      intimacyLevel: formData.intimacyLevel,
+      attendees: attendeesField
     };
 
     saveBarCrawl(barCrawlData)
@@ -209,7 +214,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
       .finally(() => {
         dispatch(setLoading({ key: 'saveCrawl', value: false }));
       })
-};
+  };
 
   const handleTextFieldChange = (field: keyof BcFormFormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = e.target.value;
