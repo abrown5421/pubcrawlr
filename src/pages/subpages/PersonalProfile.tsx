@@ -1,8 +1,8 @@
 import { Box, Theme } from "@mui/material";
 import ProfileContainer from "../../containers/ProfileContainer";
-import "../../styles/containers/profile-container.css";
+import TabManager from "../../components/TabManager";
+import MyCrawlsTab from "../../components/tabs/MyCrawlsTab";
 import theme from "../../styles/theme";
-import ProfileManager from "../../components/ProfileManager";
 
 const nestedContainerStyles = (theme: Theme) => ({
   root: {
@@ -17,12 +17,15 @@ function PersonalProfile() {
 
   return (
     <Box sx={styles.root}>
-        <ProfileContainer mode="personal">
-            <ProfileManager />
-        </ProfileContainer>
+      <ProfileContainer mode="personal">
+        <TabManager
+          tabs={["My Crawls", "Invites", "Discover"]}
+        >
+          {[<MyCrawlsTab />, 'invited', 'public']}
+        </TabManager>
+      </ProfileContainer>
     </Box>
   );
 }
 
 export default PersonalProfile;
-
