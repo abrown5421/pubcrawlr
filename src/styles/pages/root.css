@@ -23,6 +23,9 @@
     bottom: 10px;
     right: 10px;
 }
+.d-none {
+    display: none !important;
+}
 @media (max-width: 1200px) {
     .map-container {
         flex: 6;

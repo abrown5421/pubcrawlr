@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, ReactNode } from "react"
+import { ComponentPropsWithoutRef } from "react"
 
 export interface ViewportState {
     width: number;
@@ -79,10 +79,11 @@ export interface BarsState {
     bars: Place[];
 }
 
-export interface ModalState  {
-    open: boolean;
-    title: string;
-    body: ReactNode;
+export interface ModalState {
+  open: boolean;
+  title: string;
+  body: React.ReactNode | string;
+  closeable?: boolean; 
 }
 
 export interface NotificationState {
@@ -104,7 +105,7 @@ export interface MarkerPopupProps {
 }
 
 export interface BarCrawlInfo {
-  id: string | null;
+  id?: string | null;
   userID: string | null;
   selectedBars: Place[];
   crawlName: string;
@@ -179,7 +180,7 @@ export type PersonalInfoValidationErrors = Partial<Record<keyof PersonalInfoForm
 export type BcFormFormData = {
   barCrawlName: string;
   selectedBars?: any[];
-  intimacyLevel: "Public" | "Friends" | "Private";  
+  intimacyLevel: "Public" | "Groups" | "Private";  
   startDate?: string;  
   endDate?: string;    
 };

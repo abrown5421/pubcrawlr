@@ -9,24 +9,34 @@ import { closeModal } from '../store/slices/modalSlice';
 import '../styles/components/modal.css';
 
 export default function Modal() {
-  const { open, title, body } = useAppSelector((state) => state.modal);
+  const { open, title, body, closeable = true } = useAppSelector((state) => state.modal);
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
-    dispatch(closeModal());
+    if (closeable) {
+      dispatch(closeModal());
+    }
   };
 
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
+      onClose={(reason) => {
+        if (!closeable && (reason === 'backdropClick' || reason === 'escapeKeyDown')) {
+          return;
+        }
+        handleClose();
+      }}
+      disableEscapeKeyDown={!closeable}
       maxWidth="sm"
       fullWidth
       PaperProps={{ className: 'modal-container' }}
     >
-      <IconButton onClick={handleClose} className="modal-close-button">
-        <CloseIcon />
-      </IconButton>
+      {closeable && (
+        <IconButton onClick={handleClose} className="modal-close-button">
+          <CloseIcon />
+        </IconButton>
+      )}
 
       <DialogTitle className="modal-title">{title}</DialogTitle>
 
@@ -36,5 +46,6 @@ export default function Modal() {
         </DialogContentText>
       </DialogContent>
     </Dialog>
+
   );
 }

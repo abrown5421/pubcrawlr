@@ -12,11 +12,12 @@ import { addBars } from "../store/slices/localBarSlice";
 import { setDrawerOpen } from '../store/slices/selectedBarSlice';
 import { Place } from "../types/globalTypes";
 import BarCard from "../components/BarCard";
-import { Button } from "@mui/material";
+import { Button, CircularProgress, Typography } from "@mui/material";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import BarCrawlBuilder from "../components/BarCrawlBuilder";
 import MapLibreGlDirections, { LoadingIndicatorControl } from "@maplibre/maplibre-gl-directions";
 import { getMarkerPopup } from "../utils/getMarkerPopup";
+import { setModal } from "../store/slices/modalSlice";
 
 const useRootStyles = (theme: any) => ({
   openCrawlButton: {
@@ -88,6 +89,17 @@ function Root() {
   
   // Fetch bars from fetchBars hook based on latitude and longitude
   const fetchAndStoreBars = async (lat: number, lng: number) => {
+    dispatch(setModal({
+      open: true,
+      title: '',
+      body: (
+        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%'}}>
+          <CircularProgress size="24px" sx={{ color: "#000" }} />
+          <Typography sx={{mt: 2}}>Fetching Bars, Please Wait...</Typography>
+        </div>
+      ),
+      closeable: false,
+    }))
     try {
       const results = await fetchBars(lat, lng);
       const normalizedPlaces = await Promise.all(results.map(normalizePlace));
@@ -96,8 +108,20 @@ function Root() {
       );
   
       dispatch(addBars(bars));
+      dispatch(setModal({
+          open: false,
+          title: '',
+          body: '',
+          closeable: true,
+      }))
     } catch (error) {
       console.error("Error fetching bars:", error);
+      dispatch(setModal({
+        open: false,
+        title: '',
+        body: '',
+        closeable: true,
+    }))
     }
   };
 
@@ -303,6 +327,7 @@ function Root() {
         entry="animate__slideInRight" 
         exit="animate__slideOutRight" 
         isEntering={selectedBars.length > 0 && viewport === "desktop"}
+        className={selectedBars.length === 0 ? "d-none" : ""}
         sx={{
           position: 'absolute',
           minWidth: '200px',

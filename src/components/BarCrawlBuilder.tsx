@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Drawer, TextField, Button, Typography, MenuItem, CircularProgress } from "@mui/material";
+import { Drawer, Box, TextField, Button, Typography, MenuItem, CircularProgress, Collapse } from "@mui/material";
 import { useTheme } from "@mui/system";
 import Form from "./Form";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -281,11 +281,11 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
               <Typography variant="caption">Everyone will have access</Typography>
             </div>
           </MenuItem>
-          <MenuItem value="Friends" sx={{ display: 'flex', flexDirection: 'row', padding: '6px' }}>
+          <MenuItem value="Groups" sx={{ display: 'flex', flexDirection: 'row', padding: '6px' }}>
             <div className="bcb-col"><GroupsIcon sx={{ marginRight: 1 }} /></div>
             <div className="bcb-col">
-              Friends
-              <Typography variant="caption">Only your friends will have access</Typography>
+              Group
+              <Typography variant="caption">Only a specified group will have access</Typography>
             </div>
           </MenuItem>
           <MenuItem value="Private" sx={{ display: 'flex', flexDirection: 'row', padding: '6px' }}>
@@ -327,6 +327,22 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
             helperText={errors.endDate || ""}
           />
         </div>
+        <Collapse in={formData.intimacyLevel === "Private"} timeout="auto" unmountOnExit>
+          <Box sx={{ mt: 2, mb: 2 }}>
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+              Invite Friends
+            </Typography>
+            {/* friend invitation module will go here */}
+          </Box>
+        </Collapse>
+        <Collapse in={formData.intimacyLevel === "Groups"} timeout="auto" unmountOnExit>
+          <Box sx={{ mt: 2, mb: 2 }}>
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>
+              Select Group
+            </Typography>
+            {/* group selection module will go here */}
+          </Box>
+        </Collapse>
         {selectedBars.length > 0 && (
           <div style={{ marginBottom: theme.spacing(2) }}>
             {selectedBars.map((bar, index) => (
