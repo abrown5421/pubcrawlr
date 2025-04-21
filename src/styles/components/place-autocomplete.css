@@ -1,5 +1,5 @@
 .box-dropdown {
     box-shadow: 
-        -2px 2px 4px rgba(0, 0, 0, 0.1),  /* left */
-         2px 2px 4px rgba(0, 0, 0, 0.1);  /* right and bottom */
+        -2px 2px 4px rgba(0, 0, 0, 0.1), 
+         2px 2px 4px rgba(0, 0, 0, 0.1);  
 }

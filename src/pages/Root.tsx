@@ -8,11 +8,11 @@ import PlaceAutocomplete from "../components/PlaceAutocomplete";
 import "../styles/pages/root.css";
 import { SearchHereButton } from "../utils/CustomMapControls";
 import { fetchBars } from "../utils/fetchBars";
-import { addBars } from "../store/slices/localBarSlice";
+import { addBars, clearBars } from "../store/slices/localBarSlice";
 import { setDrawerOpen } from '../store/slices/selectedBarSlice';
 import { Place } from "../types/globalTypes";
 import BarCard from "../components/BarCard";
-import { Button, CircularProgress, Typography } from "@mui/material";
+import { Button, CircularProgress, Collapse, Typography } from "@mui/material";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import BarCrawlBuilder from "../components/BarCrawlBuilder";
 import MapLibreGlDirections, { LoadingIndicatorControl } from "@maplibre/maplibre-gl-directions";
@@ -28,6 +28,14 @@ const useRootStyles = (theme: any) => ({
       color: theme.palette.custom?.dark,
     },
     marginTop: theme.spacing(2),
+  },
+  clearButton: {
+    backgroundColor: theme.palette.custom?.error,
+    color: theme.palette.custom?.light,
+    "&:hover": {
+      backgroundColor: theme.palette.custom?.light,
+      color: theme.palette.custom?.dark,
+    }
   },
 });
 
@@ -278,12 +286,33 @@ function Root() {
     }
   }, [selectedBars, directions]);
   
+  const handleClearBarResults = () => {
+    dispatch(clearBars())
+  }
   
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"} sx={{height: '100%'}}>
       <Box sx={{ height: "100%", backgroundColor: theme.palette.custom?.light }} className="root-container">
         <div ref={mapControllerRef} className="map-controller">
-          <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
+          <div className="root-row">
+            <div style={{ flexGrow: 1 }}>
+              <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Collapse orientation="horizontal" in={barResults.length > 0}>
+                <div>
+                  <Button
+                    className="add-button"
+                    variant="contained"
+                    sx={styles.clearButton}
+                    onClick={handleClearBarResults}
+                  >
+                    Clear Results
+                  </Button>
+                </div>
+              </Collapse>
+            </div>
+          </div>
           {viewport === 'desktop' && visibleBars.map((bar) => {
             console.log(bar)
           return (

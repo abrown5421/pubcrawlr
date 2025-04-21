@@ -10,7 +10,10 @@ const barsSlice = createSlice({
   initialState,
   reducers: {
     addBars: (state, action: PayloadAction<Place[]>) => {
-      state.bars.push(...action.payload);
+      const newBars = action.payload.filter(
+        (newBar) => !state.bars.some((existingBar) => existingBar.id === newBar.id)
+      );
+      state.bars.push(...newBars);
     },
     removeBar: (state, action: PayloadAction<string>) => {
       state.bars = state.bars.filter(bar => bar.name !== action.payload);
