@@ -71,6 +71,27 @@ export const saveBarCrawl = async ({
   }
 };
 
+export const getBarCrawlByID = async (id: string): Promise<BarCrawlInfo | null> => {
+  try {
+    const docRef = db.collection('BarCrawls').doc(id);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      console.warn(`BarCrawl with ID ${id} does not exist.`);
+      return null;
+    }
+
+    const data = doc.data() as BarCrawlInfo;
+    return {
+      ...data,
+      id: doc.id,
+    };
+  } catch (error) {
+    console.error('Error fetching BarCrawl by ID:', error);
+    throw new Error('Error fetching BarCrawl by ID');
+  }
+};
+
 export const getUserBarCrawls = async (userID: string): Promise<BarCrawlInfo[]> => {
   try {
     const snapshot = await db

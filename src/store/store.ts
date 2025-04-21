@@ -9,6 +9,7 @@ import selectedBarReducer from './slices/selectedBarSlice';
 import buttonLoadReducer from './slices/buttonLoadSlice';
 import trianglifyReducer from './slices/trianglifySlice';
 import userProfileReducer from './slices/userProfileSlice';
+import selectedBarCrawlReducer from './slices/selectedBarCrawlSlice';
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     modal: modalReducer, 
     localBars: localBarReducer,
     selectedBars: selectedBarReducer,
+    selectedBarCrawl: selectedBarCrawlReducer,
     buttonLoad: buttonLoadReducer,
     trianglify: trianglifyReducer,
     userProfile: userProfileReducer,

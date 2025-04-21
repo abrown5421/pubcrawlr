@@ -1,8 +1,12 @@
 import { Box } from "@mui/system";
 import AnimatedContainer from "../containers/AnimatedContainer";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { Theme } from "@mui/system";
 import theme from "../styles/theme";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { getBarCrawlByID } from "../services/barCrawlService";
+import { setSelectedBarCrawl } from "../store/slices/selectedBarCrawlSlice";
 
 const nestedContainerStyles = (theme: Theme) => ({
   root: {
@@ -13,13 +17,29 @@ const nestedContainerStyles = (theme: Theme) => ({
 });
 
 function Crawl() {
+  const dispatch = useAppDispatch();
   const enter = useAppSelector(state => state.activePage);
+  const token = useAppSelector((state) => state.authentication.token);
+  const crawl = useAppSelector((state) => state.selectedBarCrawl.selectedBarCrawl);
   const styles = nestedContainerStyles(theme);
+  const { slug } = useParams();
   
+  useEffect(() => {
+    if (slug) {
+      getBarCrawlByID(slug).then((crawl) => {
+        if (crawl) dispatch(setSelectedBarCrawl(crawl));
+      })
+      .catch(console.error);
+    }
+  }, [slug]);
+
+  useEffect(()=>{console.log(crawl)}, [crawl])
+
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === 'Crawl'} sx={{height: '100%'}}>
       <Box sx={styles.root}>
-        Crawl
+        {token === crawl?.userID && <>You are the creator of this crawl</>}
+        {token !== crawl?.userID && <>You are not the creator of this crawl</>}
       </Box>
     </AnimatedContainer>
   );
