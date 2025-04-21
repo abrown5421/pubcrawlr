@@ -61,9 +61,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
     startDate: "",
     endDate: ""
   });
-
-  useEffect(()=>{console.log(attendees)}, [attendees])
-
+  
   const [errors, setErrors] = useState<BcFormValidationErrors>({});
 
   const validate = (data: BcFormFormData): BcFormValidationErrors => {
