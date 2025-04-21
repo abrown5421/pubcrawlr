@@ -8,12 +8,15 @@ import {
   InputAdornment,
   CircularProgress,
   Box,
+  Divider,
+  Typography,
 } from "@mui/material";
 import { PlaceAutocompleteProps } from "../types/globalTypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setLoading } from "../store/slices/buttonLoadSlice";
 import { Feature } from "../types/globalTypes";
 import theme from "../styles/theme";
+import "../styles/components/place-autocomplete.css"
 
 const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
   const dispatch = useAppDispatch();
@@ -24,6 +27,14 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
   const skipFetchRef = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const controller = useRef<AbortController | null>(null);
+  const [recentSearches, setRecentSearches] = useState<Feature[]>([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("recentSearches");
+    if (saved) {
+      setRecentSearches(JSON.parse(saved));
+    }
+  }, []);
 
   useEffect(() => {
     if (skipFetchRef.current) {
@@ -72,14 +83,21 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
     }${feature.properties.state ? `, ${feature.properties.state}` : ""}${
       feature.properties.country ? `, ${feature.properties.country}` : ""
     }`;
-
+  
     setInputValue(formattedAddress);
     setSuggestions([]);
     setShowDropdown(false);
-
+  
     const [lng, lat] = feature.geometry.coordinates;
     onPlaceSelected(lat, lng);
+  
+    // Store in localStorage
+    const newSearches = [feature, ...recentSearches.filter(f => f.properties.name !== feature.properties.name)];
+    const trimmed = newSearches.slice(0, 3);
+    setRecentSearches(trimmed);
+    localStorage.setItem("recentSearches", JSON.stringify(trimmed));
   };
+  
 
   const handleClickAway = () => setShowDropdown(false);
 
@@ -115,7 +133,7 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
           }}
         >
           <Collapse in={showDropdown && suggestions.length > 0}>
-            <Box sx={{backgroundColor: theme.palette.custom?.light }}>
+            <Box className="box-dropdown" sx={{backgroundColor: theme.palette.custom?.light }}>
               <List dense>
                 {suggestions.map((feature, index) => (
                   <ListItemButton key={index} onClick={() => handleSelect(feature)}>
@@ -126,8 +144,26 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
                   </ListItemButton>
                 ))}
               </List>
+              <Divider />
+              <Typography variant="caption">Recent Searches</Typography>
+              {recentSearches.length > 0 && (
+                <Box sx={{ backgroundColor: theme.palette.custom?.light }}>
+                  <List dense>
+                    {recentSearches.map((feature, index) => (
+                      <ListItemButton key={`recent-${index}`} onClick={() => handleSelect(feature)}>
+                        {feature.properties.name}
+                        {feature.properties.city && `, ${feature.properties.city}`}
+                        {feature.properties.state && `, ${feature.properties.state}`}
+                        {feature.properties.country && `, ${feature.properties.country}`}
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </Box>
+              )}
             </Box>
           </Collapse>
+          
+
         </div>
       </div>
     </ClickAwayListener>
