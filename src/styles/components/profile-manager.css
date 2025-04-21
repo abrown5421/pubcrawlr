@@ -1,4 +1,4 @@
-.bar-crawl-deck {
+  .bar-crawl-deck {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
@@ -7,4 +7,11 @@
   .bar-crawl-deck > * {
     flex: 1 1 calc(33.333% - 10.67px);
     max-width: calc(33.333% - 10.67px);
+  }
+
+  @media only screen and (max-width: 1024px) {
+    .bar-crawl-deck > * {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
   }

@@ -93,8 +93,50 @@
     padding: 8px !important;
   }
 
-  @media only screen and (max-width: 600px) {
+  @media only screen and (min-width: 140px) {
+    .button-group {
+      justify-content: center !important;
+    }
+  }
+
+  @media (max-width: 1399px) and (min-width: 1024px) {
+    .button-group {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .button-group button {
+      width: 100%;
+      margin-left: 0px !important;
+    }
+  }
+  
+  @media (max-width: 1023px) {
+    .button-group {
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap; 
+      gap: 8px; 
+    }
+  
+    .button-group button {
+      width: auto;
+      flex: 1 1 auto; 
+    }
+  }
+
+  @media (max-width: 600px) {
     .bar-crawl-card {
       width: 100% !important;
+    }
+    .button-group {
+      flex-direction: row;
+      align-items: stretch;
+    }
+  
+    .button-group button {
+      width: 100%;
+      margin-left: 0px !important;
     }
   }
