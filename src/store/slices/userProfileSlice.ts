@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { profileUserState, User, BarCrawl } from '../../types/globalTypes';
-
+import { profileUserState, User, BarCrawl, FriendEntry } from '../../types/globalTypes';
+ 
 const initialState: profileUserState = {
   profileUser: null,
   barCrawls: [],
+  friends: [],
 };
 
 const userProfileSlice = createSlice({
@@ -22,9 +23,15 @@ const userProfileSlice = createSlice({
     clearBarCrawls: (state) => {
       state.barCrawls = [];
     },
+    setFriends: (state, action: PayloadAction<FriendEntry[]>) => {
+      state.friends = action.payload;
+    },
+    removeFriend: (state, action: PayloadAction<string>) => {
+      state.friends = state.friends.filter(friend => friend.FriendDocId !== action.payload);
+    },
   },
 });
 
-export const { setProfileUser, setBarCrawls, removeBarCrawl, clearBarCrawls } = userProfileSlice.actions;
+export const { setProfileUser, setBarCrawls, removeBarCrawl, clearBarCrawls, setFriends, removeFriend } = userProfileSlice.actions;
 
 export default userProfileSlice.reducer;

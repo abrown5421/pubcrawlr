@@ -11,7 +11,7 @@ import TrianglifyBanner from '../components/TrianglifyBanner';
 import TrianglifyCustomizer from '../components/TrianglifyCustomizer';
 import { useParams } from 'react-router-dom';
 import { getUserDataFromId } from '../services/userService';
-import { setBarCrawls, setProfileUser } from '../store/slices/userProfileSlice';
+import { setBarCrawls, setProfileUser, setFriends } from '../store/slices/userProfileSlice';
 import { setMultipleTrianglifyValues } from '../store/slices/trianglifySlice';
 import { setLoading } from '../store/slices/buttonLoadSlice';
 import { fetchTrianglifyConfig } from '../services/tryianglifyService';
@@ -19,7 +19,11 @@ import ProfileInfoBuilder from '../components/ProfileInfoBuilder';
 import { getUserBarCrawls } from '../services/barCrawlService';
 import TabManager from '../components/TabManager'; 
 import MyCrawlsTab from "../components/tabs/MyCrawlsTab";
+import MyFriendsTab from "../components/tabs/MyFriendsTab";
+import PendingFriendsTab from "../components/tabs/PendingFriendsTab";
+import RequestedFriendsTab from "../components/tabs/RequestedFriendsTab";
 import AnimatedContainer from './AnimatedContainer';
+import { getFriends } from '../services/friendService';
 
 const useProfileStyles = (theme: any) => ({
   logo: {
@@ -36,6 +40,9 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
   const isLoading = useAppSelector((state) => state.buttonLoad['mainApp'] ?? false);
   const dispatch = useAppDispatch();
   const { slug } = useParams();
+  const acceptedFriendCount = userProfile.friends.filter(
+    (friend) => friend.FriendRequestAccepted && friend.FriendRequested
+  );
   const [activeSection, setActiveSection] = useState<{ name: string; in: boolean }>({
     name: 'barCrawls',
     in: true
@@ -63,7 +70,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
   const fetchUserbarCrawls = async (uid: string) => {
     const userBarCrawls = await getUserBarCrawls(uid);
     const formattedCrawls = userBarCrawls.map(crawl => ({
-      id: crawl.id,
+      id: crawl.id ?? null,
       crawlName: crawl.crawlName,
       intimacyLevel: crawl.intimacyLevel,
       userID: crawl.userID ?? "",
@@ -82,17 +89,25 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
     dispatch(setBarCrawls(formattedCrawls)); 
   };
 
+  const fetchUserFriends = async (uid: string) => {
+    const userFriends = await getFriends(uid);
+    dispatch(setFriends(userFriends)); 
+  };
+
   useEffect(() => {
     dispatch(setLoading({ key: 'profilePage', value: true }));
     if (slug) {
       fetchUserData(slug);
       fetchTrianglifyData(slug);
       fetchUserbarCrawls(slug);
+      fetchUserFriends(slug);
     }
     setTimeout(() => {
       dispatch(setLoading({ key: 'profilePage', value: false }));
     }, 1000);
   }, [slug]);
+
+  // useEffect(()=>{console.log(userProfile)}, [userProfile])
 
   const handleImageChange = () => {
     dispatch(setModal({
@@ -133,9 +148,9 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
       case 'friends':
         return (
           <TabManager tabs={['My Friends', 'Pending', 'Requests']}>
-            <div>My Friends content here</div>
-            <div>Pending Requests content here</div>
-            <div>Incoming Requests content here</div>
+            <MyFriendsTab />
+            <PendingFriendsTab />
+            <RequestedFriendsTab />
           </TabManager>
         );
       case 'groups':
@@ -192,7 +207,9 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                   <Typography variant="caption">Bar Crawls</Typography>
                 </div>
                 <div className="profile-stat-column">
-                  <Typography variant="h5" fontWeight={700} sx={styles.logo}>0</Typography>
+                  <Typography variant="h5" fontWeight={700} sx={styles.logo}>
+                    {acceptedFriendCount.length}
+                  </Typography>
                   <Typography variant="caption">Friends</Typography>
                 </div>
                 <div className="profile-stat-column">

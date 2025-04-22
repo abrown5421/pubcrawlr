@@ -9,10 +9,8 @@ import {
   import { db } from "../config/Firebase"; 
   import { FriendEntry } from "../types/globalTypes";
   
-  const FRIENDS_COLLECTION = "friends";
-  
   export async function requestFriend(currentUserId: string, friend: FriendEntry) {
-    const currentUserDocRef = doc(db, FRIENDS_COLLECTION, currentUserId);
+    const currentUserDocRef = doc(db, "Friends", currentUserId);
   
     const friendEntry: FriendEntry = {
       ...friend,
@@ -29,7 +27,7 @@ import {
   }
   
   export async function acceptFriendRequest(currentUserId: string, friendDocId: string) {
-    const currentUserDocRef = doc(db, FRIENDS_COLLECTION, currentUserId);
+    const currentUserDocRef = doc(db, "Friends", currentUserId);
     const currentUserDoc = await getDoc(currentUserDocRef);
   
     if (currentUserDoc.exists()) {
@@ -44,7 +42,7 @@ import {
   }
   
   export async function rescindFriendRequest(currentUserId: string, friendDocId: string) {
-    const currentUserDocRef = doc(db, FRIENDS_COLLECTION, currentUserId);
+    const currentUserDocRef = doc(db, "Friends", currentUserId);
     const currentUserDoc = await getDoc(currentUserDocRef);
   
     if (currentUserDoc.exists()) {
@@ -55,7 +53,7 @@ import {
   }
   
   export async function removeFriend(currentUserId: string, friendDocId: string) {
-    const currentUserDocRef = doc(db, FRIENDS_COLLECTION, currentUserId);
+    const currentUserDocRef = doc(db, "Friends", currentUserId);
     const currentUserDoc = await getDoc(currentUserDocRef);
   
     if (currentUserDoc.exists()) {
@@ -64,7 +62,7 @@ import {
       await updateDoc(currentUserDocRef, { FriendsArray: updatedArray });
     }
   
-    const otherUserDocRef = doc(db, FRIENDS_COLLECTION, friendDocId);
+    const otherUserDocRef = doc(db, "Friends", friendDocId);
     const otherUserDoc = await getDoc(otherUserDocRef);
   
     if (otherUserDoc.exists()) {
@@ -75,7 +73,7 @@ import {
   }
   
   export async function getFriends(userId: string): Promise<FriendEntry[]> {
-    const userDocRef = doc(db, FRIENDS_COLLECTION, userId);
+    const userDocRef = doc(db, "Friends", userId);
     const userDoc = await getDoc(userDocRef);
     return userDoc.exists() ? userDoc.data()?.FriendsArray || [] : [];
   }
@@ -86,7 +84,7 @@ import {
   }
   
   export function subscribeToFriends(userId: string, callback: (friends: FriendEntry[]) => void) {
-    const userDocRef = doc(db, FRIENDS_COLLECTION, userId);
+    const userDocRef = doc(db, "Friends", userId);
     return onSnapshot(userDocRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();

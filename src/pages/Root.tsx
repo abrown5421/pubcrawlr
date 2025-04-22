@@ -314,10 +314,11 @@ function Root() {
             </div>
           </div>
           {viewport === 'desktop' && visibleBars.map((bar) => {
-            console.log(bar)
-          return (
-            <BarCard key={bar.id} bar={bar} mode="not-selected" />
-          )})}
+            // console.log(bar)
+            return (
+              <BarCard key={bar.id} bar={bar} mode="not-selected" />
+            )
+          })}
         </div>
         <div ref={mapContainerRef} className="map-container">
           <AnimatedContainer 

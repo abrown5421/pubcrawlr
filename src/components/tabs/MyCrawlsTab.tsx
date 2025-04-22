@@ -7,8 +7,8 @@ export default function ProfileManager() {
   const userProfile = useAppSelector((state) => state.userProfile);
 
   return (
-    <Box sx={{ width: '100%' }}>
-        <Box className="bar-crawl-deck">
+    <Box sx={{ width: '100%', overflow: 'scroll' }}>
+        <Box className="card-deck">
         {userProfile.barCrawls.length < 1 && <Typography variant="caption">You don't currently have any bar crawls saved.</Typography>}
         {userProfile.barCrawls.length > 0 && userProfile.barCrawls.map((crawl) => (
             <BarCrawlCard key={crawl.crawlName} crawl={crawl} />

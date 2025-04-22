@@ -36,6 +36,7 @@ export interface BarCrawl {
 export interface profileUserState {
   profileUser: User | null;
   barCrawls: BarCrawl[];
+  friends: FriendEntry[];
 }
 
 export interface AuthenticationState {
@@ -153,6 +154,11 @@ export interface FriendEntry {
 export type BarCardProps = {
     bar: Place;
     mode: String;  
+};
+
+export type FriendCardProps = {
+  friend: FriendEntry;
+  mode: 'friend' | 'pend' | 'request'
 };
 
 export type ValidationErrors = Partial<Record<keyof FormData, string>>;
