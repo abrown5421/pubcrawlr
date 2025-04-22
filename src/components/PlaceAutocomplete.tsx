@@ -115,6 +115,7 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
             dispatch(setLoading({ key: "searchForPlace", value: true }));
             setInputValue(e.target.value);
           }}
+          onFocus={() => setShowDropdown(true)} 
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -132,22 +133,27 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
             zIndex: 10000,
           }}
         >
-          <Collapse in={showDropdown && suggestions.length > 0}>
-            <Box className="box-dropdown" sx={{backgroundColor: theme.palette.custom?.light }}>
-              <List dense>
-                {suggestions.map((feature, index) => (
-                  <ListItemButton key={index} onClick={() => handleSelect(feature)}>
-                    {feature.properties.name}
-                    {feature.properties.city && `, ${feature.properties.city}`}
-                    {feature.properties.state && `, ${feature.properties.state}`}
-                    {feature.properties.country && `, ${feature.properties.country}`}
-                  </ListItemButton>
-                ))}
-              </List>
-              <Divider />
-              <Typography variant="caption">Recent Searches</Typography>
+          <Collapse in={showDropdown && (suggestions.length > 0 || recentSearches.length > 0)}>
+            <Box className="box-dropdown" sx={{ backgroundColor: theme.palette.custom?.light }}>
+              {suggestions.length > 0 && (
+                <List dense>
+                  {suggestions.map((feature, index) => (
+                    <ListItemButton key={index} onClick={() => handleSelect(feature)}>
+                      {feature.properties.name}
+                      {feature.properties.city && `, ${feature.properties.city}`}
+                      {feature.properties.state && `, ${feature.properties.state}`}
+                      {feature.properties.country && `, ${feature.properties.country}`}
+                    </ListItemButton>
+                  ))}
+                  <Divider />
+                </List>
+              )}
+
               {recentSearches.length > 0 && (
-                <Box sx={{ backgroundColor: theme.palette.custom?.light }}>
+                <>
+                  <Typography variant="caption" sx={{ ml: 2 }}>
+                    Recent Searches
+                  </Typography>
                   <List dense>
                     {recentSearches.map((feature, index) => (
                       <ListItemButton key={`recent-${index}`} onClick={() => handleSelect(feature)}>
@@ -158,12 +164,10 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
                       </ListItemButton>
                     ))}
                   </List>
-                </Box>
+                </>
               )}
             </Box>
           </Collapse>
-          
-
         </div>
       </div>
     </ClickAwayListener>
