@@ -110,6 +110,7 @@ export interface Attendee {
   UserLastName: string | null; 
   invited: boolean;
   attending: boolean;
+  creator: boolean;
 }
 
 export interface BarCrawlInfo {
