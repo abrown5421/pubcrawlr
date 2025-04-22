@@ -119,8 +119,8 @@ export interface BarCrawlInfo {
   userID: string | null;
   selectedBars: Place[];
   crawlName: string;
-  startDate?: Date; 
-  endDate?: Date;   
+  startDate?: string; 
+  endDate?: string;   
   intimacyLevel: string;
   attendees: Attendee[] | string;
 }

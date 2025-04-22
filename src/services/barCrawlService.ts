@@ -74,12 +74,12 @@ export const saveBarCrawl = async ({
     };
 
     if (startDate) {
-      barCrawlData.startDate = startDate instanceof Date ? startDate : new Date(startDate);
+      barCrawlData.startDate = startDate;
     }
-
+    
     if (endDate) {
-      barCrawlData.endDate = endDate instanceof Date ? endDate : new Date(endDate);
-    }
+      barCrawlData.endDate = endDate;
+    }    
 
     barCrawlData = sanitizeUndefined(barCrawlData);
     await db.collection('BarCrawls').add(barCrawlData);

@@ -71,39 +71,50 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
     startDate: "",
     endDate: ""
   });
-  
-  const [errors, setErrors] = useState<BcFormValidationErrors>({});
 
+  const [errors, setErrors] = useState<BcFormValidationErrors>({});
+  const parseDate = (dateStr: string): Date => {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  };
+  
   const validate = (data: BcFormFormData): BcFormValidationErrors => {
     const newErrors: BcFormValidationErrors = {};
-
+  
     if (!data.barCrawlName) {
       newErrors.barCrawlName = "Bar crawl name is required";
     }
+  
     if (selectedBars.length < 2) {
       newErrors.selectedBars = "Please select at least 2 bars";
     }
-
+  
     const today = new Date();
-    if (data.startDate) {
-      const startDate = new Date(data.startDate);
+    today.setHours(0, 0, 0, 0);
+  
+    const hasStart = Boolean(data.startDate);
+    const hasEnd = Boolean(data.endDate);
+  
+    if (hasStart) {
+      const startDate = parseDate(data.startDate!);
+      startDate.setHours(0, 0, 0, 0);
+  
       if (startDate < today) {
         newErrors.startDate = "Start date must be today or in the future.";
       }
-    }
-
-    if (data.endDate) {
-      if (!data.startDate) {
-        newErrors.startDate = "Start date is required if an end date is provided.";
-      } else {
-        const startDate = new Date(data.startDate);
-        const endDate = new Date(data.endDate);
+  
+      if (hasEnd) {
+        const endDate = parseDate(data.endDate!);
+        endDate.setHours(0, 0, 0, 0);
+  
         if (endDate < startDate) {
           newErrors.endDate = "End date must be on or after the start date.";
         }
       }
+    } else if (hasEnd) {
+      newErrors.startDate = "Start date is required if an end date is provided.";
     }
-
+  
     return newErrors;
   };
 
@@ -180,15 +191,13 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
       }))
       return;
     }
-    const startDate = formData.startDate ? new Date(formData.startDate) : undefined;
-    const endDate = formData.endDate ? new Date(formData.endDate) : undefined;
 
     const barCrawlData = {
       userID: token,
       selectedBars: selectedBars,
       crawlName: formData.barCrawlName,
-      startDate,
-      endDate,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
       intimacyLevel: formData.intimacyLevel,
       attendees: attendees
     };

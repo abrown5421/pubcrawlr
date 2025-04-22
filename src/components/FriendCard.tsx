@@ -51,17 +51,17 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, mode }) => {
     switch (mode) {
       case 'friend':
         return (
-          <Button sx={styles.removeButton} variant="contained">Remove Friend</Button>
+          <Button sx={styles.removeButton} variant="contained">Unfriend</Button>
         );
       case 'pend':
         return (
-          <Button sx={styles.acceptButton} variant="contained">Rescind Request</Button>
+          <Button sx={styles.declineButton} variant="contained">Cancel</Button>
         );
       case 'request':
         return (
           <>
-            <Button sx={styles.acceptButton} variant="contained">Yes</Button>
-            <Button sx={styles.declineButton} variant="contained">No</Button>
+            <Button sx={styles.acceptButton} variant="contained">Accept</Button>
+            <Button sx={styles.declineButton} variant="contained">Decline</Button>
           </>
         );
       default:
@@ -79,7 +79,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, mode }) => {
           Email: {friend.FriendEmail}
         </Typography>
         <Box className="button-group">
-          <Button sx={styles.viewButton} variant="contained">View Profile</Button>
+          <Button sx={styles.viewButton} variant="contained">View</Button>
           {renderActions()}
         </Box>
       </CardContent>
