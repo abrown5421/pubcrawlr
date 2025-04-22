@@ -140,6 +140,16 @@ export interface Feature {
   };
 }
 
+export interface FriendEntry {
+  FriendDocId: string;
+  FriendFirstName: string;
+  FriendLastName: string;
+  FriendEmail: string;
+  FriendRequested: boolean;
+  FriendRequestAccepted: boolean;
+  DateRequested: string;
+}
+
 export type BarCardProps = {
     bar: Place;
     mode: String;  
