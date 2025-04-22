@@ -1,5 +1,5 @@
 import { db } from '../config/Firebase';
-import { BarCrawlInfo } from '../types/globalTypes';
+import { BarCrawlInfo, Attendee } from '../types/globalTypes';
 
 const sanitizeUndefined = (obj: any): any => {
   if (Array.isArray(obj)) {
@@ -24,6 +24,20 @@ export const deleteBarCrawl = async (id: string): Promise<void> => {
   }
 };
 
+const ensureCreatorInAttendees = (attendees: any, userID: string | null): Attendee[] => {
+  const validAttendees = Array.isArray(attendees) ? attendees : [];
+  const creator: Attendee = {
+    docId: userID,
+    UserFirstName: null,
+    UserLastName: null,
+    invited: false,
+    attending: true,
+  };
+
+  const isCreatorIncluded = validAttendees.some(a => a.docId === userID);
+  return isCreatorIncluded ? validAttendees : [creator, ...validAttendees];
+};
+
 export const saveBarCrawl = async ({
   userID,
   selectedBars,
@@ -31,42 +45,43 @@ export const saveBarCrawl = async ({
   startDate,
   endDate,
   intimacyLevel,
-  attendees
+  attendees,
 }: BarCrawlInfo): Promise<void> => {
   try {
     const updatedSelectedBars = selectedBars.map(bar => {
       const barLat = bar.geometry.location.lat;
-      const barLng = bar.geometry.location.lng; 
+      const barLng = bar.geometry.location.lng;
 
       const updatedGeometry = {
         location: {
-          lat: barLat, 
-          lng: barLng  
-        }
+          lat: barLat,
+          lng: barLng,
+        },
       };
 
       return sanitizeUndefined({ ...bar, geometry: updatedGeometry });
     });
+
+    const finalAttendees = ensureCreatorInAttendees(attendees, userID);
 
     let barCrawlData: any = {
       userID,
       selectedBars: updatedSelectedBars,
       crawlName,
       intimacyLevel,
-      attendees
+      attendees: finalAttendees,
     };
 
     if (startDate) {
-      barCrawlData.startDate = startDate instanceof Date ? startDate : new Date(startDate); 
+      barCrawlData.startDate = startDate instanceof Date ? startDate : new Date(startDate);
     }
 
     if (endDate) {
-      barCrawlData.endDate = endDate instanceof Date ? endDate : new Date(endDate); 
+      barCrawlData.endDate = endDate instanceof Date ? endDate : new Date(endDate);
     }
 
     barCrawlData = sanitizeUndefined(barCrawlData);
-
-    await db.collection('BarCrawls').add(barCrawlData); 
+    await db.collection('BarCrawls').add(barCrawlData);
   } catch (error) {
     console.error('Error saving bar crawl:', error);
     throw new Error('Error saving bar crawl');

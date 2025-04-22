@@ -16,9 +16,7 @@ import { setActivePage } from './store/slices/activePageSlice.ts';
 import { routeToPageName } from './utils/routeToPageName.ts';
 import NotFound from './pages/NotFound';  
 import Modal from './components/Modal.tsx';
-import { fetchTrianglifyConfig } from './services/tryianglifyService.ts';
-import { setMultipleTrianglifyValues } from './store/slices/trianglifySlice.ts';
-import { CircularProgress, useTheme } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { setLoading } from './store/slices/buttonLoadSlice.ts';
 
 function AnimationInitializer() {
@@ -39,7 +37,6 @@ function App() {
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.authentication.token);
   const authToken = Cookies.get('authId'); 
-  const theme = useTheme();
   const isLoading = useAppSelector((state) => state.buttonLoad['mainApp'] ?? false);
 
   const fetchUserData = async (uid: string) => {

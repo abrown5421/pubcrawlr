@@ -49,11 +49,20 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
   const viewport = useAppSelector(state => state.viewport.type);
   const selectedBars = useAppSelector(state => state.selectedBars.selectedBars);
   const token = useAppSelector((state) => state.authentication.token);
+  const user = useAppSelector((state) => state.authentication.user ?? null);
   const isLoading = useAppSelector((state) => state.buttonLoad['saveCrawl'] ?? false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const crawlForm = useRef<FormHandle>(null);
-  const [attendees, setAttendees] = useState<Attendee[]>([]);
+
+  const [attendees, setAttendees] = useState<Attendee[]>(user ? [{
+    docId: user?.docId ,
+    UserFirstName: user?.UserFirstName,
+    UserLastName: user?.UserLastName,
+    invited: true,
+    attending: true,
+  }] : [])
+  
   const [formData, setFormData] = useState<BcFormFormData>({
     barCrawlName: "",
     selectedBars: selectedBars,
@@ -172,7 +181,6 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
     }
     const startDate = formData.startDate ? new Date(formData.startDate) : undefined;
     const endDate = formData.endDate ? new Date(formData.endDate) : undefined;
-    const attendeesField = formData.intimacyLevel === "Public" ? "Public" : attendees;
 
     const barCrawlData = {
       userID: token,
@@ -181,7 +189,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
       startDate,
       endDate,
       intimacyLevel: formData.intimacyLevel,
-      attendees: attendeesField
+      attendees: attendees
     };
 
     saveBarCrawl(barCrawlData)
@@ -224,6 +232,31 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
         return rest;
       });
     }
+  };
+
+  const creatorAttendancePersists = (attendees: Attendee[], creatorID: string): Attendee[] => {
+    const creatorExists = attendees.some(a => a.docId === creatorID);
+    
+    if (!creatorExists) {
+      return [
+        {
+          docId: user?.docId ?? null,
+          UserFirstName: user?.UserFirstName ?? "",
+          UserLastName: user?.UserLastName ?? "",
+          invited: true,
+          attending: true,
+        },
+        ...attendees
+      ];
+    }
+    
+    return attendees;
+  };
+
+  const handleAddAttendee = (newAttendee: Attendee) => {
+    setAttendees(prev =>
+      creatorAttendancePersists([...prev, newAttendee], user?.docId ?? '')
+    );
   };
 
   useEffect(() => {

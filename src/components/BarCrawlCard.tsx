@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import placeholderImg from "../../public/assets/images/bar-placeholder.png";
 import "../styles/components/bar-crawl-card.css";
 import { BarCrawlCardProps } from "../types/globalTypes";
 import { useTheme } from "@emotion/react";
@@ -65,11 +64,11 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl }) => {
   const dispatch = useAppDispatch();
   const styles = useBarCrawlCardStyles(theme);
   const [showBars, setShowBars] = useState(false);
-  const isLoading = useAppSelector((state) => state.buttonLoad["deleteCrawl"] ?? false);
+  const isLoading = useAppSelector((state) => state.buttonLoad[`deleteCrawl-${crawl.id}`] ?? false);
   const barCrawls = useAppSelector((state) => state.userProfile.barCrawls);
 
   const handleDelete = async (id: string) => {
-    dispatch(setLoading({ key: "deleteCrawl", value: true }));
+    dispatch(setLoading({ key: `deleteCrawl-${id}`, value: true }));
   
     try {
       await deleteBarCrawl(id);
@@ -94,7 +93,7 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl }) => {
         })
       );
     } finally {
-      dispatch(setLoading({ key: "deleteCrawl", value: false }));
+      dispatch(setLoading({ key: `deleteCrawl-${id}`, value: false }));
     }
   };
 
@@ -148,7 +147,7 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl }) => {
           sx={styles.deleteButton}
         >
           {isLoading ? (
-            <CircularProgress size="24px" />
+            <CircularProgress size="24px" sx={{ color: "#FFF" }}/>
           ) : (
             "Delete"
           )}
