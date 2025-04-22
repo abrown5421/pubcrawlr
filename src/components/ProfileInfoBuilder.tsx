@@ -3,7 +3,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Form from "./Form";
 import { FormHandle } from "../types/globalTypes";
-import { useTheme } from "@emotion/react";
+import theme from "../styles/theme";
+import { Theme } from "@mui/system";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { CircularProgress } from "@mui/material";
 import { PersonalInfoValidationErrors, PersonalInfoFormData } from '../types/globalTypes';
@@ -13,11 +14,11 @@ import { updateUserData } from "../services/userService";
 import { setModal } from "../store/slices/modalSlice";
 import { setProfileUser } from "../store/slices/userProfileSlice";
 
-const usePIBStyles = (theme: any) => ({
+const usePIBStyles = (theme: Theme) => ({
     saveButton: {
       marginRight: "8px",
-      backgroundColor: theme.palette?.custom?.grey,
-      color: theme.palette?.custom?.dark,
+      backgroundColor: theme.palette.custom?.dark,
+      color: theme.palette.custom?.light,
       "&:hover": {
         backgroundColor: theme.palette?.custom?.light,
         color: theme.palette?.custom?.dark,
@@ -27,7 +28,6 @@ const usePIBStyles = (theme: any) => ({
   
 const ProfileInfoBuilder: React.FC = () => {
     const dispatch = useAppDispatch();
-    const theme = useTheme();
     const styles = usePIBStyles(theme);
     const token = useAppSelector((state) => state.authentication.token);
     const profileFormRef = useRef<FormHandle>(null);

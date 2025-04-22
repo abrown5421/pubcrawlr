@@ -5,7 +5,8 @@ import { setTrianglifyValue } from '../store/slices/trianglifySlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
-import { useTheme } from "@mui/material/styles";
+import { Theme } from "@mui/system";
+import theme from "../styles/theme";
 import '../styles/components/trianglify-customizer.css';
 import TrianglifyBanner from './TrianglifyBanner';
 import { saveTrianglifyConfig } from '../services/tryianglifyService';
@@ -13,20 +14,20 @@ import { setLoading } from '../store/slices/buttonLoadSlice';
 import { setModal } from '../store/slices/modalSlice';
 import { setAlert } from '../store/slices/notificationSlice';
 
-const useTCFStyles = (theme: any) => ({
+const useTCFStyles = (theme: Theme) => ({
     saveButton: {
-        backgroundColor: theme.palette.custom?.dark,
-        color: theme.palette.custom?.light,
-        "&:hover": {
-          backgroundColor: theme.palette.custom?.light,
-          color: theme.palette.custom?.dark,
-        },
+      marginTop: "16px",
+      backgroundColor: theme.palette.custom?.dark,
+      color: theme.palette.custom?.light,
+      "&:hover": {
+        backgroundColor: theme.palette.custom?.light,
+        color: theme.palette.custom?.dark,
+      },
     },
   });
 
 const TrianglifyCustomizer = () => {
   const dispatch = useAppDispatch();
-  const theme = useTheme();
   const styles = useTCFStyles(theme);
   const trianglify = useAppSelector((state) => state.trianglify);
   const token = useAppSelector((state) => state.authentication.token);
@@ -179,10 +180,11 @@ const TrianglifyCustomizer = () => {
       </div>
         <Button
             variant="contained"
+            fullWidth
             style={styles.saveButton}
             onClick={handleSaveTrianglify}
         >
-            {isLoading ? <CircularProgress size="24px" sx={{ color: theme.palette.custom?.light }} /> :  'Save'}
+            {isLoading ? <CircularProgress size="24px" sx={{ color: theme.palette?.custom?.light }} /> :  'Save'}
         </Button>
     </div>
   );

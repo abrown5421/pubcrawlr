@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, TextField, Typography, IconButton, InputAdornment, CircularProgress } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';  
 import Form from "../components/Form";
@@ -15,8 +15,8 @@ import authService from '../services/authService';
 import { setAuthToken, setUser } from '../store/slices/authenticationSlice';
 import Cookies from 'js-cookie'
 import { setLoading } from '../store/slices/buttonLoadSlice';
-import { fetchTrianglifyConfig } from '../services/tryianglifyService';
-import { setMultipleTrianglifyValues } from '../store/slices/trianglifySlice';
+import { fetchTrianglifyConfig, saveTrianglifyConfig } from '../services/tryianglifyService';
+import { randomizeTrianglifyState, setMultipleTrianglifyValues } from '../store/slices/trianglifySlice';
 
 const nestedAnimatedContainerStyles = (theme: Theme) => ({
   authBox: {
@@ -37,6 +37,7 @@ const nestedAnimatedContainerStyles = (theme: Theme) => ({
 
 const Auth: React.FC<AuthProps> = ({ mode }) => {
   const enter = useAppSelector(state => state.activePage);
+  const trianglify = useAppSelector(state => state.trianglify);
   const isLoading = useAppSelector((state) => state.buttonLoad['saveAuth'] ?? false);
   const styles = nestedAnimatedContainerStyles(theme);
   const customForm = useRef<FormHandle>(null);
@@ -132,7 +133,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       dispatch(setAuthToken(user.docId));
 
       dispatch(setActivePage({ key: "In", value: false }));
-      dispatch(setActivePage({ key: "Name", value: 'Dashboard' }));
+      dispatch(setActivePage({ key: "Name", value: 'Root' }));
   
       setTimeout(() => {
         dispatch(setActivePage({ key: "In", value: true }));
@@ -148,7 +149,6 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       }
     }
   };
-  
   
   const handleRegister = async (data: FormData) => {
     dispatch(setLoading({ key: 'saveAuth', value: true }));
@@ -173,11 +173,13 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
 
       Cookies.set('authId', user.docId, { expires: 5 });
       dispatch(setAuthToken(user.docId));
-
       dispatch(setActivePage({ key: "In", value: false }));
       dispatch(setActivePage({ key: "Name", value: 'Root' }));
   
       setTimeout(() => {
+        console.log(user.docId)
+        console.log(trianglify)
+        saveTrianglifyConfig(user.docId, trianglify);
         dispatch(setActivePage({ key: "In", value: true }));
         navigate('/');
       }, 500);
@@ -192,7 +194,6 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       }
     }
   };
-  
 
   const handleSubmit = (data: unknown) => {
     const extractedData = data as FormData;
@@ -218,6 +219,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
   };  
 
   const toggleMode = (x: string, y: string) => {
+    
     dispatch(setActivePage({ key: "In", value: false }));
     dispatch(setActivePage({ key: "Name", value: y }));
     setTimeout(() => {
@@ -225,6 +227,12 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
       navigate(x);
     }, 500);
   };
+
+  useEffect(()=>{
+    if (mode === 'signup') {
+      dispatch(randomizeTrianglifyState())
+    }
+  }, [mode])
 
   const renderInputField = (
     name: keyof FormData, 

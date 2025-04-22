@@ -4,10 +4,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { TrianglifyBannerProps } from '../types/globalTypes';
 import '../styles/components/tryianglify-banner.css';
-import { useAppSelector } from '../store/hooks';
 
 const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
-  const viewport = useAppSelector(state => state.viewport.type);
   const ref = useRef<HTMLDivElement>(null);
 
   const { cellSize, variance, xColors, yColors } = useSelector(

@@ -25,8 +25,20 @@ const trianglifySlice = createSlice({
     ) => {
       Object.assign(state, action.payload);
     },
+    randomizeTrianglifyState: (state: TrianglifyState) => {
+      state.cellSize = Math.floor(Math.random() * 200) + 50;
+      state.variance = Math.random();
+      state.xColors = [
+        `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+        `#${Math.floor(Math.random() * 16777215).toString(16)}`
+      ];
+      state.yColors = [
+        `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+        `#${Math.floor(Math.random() * 16777215).toString(16)}`
+      ];
+    },
   },
 });
 
-export const { setTrianglifyValue, resetTrianglify, setMultipleTrianglifyValues } = trianglifySlice.actions;
+export const { setTrianglifyValue, resetTrianglify, setMultipleTrianglifyValues, randomizeTrianglifyState } = trianglifySlice.actions;
 export default trianglifySlice.reducer;
