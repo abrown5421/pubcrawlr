@@ -9,46 +9,70 @@ import {
   import { db } from "../config/Firebase"; 
   import { FriendEntry } from "../types/globalTypes";
   
-  export async function requestFriend(currentUserId: string, friend: FriendEntry) {
-    const currentUserDocRef = doc(db, "Friends", currentUserId);
+  export async function requestFriend(currentUserId: string, requestee: FriendEntry, requester: FriendEntry) {
+    const requesteeDocRef = doc(db, "Friends", currentUserId);
+    const requesterDocRef = doc(db, "Friends", requestee.FriendDocId);
   
-    const friendEntry: FriendEntry = {
-      ...friend,
+    const requesteeEntry: FriendEntry = {
+      ...requestee,
       FriendRequested: true,
       FriendRequestAccepted: false,
       DateRequested: new Date().toISOString(),
     };
-  
-    await setDoc(
-      currentUserDocRef,
-      { FriendsArray: arrayUnion(friendEntry) },
-      { merge: true }
-    );
+
+    const requesterEntry: FriendEntry = {
+      ...requester,
+      FriendRequested: false,
+      FriendRequestAccepted: true,
+      DateRequested: new Date().toISOString(),
+    };
+
+    const requesteeDocSnap = await getDoc(requesteeDocRef);
+    if (!requesteeDocSnap.exists()) {
+        await setDoc(requesteeDocRef, { FriendsArray: [requesteeEntry] });
+    } else {
+        await setDoc(
+            requesteeDocRef,
+            { FriendsArray: arrayUnion(requesteeEntry) },
+            { merge: true }
+        );
+    }
+
+    const requesterDocSnap = await getDoc(requesterDocRef);
+    if (!requesterDocSnap.exists()) {
+        await setDoc(requesterDocRef, { FriendsArray: [requesterEntry] });
+    } else {
+        await setDoc(
+            requesterDocRef,
+            { FriendsArray: arrayUnion(requesterEntry) },
+            { merge: true }
+        );
+    }
   }
   
   export async function acceptFriendRequest(currentUserId: string, friendDocId: string) {
     const currentUserDocRef = doc(db, "Friends", currentUserId);
-    const currentUserDoc = await getDoc(currentUserDocRef);
+    const friendUserDocRef = doc(db, "Friends", friendDocId);
   
-    if (currentUserDoc.exists()) {
-      const friendsArray = currentUserDoc.data()?.FriendsArray || [];
-      const updatedArray = friendsArray.map((f: FriendEntry) =>
-        f.FriendDocId === friendDocId
-          ? { ...f, FriendRequestAccepted: true }
-          : f
+    const currentUserDoc = await getDoc(currentUserDocRef);
+    const friendUserDoc = await getDoc(friendUserDocRef);
+  
+    if (currentUserDoc.exists() && friendUserDoc.exists()) {
+      const currentUserFriends: FriendEntry[] = currentUserDoc.data()?.FriendsArray || [];
+      const friendUserFriends: FriendEntry[] = friendUserDoc.data()?.FriendsArray || [];
+  
+      const updatedCurrentUserFriends = currentUserFriends.map((f) =>
+        f.FriendDocId === friendDocId ? { ...f, FriendRequested: true } : f
       );
-      await updateDoc(currentUserDocRef, { FriendsArray: updatedArray });
-    }
-  }
   
-  export async function rescindFriendRequest(currentUserId: string, friendDocId: string) {
-    const currentUserDocRef = doc(db, "Friends", currentUserId);
-    const currentUserDoc = await getDoc(currentUserDocRef);
+      const updatedFriendUserFriends = friendUserFriends.map((f) =>
+        f.FriendDocId === currentUserId ? { ...f, FriendRequestAccepted: true } : f
+      );
   
-    if (currentUserDoc.exists()) {
-      const friendsArray = currentUserDoc.data()?.FriendsArray || [];
-      const updatedArray = friendsArray.filter((f: FriendEntry) => f.FriendDocId !== friendDocId);
-      await updateDoc(currentUserDocRef, { FriendsArray: updatedArray });
+      await Promise.all([
+        updateDoc(currentUserDocRef, { FriendsArray: updatedCurrentUserFriends }),
+        updateDoc(friendUserDocRef, { FriendsArray: updatedFriendUserFriends })
+      ]);
     }
   }
   

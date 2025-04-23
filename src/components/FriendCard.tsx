@@ -1,11 +1,14 @@
 import React from "react";
-import { Card, CardContent, Typography, Box, Button } from "@mui/material";
+import { Card, CardContent, Typography, Box, Button, CircularProgress } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { FriendCardProps } from "../types/globalTypes";
 import "../styles/components/friend-card.css";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate } from "react-router-dom";
 import { setActivePage } from "../store/slices/activePageSlice";
+import { setLoading } from "../store/slices/buttonLoadSlice";
+import { setAlert } from "../store/slices/notificationSlice";
+import { acceptFriendRequest, removeFriend } from "../services/friendService";
 
 const useFriendCardStyles = (theme: any) => ({
   viewButton: {
@@ -51,22 +54,78 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, mode }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const styles = useFriendCardStyles(theme);
+  const token = useAppSelector((state) => state.authentication.token);
+  const isAcceptLoading = useAppSelector((state) => state.buttonLoad['acceptFriend'] ?? false);
+  const isDeclineLoading = useAppSelector((state) => state.buttonLoad['declineFriend'] ?? false);
 
+  const handleAnswerRequest = async (x: string) => {
+    if (x === 'accept') {
+      dispatch(setLoading({ key: 'acceptFriend', value: true }));
+    } else {
+      dispatch(setLoading({ key: 'declineFriend', value: true }));
+    }
+    if (token && friend.FriendDocId) {
+        try {
+          if (x === 'accept') {
+            dispatch(setLoading({ key: 'acceptFriend', value: false }));
+            acceptFriendRequest(token, friend.FriendDocId)
+          } else {
+            dispatch(setLoading({ key: 'declineFriend', value: true }));
+            removeFriend(token, friend.FriendDocId)
+          }
+        } catch (error) {
+            if (x === 'accept') {
+              dispatch(setLoading({ key: 'acceptFriend', value: false }));
+            } else {
+              dispatch(setLoading({ key: 'declineFriend', value: false }));
+            }
+            dispatch(
+              setAlert({
+                open: true,
+                message: "Error fetching user data or processing friend request",
+                severity: "error",
+              })
+            );
+        }
+    } else {
+        dispatch(
+          setAlert({
+            open: true,
+            message: "Missing token or profile data",
+            severity: "error",
+          })
+        );
+        if (x === 'accept') {
+          dispatch(setLoading({ key: 'acceptFriend', value: false }));
+        } else {
+          dispatch(setLoading({ key: 'declineFriend', value: false }));
+        }
+    }
+  };
+  
   const renderActions = () => {
     switch (mode) {
       case 'friend':
         return (
-          <Button sx={styles.removeButton} variant="contained">Unfriend</Button>
+          <Button onClick={() => handleAnswerRequest('decline')} sx={styles.removeButton} variant="contained">
+            {isDeclineLoading ? <CircularProgress size="24px" sx={{ color: "#fff" }} /> : "Unfriend"}
+          </Button>
         );
       case 'pend':
         return (
-          <Button sx={styles.declineButton} variant="contained">Cancel</Button>
+          <Button onClick={() => handleAnswerRequest('decline')} sx={styles.declineButton} variant="contained">
+            {isDeclineLoading ? <CircularProgress size="24px" sx={{ color: "#fff" }} /> : "Cancel"}
+          </Button>
         );
       case 'request':
         return (
           <>
-            <Button sx={styles.acceptButton} variant="contained">Accept</Button>
-            <Button sx={styles.declineButton} variant="contained">Decline</Button>
+            <Button onClick={() => handleAnswerRequest('accept')} sx={styles.acceptButton} variant="contained">
+              {isAcceptLoading ? <CircularProgress size="24px" sx={{ color: "#fff" }} /> : "Accept"}
+            </Button>
+            <Button onClick={() => handleAnswerRequest('decline')} sx={styles.declineButton} variant="contained">
+              {isDeclineLoading ? <CircularProgress size="24px" sx={{ color: "#fff" }} /> : "Decline"}
+            </Button>
           </>
         );
       default:

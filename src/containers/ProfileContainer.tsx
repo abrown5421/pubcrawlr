@@ -23,12 +23,21 @@ import MyFriendsTab from "../components/tabs/MyFriendsTab";
 import PendingFriendsTab from "../components/tabs/PendingFriendsTab";
 import RequestedFriendsTab from "../components/tabs/RequestedFriendsTab";
 import AnimatedContainer from './AnimatedContainer';
-import { getFriends } from '../services/friendService';
+import { getFriends, isAlreadyFriend, requestFriend, subscribeToFriends } from '../services/friendService';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { setAlert } from '../store/slices/notificationSlice';
 
 const useProfileStyles = (theme: any) => ({
   logo: {
     color: theme.palette.custom?.dark,
     fontFamily: 'Primary',
+  },
+  addButton: {
+    backgroundColor: theme.palette.custom?.accent,
+    color: theme.palette.custom?.light,
+    "&:hover": {
+      backgroundColor: theme.palette.custom?.highlight,
+    },
   },
 });
 
@@ -38,6 +47,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
   const token = useAppSelector((state) => state.authentication.token);
   const userProfile = useAppSelector((state) => state.userProfile);
   const isLoading = useAppSelector((state) => state.buttonLoad['mainApp'] ?? false);
+  const isAddLoading = useAppSelector((state) => state.buttonLoad['addFriend'] ?? false);
   const dispatch = useAppDispatch();
   const { slug } = useParams();
   const acceptedFriendCount = userProfile.friends.filter(
@@ -47,6 +57,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
     name: 'barCrawls',
     in: true
   });
+  const [alreadyFriend, setAlreadyFriend] = useState<boolean | null>(null);
 
   const fetchTrianglifyData = async (uid: string) => {
     const trianglifyData = await fetchTrianglifyConfig(uid);
@@ -94,21 +105,6 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
     dispatch(setFriends(userFriends)); 
   };
 
-  useEffect(() => {
-    dispatch(setLoading({ key: 'profilePage', value: true }));
-    if (slug) {
-      fetchUserData(slug);
-      fetchTrianglifyData(slug);
-      fetchUserbarCrawls(slug);
-      fetchUserFriends(slug);
-    }
-    setTimeout(() => {
-      dispatch(setLoading({ key: 'profilePage', value: false }));
-    }, 1000);
-  }, [slug]);
-
-  // useEffect(()=>{console.log(userProfile)}, [userProfile])
-
   const handleImageChange = () => {
     dispatch(setModal({
       open: true,
@@ -139,7 +135,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
     switch (activeSection.name) {
       case 'barCrawls':
         return (
-          <TabManager tabs={['My Crawls', 'Invites', 'Discover']}>
+          <TabManager tabs={['Crawls', 'Invites', 'Discover']}>
             <MyCrawlsTab />
             <div>Invites content here</div>
             <div>Discover new crawls content here</div>
@@ -147,7 +143,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
         );
       case 'friends':
         return (
-          <TabManager tabs={['My Friends', 'Pending', 'Requests']}>
+          <TabManager tabs={['Friends', 'Pending', 'Requests']}>
             <MyFriendsTab />
             <PendingFriendsTab />
             <RequestedFriendsTab />
@@ -155,7 +151,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
         );
       case 'groups':
         return (
-          <TabManager tabs={['My Groups', 'New Group']}>
+          <TabManager tabs={['Groups', 'New Group']}>
             <div>My Groups content here</div>
             <div>Create a New Group form here</div>
           </TabManager>
@@ -164,6 +160,93 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
         return null;
     }
   };
+
+  const handleRequestFriend = async () => {
+    dispatch(setLoading({ key: 'addFriend', value: true }));
+    if (token && userProfile.profileUser) {
+        try {
+            const requesterData = await getUserDataFromId(token);
+            if (requesterData) {
+              const requestee = {
+                FriendDocId: userProfile.profileUser.docId,
+                FriendFirstName: userProfile.profileUser.UserFirstName,
+                FriendLastName: userProfile.profileUser.UserLastName,
+                FriendEmail: userProfile.profileUser.UserEmail,
+                FriendRequested: true,
+                FriendRequestAccepted: false,
+                DateRequested: new Date().toISOString(),
+              };
+
+              const requester = {
+                  FriendDocId: token,
+                  FriendFirstName: requesterData.UserFirstName,
+                  FriendLastName: requesterData.UserLastName,
+                  FriendEmail: requesterData.UserEmail,
+                  FriendRequested: false,
+                  FriendRequestAccepted: false,
+                  DateRequested: new Date().toISOString(),
+              };
+
+              await requestFriend(token, requestee, requester);
+              setAlreadyFriend(true);
+              dispatch(setLoading({ key: 'addFriend', value: false }));
+            }
+        } catch (error) {
+            dispatch(setLoading({ key: 'addFriend', value: false }));
+            dispatch(
+              setAlert({
+                open: true,
+                message: "Error fetching user data or processing friend request",
+                severity: "error",
+              })
+            );
+        }
+    } else {
+        dispatch(
+          setAlert({
+            open: true,
+            message: "Missing token or profile data",
+            severity: "error",
+          })
+        );
+        dispatch(setLoading({ key: 'addFriend', value: false }));
+    }
+  };
+
+  useEffect(() => {
+    const checkFriendStatus = async () => {
+      if (token && userProfile?.profileUser?.docId) {
+        const isFriend = await isAlreadyFriend(token, userProfile.profileUser.docId);
+        setAlreadyFriend(isFriend);
+      }
+    };
+
+    checkFriendStatus();
+  }, [token, userProfile?.profileUser?.docId]);
+
+  useEffect(() => {
+    if (!slug) return;
+  
+    dispatch(setLoading({ key: 'profilePage', value: true }));
+  
+    fetchUserData(slug);
+    fetchTrianglifyData(slug);
+    fetchUserbarCrawls(slug);
+    fetchUserFriends(slug);
+  
+    const unsubscribe = subscribeToFriends(slug, () => {
+      fetchUserFriends(slug);
+    });
+  
+    const timeout = setTimeout(() => {
+      dispatch(setLoading({ key: 'profilePage', value: false }));
+    }, 1000);
+  
+    return () => {
+      unsubscribe?.(); 
+      clearTimeout(timeout);
+    };
+  }, [slug]);
 
   return (
     <Box className="prof-container">
@@ -192,10 +275,21 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                 <Typography variant="h5" fontWeight={700} sx={styles.logo}>
                   {userProfile.profileUser?.UserFirstName} {userProfile.profileUser?.UserLastName}
                 </Typography>
-                {mode === "personal" && (
+                {mode === "personal" ? (
                   <IconButton onClick={handleInfoChange} sx={{ backgroundColor: theme.palette.custom?.light }} className="profile-info-edit">
                     <EditIcon />
                   </IconButton>
+                ) : (
+                  <Button
+                    sx={styles.addButton}
+                    variant="contained"
+                    startIcon={<PersonAddIcon />}
+                    className="profile-info-edit"
+                    onClick={handleRequestFriend}
+                    disabled={alreadyFriend === true}
+                  >
+                    {isAddLoading ? <CircularProgress size="24px" sx={{ color: "#fff" }} /> : (alreadyFriend === true ? "Pending" : "Add Friend")}
+                  </Button>
                 )}
               </div>
               <Typography variant="caption">{userProfile.profileUser?.UserEmail}</Typography>
