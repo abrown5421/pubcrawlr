@@ -50,6 +50,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
   const isAddLoading = useAppSelector((state) => state.buttonLoad['addFriend'] ?? false);
   const dispatch = useAppDispatch();
   const { slug } = useParams();
+  const isThisTheirProfile = token === slug;
   const acceptedFriendCount = userProfile.friends.filter(
     (friend) => friend.FriendRequestAccepted && friend.FriendRequested
   );
@@ -134,28 +135,47 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
   const renderTabs = () => {
     switch (activeSection.name) {
       case 'barCrawls':
-        return (
-          <TabManager tabs={['Crawls', 'Invites', 'Discover']}>
+        if (isThisTheirProfile) {
+          return (
+            <TabManager tabs={['Crawls', 'Invites', 'Discover']}>
+              <MyCrawlsTab mode="owned" />
+              <div>Invites content here</div>
+              <div>Discover new crawls content here</div>
+            </TabManager>
+          );
+        } else {
+          return(
             <MyCrawlsTab />
-            <div>Invites content here</div>
-            <div>Discover new crawls content here</div>
-          </TabManager>
-        );
+          )
+        }
+        
       case 'friends':
-        return (
-          <TabManager tabs={['Friends', 'Pending', 'Requests']}>
+        if (isThisTheirProfile) {
+          return (
+            <TabManager tabs={['Friends', 'Pending', 'Requests']}>
+              <MyFriendsTab mode="owned" />
+              <PendingFriendsTab />
+              <RequestedFriendsTab />
+            </TabManager>
+          );
+        } else {
+          return(
             <MyFriendsTab />
-            <PendingFriendsTab />
-            <RequestedFriendsTab />
-          </TabManager>
-        );
+          )
+        }
       case 'groups':
-        return (
-          <TabManager tabs={['Groups', 'New Group']}>
+        if (isThisTheirProfile) {
+          return (
+            <TabManager tabs={['Groups', 'New Group']}>
+              <div>My Groups content here</div>
+              <div>Create a New Group form here</div>
+            </TabManager>
+          );
+        } else {
+          return(
             <div>My Groups content here</div>
-            <div>Create a New Group form here</div>
-          </TabManager>
-        );
+          )
+        }
       default:
         return null;
     }
