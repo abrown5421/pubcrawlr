@@ -9,34 +9,25 @@ import {
   import { db } from "../config/Firebase"; 
   import { FriendEntry } from "../types/globalTypes";
   
-  export async function requestFriend(currentUserId: string, requestee: FriendEntry, requester: FriendEntry) {
-    const requesteeDocRef = doc(db, "Friends", currentUserId);
-    const requesterDocRef = doc(db, "Friends", requestee.FriendDocId);
+  export async function requestFriend(currentUserId: string, requester: FriendEntry, requestee: FriendEntry) {
+    const requesterDocRef = doc(db, "Friends", currentUserId);
+    const requesteeDocRef = doc(db, "Friends", requester.FriendDocId);
   
-    const requesteeEntry: FriendEntry = {
-      ...requestee,
+    const requesterEntry: FriendEntry = {
+      ...requester,
       FriendRequested: true,
       FriendRequestAccepted: false,
       DateRequested: new Date().toISOString(),
+      Seen: true,
     };
 
-    const requesterEntry: FriendEntry = {
-      ...requester,
+    const requesteeEntry: FriendEntry = {
+      ...requestee,
       FriendRequested: false,
       FriendRequestAccepted: true,
       DateRequested: new Date().toISOString(),
+      Seen: false,
     };
-
-    const requesteeDocSnap = await getDoc(requesteeDocRef);
-    if (!requesteeDocSnap.exists()) {
-        await setDoc(requesteeDocRef, { FriendsArray: [requesteeEntry] });
-    } else {
-        await setDoc(
-            requesteeDocRef,
-            { FriendsArray: arrayUnion(requesteeEntry) },
-            { merge: true }
-        );
-    }
 
     const requesterDocSnap = await getDoc(requesterDocRef);
     if (!requesterDocSnap.exists()) {
@@ -45,6 +36,17 @@ import {
         await setDoc(
             requesterDocRef,
             { FriendsArray: arrayUnion(requesterEntry) },
+            { merge: true }
+        );
+    }
+
+    const requesteeDocSnap = await getDoc(requesteeDocRef);
+    if (!requesteeDocSnap.exists()) {
+        await setDoc(requesteeDocRef, { FriendsArray: [requesteeEntry] });
+    } else {
+        await setDoc(
+            requesteeDocRef,
+            { FriendsArray: arrayUnion(requesteeEntry) },
             { merge: true }
         );
     }

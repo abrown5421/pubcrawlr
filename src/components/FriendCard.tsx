@@ -70,7 +70,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, mode }) => {
             dispatch(setLoading({ key: 'acceptFriend', value: false }));
             acceptFriendRequest(token, friend.FriendDocId)
           } else {
-            dispatch(setLoading({ key: 'declineFriend', value: true }));
+            dispatch(setLoading({ key: 'declineFriend', value: false }));
             removeFriend(token, friend.FriendDocId)
           }
         } catch (error) {

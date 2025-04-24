@@ -93,6 +93,11 @@ export interface NotificationState {
     severity: 'error' | 'warning' | 'info' | 'success';
 }
 
+export interface RequestsState {
+  open: boolean;
+  requests: number;
+}
+
 export interface SelectedBarsState {
   selectedBars: Place[];
   drawerOpen: boolean;
@@ -149,6 +154,7 @@ export interface FriendEntry {
   FriendRequested: boolean;
   FriendRequestAccepted: boolean;
   DateRequested: string;
+  Seen: boolean;
 }
 
 export type BarCardProps = {

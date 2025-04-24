@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { Avatar, Box, CircularProgress, IconButton, Typography, useTheme, Button, Stack } from '@mui/material';
+import { Avatar, Box, CircularProgress, IconButton, Typography, useTheme, Button, Stack, Badge } from '@mui/material';
 import GroupsIcon from '@mui/icons-material/Groups';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
@@ -45,6 +45,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
   const theme = useTheme();
   const styles = useProfileStyles(theme);
   const token = useAppSelector((state) => state.authentication.token);
+  const request = useAppSelector((state) => state.requests);
   const userProfile = useAppSelector((state) => state.userProfile);
   const isLoading = useAppSelector((state) => state.buttonLoad['mainApp'] ?? false);
   const isAddLoading = useAppSelector((state) => state.buttonLoad['addFriend'] ?? false);
@@ -187,7 +188,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
         try {
             const requesterData = await getUserDataFromId(token);
             if (requesterData) {
-              const requestee = {
+              const requester = {
                 FriendDocId: userProfile.profileUser.docId,
                 FriendFirstName: userProfile.profileUser.UserFirstName,
                 FriendLastName: userProfile.profileUser.UserLastName,
@@ -195,9 +196,10 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                 FriendRequested: true,
                 FriendRequestAccepted: false,
                 DateRequested: new Date().toISOString(),
+                Seen: true,
               };
 
-              const requester = {
+              const requestee = {
                   FriendDocId: token,
                   FriendFirstName: requesterData.UserFirstName,
                   FriendLastName: requesterData.UserLastName,
@@ -205,9 +207,10 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                   FriendRequested: false,
                   FriendRequestAccepted: false,
                   DateRequested: new Date().toISOString(),
+                  Seen: false,
               };
 
-              await requestFriend(token, requestee, requester);
+              await requestFriend(token, requester, requestee);
               setAlreadyFriend(true);
               dispatch(setLoading({ key: 'addFriend', value: false }));
             }
@@ -346,7 +349,15 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                 onClick={() => changeSection('friends')}
                 className="sidebar-button"
               >
-                Friends
+                <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+                  <span>Friends</span>
+                  <Badge
+                    color="error"
+                    badgeContent={request.open ? request.requests : null}
+                    invisible={!request.open || !request.requests}
+                    sx={{ mr: 1 }}
+                  />
+                </Box>
               </Button>
               <Button
                 startIcon={<GroupsIcon />}

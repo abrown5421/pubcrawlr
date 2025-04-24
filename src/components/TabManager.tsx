@@ -1,5 +1,6 @@
 import { useState, ReactNode } from "react";
-import { Box, Tabs, Tab } from "@mui/material";
+import { Box, Tabs, Tab, Badge } from "@mui/material";
+import { useAppSelector } from "../store/hooks";
 
 interface TabManagerProps {
   tabs: string[];
@@ -7,6 +8,7 @@ interface TabManagerProps {
 }
 
 export default function TabManager({ tabs, children }: TabManagerProps) {
+  const request = useAppSelector((state) => state.requests);
   const [tab, setTab] = useState(0);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -16,9 +18,28 @@ export default function TabManager({ tabs, children }: TabManagerProps) {
   return (
     <Box sx={{ width: "100%" }}>
       <Tabs value={tab} onChange={handleChange}>
-        {tabs.map((label, i) => (
-          <Tab key={i} label={label} />
-        ))}
+        {tabs.map((label, i) => {
+          const showBadge = label === "Requests" && request.open && request.requests;
+
+          return (
+            <Tab
+              key={i}
+              label={
+                showBadge ? (
+                  <Badge
+                    color="error"
+                    badgeContent={request.requests}
+                    invisible={!request.open || !request.requests}
+                  >
+                    {label}
+                  </Badge>
+                ) : (
+                  label
+                )
+              }
+            />
+          );
+        })}
       </Tabs>
       <Box p={2}>{children[tab]}</Box>
     </Box>

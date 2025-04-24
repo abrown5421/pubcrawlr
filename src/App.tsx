@@ -18,6 +18,8 @@ import NotFound from './pages/NotFound';
 import Modal from './components/Modal.tsx';
 import { CircularProgress } from '@mui/material';
 import { setLoading } from './store/slices/buttonLoadSlice.ts';
+import { setRequests } from './store/slices/requestSlice.ts';
+import { getAllUnseen } from './services/requestService.ts';
 
 function AnimationInitializer() {
   const location = useLocation();
@@ -47,6 +49,13 @@ function App() {
       UserFirstName: userData?.UserFirstName ?? '',
       UserLastName: userData?.UserLastName ?? '',
     }));
+    const usersNotifications = await getAllUnseen(uid);
+    if (usersNotifications > 0) {
+      dispatch(setRequests({
+        open: true,
+        requests: usersNotifications,
+      }))
+    }
   };
   
   useEffect(() => {

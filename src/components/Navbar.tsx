@@ -12,6 +12,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Badge,
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
@@ -56,6 +57,7 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.authentication.token);
+  const request = useAppSelector((state) => state.requests);
   const location = useLocation();
   const theme = useTheme();
   const styles = useNavbarStyles(theme);
@@ -114,14 +116,25 @@ const Navbar: React.FC = () => {
 
           {authToken && (
             <Box display="flex" alignItems="center">
-              <Avatar
-                className="nav-avatar"
-                sx={{ backgroundColor: theme.palette.custom?.dark, cursor: "pointer" }}
-                onClick={() => setDrawerOpen(true)}
+              <Badge
+                color="error"
+                badgeContent={request.open ? request.requests : null}
+                invisible={!request.open || !request.requests}
+                overlap="circular"
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
               >
-                {user.user?.UserFirstName.charAt(0)}
-                {user.user?.UserLastName?.charAt(0)}
-              </Avatar>
+                <Avatar
+                  className="nav-avatar"
+                  sx={{ backgroundColor: theme.palette.custom?.dark, cursor: "pointer" }}
+                  onClick={() => setDrawerOpen(true)}
+                >
+                  {user.user?.UserFirstName.charAt(0)}
+                  {user.user?.UserLastName?.charAt(0)}
+                </Avatar>
+              </Badge>
             </Box>
           )}
 
@@ -151,6 +164,16 @@ const Navbar: React.FC = () => {
               <ListItem disablePadding>
                 <ListItemButton sx={{paddingLeft: '0px'}} onClick={handleNavClick(`/Dashboard/${token}`, "Dashboard")}>
                   <ListItemText primary="Dashboard" />
+                  <Badge
+                    color="error"
+                    badgeContent={request.open ? request.requests : null}
+                    invisible={!request.open || !request.requests}
+                    overlap="circular"
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                  ></Badge>
                 </ListItemButton>
               </ListItem>
               <ListItem disablePadding>
