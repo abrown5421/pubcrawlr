@@ -96,7 +96,11 @@ export interface NotificationState {
 
 export interface RequestsState {
   open: boolean;
-  requests: number;
+  requests: {
+    total: number;
+    friendRequests: number;
+    barCrawlInvites: number;
+  };
 }
 
 export interface SelectedBarsState {

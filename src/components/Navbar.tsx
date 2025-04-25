@@ -118,8 +118,8 @@ const Navbar: React.FC = () => {
             <Box display="flex" alignItems="center">
               <Badge
                 color="error"
-                badgeContent={request.open ? request.requests : null}
-                invisible={!request.open || !request.requests}
+                badgeContent={request.open ? request.requests.total : null}
+                invisible={!request.open || !request.requests.total}
                 overlap="circular"
                 anchorOrigin={{
                   vertical: 'top',
@@ -166,8 +166,8 @@ const Navbar: React.FC = () => {
                   <ListItemText primary="Dashboard" />
                   <Badge
                     color="error"
-                    badgeContent={request.open ? request.requests : null}
-                    invisible={!request.open || !request.requests}
+                    badgeContent={request.open ? request.requests.total : null}
+                    invisible={!request.open || !request.requests.total}
                     overlap="circular"
                     anchorOrigin={{
                       vertical: 'top',

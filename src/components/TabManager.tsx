@@ -19,18 +19,26 @@ export default function TabManager({ tabs, children }: TabManagerProps) {
     <Box sx={{ width: "100%" }}>
       <Tabs value={tab} onChange={handleChange}>
         {tabs.map((label, i) => {
-          const showBadge = label === "Requests" && request.open && request.requests;
+          const isRequestsTab = label.toLowerCase() === "requests";
+          const isInvitesTab = label.toLowerCase() === "invites";
+
+          const badgeContent = isRequestsTab
+            ? request.requests.friendRequests
+            : isInvitesTab
+            ? request.requests.barCrawlInvites
+            : 0;
+
+          const showBadge =
+            request.open &&
+            ((isRequestsTab && request.requests.friendRequests > 0) ||
+              (isInvitesTab && request.requests.barCrawlInvites > 0));
 
           return (
             <Tab
               key={i}
               label={
                 showBadge ? (
-                  <Badge
-                    color="error"
-                    badgeContent={request.requests}
-                    invisible={!request.open || !request.requests}
-                  >
+                  <Badge color="error" badgeContent={badgeContent}>
                     {label}
                   </Badge>
                 ) : (

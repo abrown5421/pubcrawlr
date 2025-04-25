@@ -3,8 +3,8 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import "../../styles/components/profile-manager.css";
 import FriendCard from '../FriendCard';
 import { useEffect } from 'react';
-import { clearRequests } from '../../store/slices/requestSlice';
-import { markAllUnseenAsSeen } from '../../services/requestService';
+import { clearFriendRequests } from '../../store/slices/requestSlice';
+import { markFriendRequestsAsSeen } from '../../services/requestService';
 
 export default function ProfileManager() {
   const dispatch = useAppDispatch();
@@ -18,8 +18,8 @@ export default function ProfileManager() {
 
   useEffect(()=>{
     if (request.open && token) {
-      dispatch(clearRequests())
-      markAllUnseenAsSeen(token)
+      dispatch(clearFriendRequests())
+      markFriendRequestsAsSeen(token);
     }
   }, [request])
 

@@ -1,10 +1,23 @@
 import { Box, Typography } from '@mui/material';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import BarCrawlCard from '../BarCrawlCard';
 import "../../styles/components/profile-manager.css";
+import { useEffect } from 'react';
+import { clearBarCrawlInvites } from '../../store/slices/requestSlice';
+import { markBarCrawlInvitesAsSeen } from '../../services/requestService';
 
 export default function InvitedBarCrawlsTab({ mode }: { mode?: string }) {
+  const dispatch = useAppDispatch();
+  const request = useAppSelector((state) => state.requests);
+  const token = useAppSelector((state) => state.authentication.token);
   const userProfile = useAppSelector((state) => state.userProfile);
+
+  useEffect(()=>{
+    if (request.open && token) {
+      dispatch(clearBarCrawlInvites())
+      markBarCrawlInvitesAsSeen(token);
+    }
+  }, [request])
 
   return (
     <Box sx={{ width: '100%', overflow: 'scroll' }}>

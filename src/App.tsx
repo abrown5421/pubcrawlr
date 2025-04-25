@@ -50,11 +50,15 @@ function App() {
       UserLastName: userData?.UserLastName ?? '',
     }));
     const usersNotifications = await getAllUnseen(uid);
-    if (usersNotifications > 0) {
+    if (usersNotifications.total > 0) {
       dispatch(setRequests({
         open: true,
-        requests: usersNotifications,
-      }))
+        requests: {
+          friendRequests: usersNotifications.friendRequests,
+          barCrawlInvites: usersNotifications.barCrawlInvites,
+          total: usersNotifications.total,
+        }
+      }));
     }
   };
   

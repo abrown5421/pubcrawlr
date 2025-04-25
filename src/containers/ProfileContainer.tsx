@@ -366,7 +366,15 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                 onClick={() => changeSection('barCrawls')}
                 className="sidebar-button"
               >
-                Bar Crawls
+                <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+                  <span>Bar Crawls</span>
+                  <Badge
+                    color="error"
+                    badgeContent={request.open ? request.requests.barCrawlInvites : null}
+                    invisible={!request.open || !request.requests.total}
+                    sx={{ mr: 1 }}
+                  />
+                </Box>
               </Button>
               <Button
                 startIcon={<PeopleAltIcon />}
@@ -378,8 +386,8 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                   <span>Friends</span>
                   <Badge
                     color="error"
-                    badgeContent={request.open ? request.requests : null}
-                    invisible={!request.open || !request.requests}
+                    badgeContent={request.open ? request.requests.friendRequests : null}
+                    invisible={!request.open || !request.requests.total}
                     sx={{ mr: 1 }}
                   />
                 </Box>
