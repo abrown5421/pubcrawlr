@@ -30,8 +30,8 @@ export interface BarCrawl {
   crawlName: string;
   attendeess: Attendee[],
   attendeeIds: string[],
-  endDate: string;
-  startDate: string;
+  startDate: string | undefined;
+  endDate: string | undefined; 
   intimacyLevel: string;
   selectedBars: Bar[];
   userID: string;

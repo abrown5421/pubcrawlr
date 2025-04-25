@@ -73,8 +73,8 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
   const token = useAppSelector((state) => state.authentication.token);
 
   const attendeesCount = crawl.attendeess.filter(attendee => attendee.attending).length;
-  const formattedStartDate = formatDate(crawl.startDate);  
-  const formattedEndDate = formatDate(crawl.endDate);
+  const formattedStartDate = formatDate(crawl?.startDate ?? "");
+  const formattedEndDate = formatDate(crawl?.endDate ?? "");
 
   const handleDelete = async (id: string) => {
     dispatch(setLoading({ key: `deleteCrawl-${id}`, value: true }));

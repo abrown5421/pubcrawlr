@@ -86,8 +86,8 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
     const userInvitedBarCrawls = await getUserInvitedBarCrawls(uid);
     const formattedCrawls = userBarCrawls.map(crawl => ({
       id: crawl.id ?? null,
-      attendeesIds: crawl.attendeeIds,
-      attendeess: crawl.attendees,
+      attendeeIds: crawl.attendeeIds, 
+      attendeess: typeof crawl.attendees === 'string' ? [] : crawl.attendees,
       crawlName: crawl.crawlName,
       startDate: crawl.startDate,
       endDate: crawl.endDate,
@@ -105,11 +105,11 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
         }
       }))
     }));
-
+  
     const formattedInvitedCrawls = userInvitedBarCrawls.map(crawl => ({
       id: crawl.id ?? null,
-      attendeesIds: crawl.attendeeIds,
-      attendeess: crawl.attendees,
+      attendeeIds: crawl.attendeeIds, 
+      attendeess: typeof crawl.attendees === 'string' ? [] : crawl.attendees,
       crawlName: crawl.crawlName,
       startDate: crawl.startDate,
       endDate: crawl.endDate,
@@ -127,8 +127,9 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
         }
       }))
     }));
-    dispatch(setBarCrawls(formattedCrawls)); 
-    dispatch(setInvitedBarCrawls(formattedInvitedCrawls)); 
+    
+    dispatch(setBarCrawls(formattedCrawls)); // first err here
+    dispatch(setInvitedBarCrawls(formattedInvitedCrawls)); // Second err here
   };
 
   const fetchUserFriends = async (uid: string) => {
