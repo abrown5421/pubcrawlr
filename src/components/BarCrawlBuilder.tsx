@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Drawer, Box, TextField, Button, Typography, MenuItem, CircularProgress, Collapse, Divider, Paper, IconButton, Avatar } from "@mui/material";
-import { Grid, useTheme } from "@mui/system";
+import { Drawer, Box, TextField, Button, Typography, MenuItem, CircularProgress, Collapse, Divider } from "@mui/material";
+import { useTheme } from "@mui/system";
 import Form from "./Form";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setAlert } from "../store/slices/notificationSlice";
@@ -202,7 +202,8 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
       startDate: formData.startDate,
       endDate: formData.endDate,
       intimacyLevel: formData.intimacyLevel,
-      attendees: attendees
+      attendees: attendees, 
+      attendeeIds: [], 
     };
 
     saveBarCrawl(barCrawlData)
@@ -387,7 +388,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
         </div>
         <Collapse in={formData.intimacyLevel === "Private"} timeout="auto" unmountOnExit>
           <Box sx={{ mt: 2, mb: 2 }}>
-            <FriendAutocomplete onUserSelect={(selectedUser) => {
+            <FriendAutocomplete friendsOnly={true} onUserSelect={(selectedUser) => {
                 handleAddAttendee({
                   docId: selectedUser.docId,
                   UserFirstName: selectedUser.UserFirstName,

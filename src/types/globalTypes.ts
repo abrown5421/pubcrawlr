@@ -230,3 +230,8 @@ export type BarCrawlCardProps = {
   crawl: BarCrawl;
   mode: string
 };
+
+export type FriendAutocompleteProps = {
+  onUserSelect?: (user: User) => void;
+  friendsOnly?: boolean;
+};

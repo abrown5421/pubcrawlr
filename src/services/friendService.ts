@@ -121,3 +121,36 @@ import {
     });
   }
   
+  export const searchFriendsByName = async (input: string, currentUserId: string): Promise<FriendEntry[]> => {
+    const inputLower = input.toLowerCase();
+    const friendsDocRef = doc(db, 'Friends', currentUserId);
+    const friendsSnap = await getDoc(friendsDocRef);
+  
+    if (!friendsSnap.exists()) return [];
+  
+    const friendsArray: FriendEntry[] = friendsSnap.data().FriendsArray || [];
+  
+    const scoredFriends: { friend: FriendEntry; score: number }[] = [];
+  
+    for (const friend of friendsArray) {
+      if (!friend.FriendRequestAccepted) continue;
+  
+      const first = friend.FriendFirstName?.toLowerCase() || '';
+      const last = friend.FriendLastName?.toLowerCase() || '';
+      const full = `${first} ${last}`;
+  
+      let score = 0;
+      if (first.startsWith(inputLower)) score += 10;
+      if (last.startsWith(inputLower)) score += 5;
+      if (full.includes(inputLower)) score += 3;
+      if (first.includes(inputLower)) score += 2;
+      if (last.includes(inputLower)) score += 1;
+  
+      if (score > 0) {
+        scoredFriends.push({ friend, score });
+      }
+    }
+  
+    scoredFriends.sort((a, b) => b.score - a.score);
+    return scoredFriends.slice(0, 10).map((entry) => entry.friend);
+  };
