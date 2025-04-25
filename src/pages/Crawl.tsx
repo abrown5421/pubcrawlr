@@ -7,11 +7,11 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { getBarCrawlByID } from "../services/barCrawlService";
 import { setSelectedBarCrawl } from "../store/slices/selectedBarCrawlSlice";
+import CrawlContainer from "../containers/CrawlContainer";
 
 const nestedContainerStyles = (theme: Theme) => ({
   root: {
     height: "100%",
-    padding: "10px",
     overflow: 'scroll',
     backgroundColor: theme.palette.custom?.light,
   }
@@ -34,13 +34,11 @@ function Crawl() {
     }
   }, [slug]);
 
-  useEffect(()=>{console.log(crawl)}, [crawl])
-
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === 'Crawl'} sx={{height: '100%'}}>
       <Box sx={styles.root}>
-        {token === crawl?.userID && <>You are the creator of this crawl</>}
-        {token !== crawl?.userID && <>You are not the creator of this crawl</>}
+        {token === crawl?.userID && <CrawlContainer mode="owner" /> }
+        {token !== crawl?.userID && <CrawlContainer mode="viewer" /> }
       </Box>
     </AnimatedContainer>
   );

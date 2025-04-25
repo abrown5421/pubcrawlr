@@ -168,6 +168,10 @@ export interface FriendEntry {
   Seen: boolean;
 }
 
+export interface CrawlContainerProps {
+  mode: string;
+}
+
 export type BarCardProps = {
     bar: Place;
     mode: String;  

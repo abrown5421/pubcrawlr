@@ -48,7 +48,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
   const token = useAppSelector((state) => state.authentication.token);
   const request = useAppSelector((state) => state.requests);
   const userProfile = useAppSelector((state) => state.userProfile);
-  const isLoading = useAppSelector((state) => state.buttonLoad['mainApp'] ?? false);
+  const isLoading = useAppSelector((state) => state.buttonLoad['profilePage'] ?? false);
   const isAddLoading = useAppSelector((state) => state.buttonLoad['addFriend'] ?? false);
   const dispatch = useAppDispatch();
   const { slug } = useParams();
