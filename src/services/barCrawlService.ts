@@ -1,4 +1,8 @@
 import { db } from '../config/Firebase';
+import {
+  collection,
+  onSnapshot,
+} from "firebase/firestore";
 import { BarCrawlInfo, Attendee } from '../types/globalTypes';
 
 const sanitizeUndefined = (obj: any): any => {
@@ -238,7 +242,16 @@ export const declineBarCrawlInvite = async (barCrawlId: string, userId: string):
   }
 };
 
+export function subscribeToBarCrawls(callback: (crawls: BarCrawlInfo[]) => void) {
+  const barCrawlsCollectionRef = collection(db, "BarCrawls");
 
-
+  return onSnapshot(barCrawlsCollectionRef, (querySnapshot) => {
+    const crawls: BarCrawlInfo[] = [];
+    querySnapshot.forEach((doc) => {
+      crawls.push(doc.data() as BarCrawlInfo);
+    });
+    callback(crawls);
+  });
+}
 
 

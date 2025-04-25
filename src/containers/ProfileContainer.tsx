@@ -16,7 +16,7 @@ import { setMultipleTrianglifyValues } from '../store/slices/trianglifySlice';
 import { setLoading } from '../store/slices/buttonLoadSlice';
 import { fetchTrianglifyConfig } from '../services/tryianglifyService';
 import ProfileInfoBuilder from '../components/ProfileInfoBuilder';
-import { getUserBarCrawls, getUserInvitedBarCrawls } from '../services/barCrawlService';
+import { getUserBarCrawls, getUserInvitedBarCrawls, subscribeToBarCrawls } from '../services/barCrawlService';
 import TabManager from '../components/TabManager'; 
 import MyCrawlsTab from "../components/tabs/MyCrawlsTab";
 import InvitedBarCrawlsTab from "../components/tabs/InvitedBarCrawlsTab";
@@ -275,10 +275,13 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
   
     fetchUserData(slug);
     fetchTrianglifyData(slug);
-    fetchUserbarCrawls(slug);
     fetchUserFriends(slug);
+
+    const unsubscribeBarCrawls = subscribeToBarCrawls(() => {
+      fetchUserbarCrawls(slug);
+    });
   
-    const unsubscribe = subscribeToFriends(slug, () => {
+    const unsubscribeFriends = subscribeToFriends(slug, () => {
       fetchUserFriends(slug);
     });
   
@@ -287,7 +290,8 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
     }, 1000);
   
     return () => {
-      unsubscribe?.(); 
+      unsubscribeBarCrawls?.(); 
+      unsubscribeFriends?.(); 
       clearTimeout(timeout);
     };
   }, [slug]);
