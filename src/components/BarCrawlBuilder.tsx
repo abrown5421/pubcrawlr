@@ -64,7 +64,8 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
     UserLastName: user?.UserLastName,
     invited: true,
     attending: true,
-    creator: true
+    creator: true,
+    seen: true
   }] : [])
   
   const [formData, setFormData] = useState<BcFormFormData>({
@@ -259,7 +260,8 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
           UserLastName: user?.UserLastName ?? "",
           invited: true,
           attending: true,
-          creator: true
+          creator: true,
+          seen: true
         },
         ...attendees
       ];
@@ -395,7 +397,8 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
                   UserLastName: selectedUser.UserLastName,
                   invited: true,
                   attending: false,
-                  creator: false
+                  creator: false,
+                  seen: false
                 });
               }}
             />

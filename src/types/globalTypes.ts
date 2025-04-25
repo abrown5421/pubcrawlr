@@ -118,6 +118,7 @@ export interface Attendee {
   invited: boolean;
   attending: boolean;
   creator: boolean;
+  seen: boolean;
 }
 
 export interface BarCrawlInfo {
