@@ -4,6 +4,7 @@ import { profileUserState, User, BarCrawl, FriendEntry } from '../../types/globa
 const initialState: profileUserState = {
   profileUser: null,
   barCrawls: [],
+  invitedBarCrawls: [],
   friends: [],
 };
 
@@ -23,6 +24,15 @@ const userProfileSlice = createSlice({
     clearBarCrawls: (state) => {
       state.barCrawls = [];
     },
+    setInvitedBarCrawls: (state, action: PayloadAction<BarCrawl[]>) => {
+      state.invitedBarCrawls = action.payload;
+    },
+    removeInvitedBarCrawl: (state, action: PayloadAction<string>) => {
+      state.invitedBarCrawls = state.invitedBarCrawls.filter(crawl => crawl.crawlName !== action.payload);
+    },
+    clearInvitedBarCrawls: (state) => {
+      state.invitedBarCrawls = [];
+    },
     setFriends: (state, action: PayloadAction<FriendEntry[]>) => {
       state.friends = action.payload;
     },
@@ -32,6 +42,6 @@ const userProfileSlice = createSlice({
   },
 });
 
-export const { setProfileUser, setBarCrawls, removeBarCrawl, clearBarCrawls, setFriends, removeFriend } = userProfileSlice.actions;
+export const { setProfileUser, setBarCrawls, removeBarCrawl, clearBarCrawls, setInvitedBarCrawls, removeInvitedBarCrawl, clearInvitedBarCrawls, setFriends, removeFriend } = userProfileSlice.actions;
 
 export default userProfileSlice.reducer;

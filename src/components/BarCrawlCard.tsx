@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import "../styles/components/bar-crawl-card.css";
 import { BarCrawlCardProps } from "../types/globalTypes";
 import { useTheme } from "@emotion/react";
-import { deleteBarCrawl } from "../services/barCrawlService";
+import { declineBarCrawlInvite, deleteBarCrawl, markUserAsAttending } from "../services/barCrawlService";
 import {
   Button,
   Card,
   CardContent,
   CardActions,
   Typography,
-  Collapse,
   Box,
   Divider,
   CircularProgress,
@@ -40,6 +39,13 @@ const useBarCrawlCardStyles = (theme: any) => ({
       color: theme.palette.custom?.dark,
     },
   },
+  acceptButton: {
+    backgroundColor: theme.palette.custom?.accent,
+    color: theme.palette.custom?.light,
+    "&:hover": {
+      backgroundColor: theme.palette.custom?.highlight,
+    },
+  },
   deleteButton: {
     backgroundColor: "#d32f2f",
     color: "#fff",
@@ -50,22 +56,15 @@ const useBarCrawlCardStyles = (theme: any) => ({
   },
 });
 
-const BarItem: React.FC<{ bar: any }> = ({ bar }) => {
-  return (
-    <Box className="bar-item" display="flex" mb={2}>
-        <Typography variant="subtitle1">{bar.name}</Typography>
-        <Typography variant="body2">{bar.vicinity}</Typography>
-    </Box>
-  );
-};
-
-const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl }) => {
+const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const styles = useBarCrawlCardStyles(theme);
-  const [showBars, setShowBars] = useState(false);
-  const isLoading = useAppSelector((state) => state.buttonLoad[`deleteCrawl-${crawl.id}`] ?? false);
+  const isDeleteCrawlLoading = useAppSelector((state) => state.buttonLoad[`deleteCrawl-${crawl.id}`] ?? false);
+  const isAttendCrawlLoading = useAppSelector((state) => state.buttonLoad[`attendCrawl-${crawl.id}`] ?? false);
+  const isDeclineCrawlLoading = useAppSelector((state) => state.buttonLoad[`declineCrawl-${crawl.id}`] ?? false);
   const barCrawls = useAppSelector((state) => state.userProfile.barCrawls);
+  const token = useAppSelector((state) => state.authentication.token);
 
   const handleDelete = async (id: string) => {
     dispatch(setLoading({ key: `deleteCrawl-${id}`, value: true }));
@@ -97,6 +96,58 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl }) => {
     }
   };
 
+  const handleAttendBarCrawl = async (barCrawlId: string, userId: string) => {
+    dispatch(setLoading({ key: `attendCrawl-${barCrawlId}`, value: true }));
+    try {
+      await markUserAsAttending(barCrawlId, userId);
+  
+      dispatch(
+        setAlert({
+          open: true,
+          message: "You are going to the bar crawl!",
+          severity: "success",
+        })
+      );
+    } catch (error) {
+      console.error("Failed to mark bar crawl attendance:", error);
+      dispatch(
+        setAlert({
+          open: true,
+          message: "Failed to mark bar crawl attendance.",
+          severity: "error",
+        })
+      );
+    } finally {
+      dispatch(setLoading({ key: `attendCrawl-${barCrawlId}`, value: false }));
+    }
+  }
+
+  const handleDeclinedBarCrawl = async (barCrawlId: string, userId: string) => {
+    dispatch(setLoading({ key: `declineCrawl-${barCrawlId}`, value: true }));
+    try {
+      await declineBarCrawlInvite(barCrawlId, userId);
+  
+      dispatch(
+        setAlert({
+          open: true,
+          message: "You are not going to the bar crawl!",
+          severity: "success",
+        })
+      );
+    } catch (error) {
+      console.error("Failed to mark bar crawl attendance:", error);
+      dispatch(
+        setAlert({
+          open: true,
+          message: "Failed to mark bar crawl attendance.",
+          severity: "error",
+        })
+      );
+    } finally {
+      dispatch(setLoading({ key: `declineCrawl-${barCrawlId}`, value: false }));
+    }
+  }
+
   return (
     <Card className="bar-crawl-card" variant="outlined">
       <CardContent className="mui-cc-ovrd">
@@ -114,44 +165,117 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl }) => {
               {crawl.intimacyLevel}
             </Typography>
           </Box>
-          <Box className="bar-crawl-header-col">
-            <Collapse in={showBars} timeout="auto" unmountOnExit>
-              <Box className="bar-list" mt={2}>
-                {crawl.selectedBars.map((bar) => (
-                  <BarItem key={bar.id} bar={bar} />
-                ))}
-              </Box>
-            </Collapse>
-          </Box>
         </Box>
       </CardContent>
 
       <Divider />
 
       <CardActions className="button-group" sx={{ justifyContent: "flex-end" }}>
-        <Button
-          sx={styles.viewButton}
-          variant="contained"
-          onClick={() => setShowBars((prev) => !prev)}
-        >
-          {showBars ? "Hide" : "View"}
-        </Button>
+        {mode === 'owned' && (
+          <>
+            <Button sx={styles.editButton} variant="contained">
+              Edit
+            </Button>
 
-        <Button sx={styles.editButton} variant="contained">
-          Edit
-        </Button>
+            <Button
+              onClick={() => crawl.id && handleDelete(crawl.id)}
+              variant="contained"
+              sx={styles.deleteButton}
+            >
+              {isDeleteCrawlLoading ? (
+                <CircularProgress size="24px" sx={{ color: "#FFF" }}/>
+              ) : (
+                "Delete"
+              )}
+            </Button>
+          </>
+        )}
+        {mode === 'invited' && crawl.id && token && (
+          <>
+            <Button
+              sx={styles.viewButton}
+              variant="contained"
+            >
+              View
+            </Button>
 
-        <Button
-          onClick={() => crawl.id && handleDelete(crawl.id)}
-          variant="contained"
-          sx={styles.deleteButton}
-        >
-          {isLoading ? (
-            <CircularProgress size="24px" sx={{ color: "#FFF" }}/>
-          ) : (
-            "Delete"
-          )}
-        </Button>
+            <Button 
+              sx={styles.acceptButton} 
+              variant="contained" 
+              onClick={() => {
+                if (crawl.id && token) {
+                  handleAttendBarCrawl(crawl.id, token);
+                }
+              }}
+            >
+              {isAttendCrawlLoading ? (
+                <CircularProgress size="24px" sx={{ color: "#FFF" }}/>
+              ) : (
+                "Accept"
+              )}
+            </Button>
+
+            <Button
+              variant="contained"
+              sx={styles.deleteButton}
+              onClick={() => {
+                if (crawl.id && token) {
+                  handleDeclinedBarCrawl(crawl.id, token);
+                }
+              }}
+            >
+              {isDeclineCrawlLoading ? (
+                <CircularProgress size="24px" sx={{ color: "#FFF" }}/>
+              ) : (
+                "Decline"
+              )}
+            </Button>
+          </>
+        )}
+        {mode === 'attendee' && (
+          <>
+            <Button
+              sx={styles.viewButton}
+              variant="contained"
+            >
+              View
+            </Button>
+
+            <Button
+              variant="contained"
+              sx={styles.deleteButton}
+              onClick={() => {
+                if (crawl.id && token) {
+                  handleDeclinedBarCrawl(crawl.id, token);
+                }
+              }}
+            >
+              {isDeclineCrawlLoading ? (
+                <CircularProgress size="24px" sx={{ color: "#FFF" }}/>
+              ) : (
+                "Back out"
+              )}
+            </Button>
+          </>
+        )}
+        {mode === 'public' && (
+          <>
+            <Button
+              sx={styles.viewButton}
+              variant="contained"
+            >
+              View
+            </Button>
+
+            <Button sx={styles.acceptButton} variant="contained">
+              {isAttendCrawlLoading ? (
+                <CircularProgress size="24px" sx={{ color: "#FFF" }}/>
+              ) : (
+                "Attend"
+              )}
+            </Button>
+          </>
+        )}
       </CardActions>
     </Card>
   );

@@ -12,6 +12,7 @@ const nestedContainerStyles = (theme: Theme) => ({
   root: {
     height: "100%",
     padding: "10px",
+    overflow: 'scroll',
     backgroundColor: theme.palette.custom?.light,
   }
 });

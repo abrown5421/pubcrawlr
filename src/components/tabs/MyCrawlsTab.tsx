@@ -5,13 +5,14 @@ import "../../styles/components/profile-manager.css";
 
 export default function MyCrawlsTab({ mode }: { mode?: string }) {
   const userProfile = useAppSelector((state) => state.userProfile);
+  const token = useAppSelector((state) => state.authentication.token);
 
   return (
     <Box sx={{ width: '100%', overflow: 'scroll' }}>
         <Box className={userProfile.barCrawls.length > 0 ? "card-deck" : "disclaim-box"}>
         {userProfile.barCrawls.length < 1 && <Typography variant="caption">{mode === 'owned' ? "You don't currently have any bar crawls saved." : "This user does not currently have any bar crawls saved."}</Typography>}
         {userProfile.barCrawls.length > 0 && userProfile.barCrawls.map((crawl) => (
-            <BarCrawlCard key={crawl.crawlName} crawl={crawl} />
+            <BarCrawlCard key={crawl.crawlName} crawl={crawl} mode={token === crawl.userID ? "owned" : "attendee"} />
         ))}
         </Box>
     </Box>

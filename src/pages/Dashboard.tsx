@@ -8,6 +8,7 @@ import ProfileContainer from "../containers/ProfileContainer";
 const nestedContainerStyles = (theme: Theme) => ({
   root: {
     height: "100%",
+    overflow: 'scroll',
     backgroundColor: theme.palette.custom?.light,
   },
 });

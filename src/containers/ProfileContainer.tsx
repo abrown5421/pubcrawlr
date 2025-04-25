@@ -11,14 +11,15 @@ import TrianglifyBanner from '../components/TrianglifyBanner';
 import TrianglifyCustomizer from '../components/TrianglifyCustomizer';
 import { useParams } from 'react-router-dom';
 import { getUserDataFromId } from '../services/userService';
-import { setBarCrawls, setProfileUser, setFriends } from '../store/slices/userProfileSlice';
+import { setBarCrawls, setProfileUser, setFriends, setInvitedBarCrawls } from '../store/slices/userProfileSlice';
 import { setMultipleTrianglifyValues } from '../store/slices/trianglifySlice';
 import { setLoading } from '../store/slices/buttonLoadSlice';
 import { fetchTrianglifyConfig } from '../services/tryianglifyService';
 import ProfileInfoBuilder from '../components/ProfileInfoBuilder';
-import { getUserBarCrawls } from '../services/barCrawlService';
+import { getUserBarCrawls, getUserInvitedBarCrawls } from '../services/barCrawlService';
 import TabManager from '../components/TabManager'; 
 import MyCrawlsTab from "../components/tabs/MyCrawlsTab";
+import InvitedBarCrawlsTab from "../components/tabs/InvitedBarCrawlsTab";
 import MyFriendsTab from "../components/tabs/MyFriendsTab";
 import PendingFriendsTab from "../components/tabs/PendingFriendsTab";
 import RequestedFriendsTab from "../components/tabs/RequestedFriendsTab";
@@ -82,6 +83,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
 
   const fetchUserbarCrawls = async (uid: string) => {
     const userBarCrawls = await getUserBarCrawls(uid);
+    const userInvitedBarCrawls = await getUserInvitedBarCrawls(uid);
     const formattedCrawls = userBarCrawls.map(crawl => ({
       id: crawl.id ?? null,
       crawlName: crawl.crawlName,
@@ -99,7 +101,26 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
         }
       }))
     }));
+
+    const formattedInvitedCrawls = userInvitedBarCrawls.map(crawl => ({
+      id: crawl.id ?? null,
+      crawlName: crawl.crawlName,
+      intimacyLevel: crawl.intimacyLevel,
+      userID: crawl.userID ?? "",
+      selectedBars: crawl.selectedBars.map(place => ({
+        id: place.id,
+        name: place.name,
+        vicinity: place.vicinity,
+        geometry: {
+          location: {
+            lat: place.geometry.location.lat,
+            lng: place.geometry.location.lng,
+          }
+        }
+      }))
+    }));
     dispatch(setBarCrawls(formattedCrawls)); 
+    dispatch(setInvitedBarCrawls(formattedInvitedCrawls)); 
   };
 
   const fetchUserFriends = async (uid: string) => {
@@ -140,7 +161,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
           return (
             <TabManager tabs={['Crawls', 'Invites', 'Discover']}>
               <MyCrawlsTab mode="owned" />
-              <div>Invites content here</div>
+              <InvitedBarCrawlsTab mode="owned" />
               <div>Discover new crawls content here</div>
             </TabManager>
           );

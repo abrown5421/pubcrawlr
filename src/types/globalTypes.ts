@@ -36,6 +36,7 @@ export interface BarCrawl {
 export interface profileUserState {
   profileUser: User | null;
   barCrawls: BarCrawl[];
+  invitedBarCrawls: BarCrawl[];
   friends: FriendEntry[];
 }
 
@@ -128,6 +129,7 @@ export interface BarCrawlInfo {
   endDate?: string;   
   intimacyLevel: string;
   attendees: Attendee[] | string;
+  attendeeIds: string[];
 }
 
 export interface TrianglifyBannerProps {
@@ -226,4 +228,5 @@ export type TrianglifyState = {
 
 export type BarCrawlCardProps = {
   crawl: BarCrawl;
+  mode: string
 };
