@@ -17,10 +17,16 @@ import { setLoading } from "../store/slices/buttonLoadSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setAlert } from "../store/slices/notificationSlice";
 import { setBarCrawls } from "../store/slices/userProfileSlice";
+import { formatDate } from "../utils/dateUtils"; 
+import GroupsIcon from '@mui/icons-material/Groups';
+import PublicIcon from '@mui/icons-material/Public';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const useBarCrawlCardStyles = (theme: any) => ({
   logo: {
     color: theme.palette.custom?.dark,
+    marginBottom: 1,
     fontFamily: "Primary",
   },
   editButton: {
@@ -65,6 +71,10 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
   const isDeclineCrawlLoading = useAppSelector((state) => state.buttonLoad[`declineCrawl-${crawl.id}`] ?? false);
   const barCrawls = useAppSelector((state) => state.userProfile.barCrawls);
   const token = useAppSelector((state) => state.authentication.token);
+
+  const attendeesCount = crawl.attendeess.filter(attendee => attendee.attending).length;
+  const formattedStartDate = formatDate(crawl.startDate);  
+  const formattedEndDate = formatDate(crawl.endDate);
 
   const handleDelete = async (id: string) => {
     dispatch(setLoading({ key: `deleteCrawl-${id}`, value: true }));
@@ -150,6 +160,7 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
 
   return (
     <Card className="bar-crawl-card" variant="outlined">
+      
       <CardContent className="mui-cc-ovrd">
         <Box
           className="bar-crawl-header"
@@ -161,8 +172,14 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
             <Typography sx={styles.logo} variant="h5">
               {crawl.crawlName}
             </Typography>
-            <Typography className="intimacy" variant="body2" color="text.secondary">
-              {crawl.intimacyLevel}
+            <Typography className="center-row" variant="body2" color="text.secondary" >
+              <CalendarMonthIcon sx={{mr: 1}} /> {formattedStartDate} - {formattedEndDate}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" className="center-row">
+              <GroupsIcon sx={{mr: 1}} /> {attendeesCount === 1 ? `${attendeesCount} person going` : `${attendeesCount} people going`}
+            </Typography>
+            <Typography className="intimacy center-row" variant="body2" color="text.secondary" >
+              {crawl.intimacyLevel === 'public' ? <PublicIcon sx={{mr: 1}} /> : <AdminPanelSettingsIcon sx={{mr: 1}} />}{crawl.intimacyLevel}
             </Typography>
           </Box>
         </Box>

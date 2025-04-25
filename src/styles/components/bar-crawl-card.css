@@ -58,6 +58,11 @@
     margin-top: 16px;
   }
   
+  .center-row {
+    display: flex;
+    align-items: center
+  }
+
   .edit-btn,
   .delete-btn {
     padding: 6px 12px;
@@ -91,6 +96,11 @@
     display: flex !important;
     justify-content: start !important;
     padding: 8px !important;
+    position: relative;
+  }
+
+  .date-typ {
+    justify-content: end;
   }
 
   @media only screen and (min-width: 140px) {

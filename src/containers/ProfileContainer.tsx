@@ -86,7 +86,11 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
     const userInvitedBarCrawls = await getUserInvitedBarCrawls(uid);
     const formattedCrawls = userBarCrawls.map(crawl => ({
       id: crawl.id ?? null,
+      attendeesIds: crawl.attendeeIds,
+      attendeess: crawl.attendees,
       crawlName: crawl.crawlName,
+      startDate: crawl.startDate,
+      endDate: crawl.endDate,
       intimacyLevel: crawl.intimacyLevel,
       userID: crawl.userID ?? "",
       selectedBars: crawl.selectedBars.map(place => ({
@@ -104,7 +108,11 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
 
     const formattedInvitedCrawls = userInvitedBarCrawls.map(crawl => ({
       id: crawl.id ?? null,
+      attendeesIds: crawl.attendeeIds,
+      attendeess: crawl.attendees,
       crawlName: crawl.crawlName,
+      startDate: crawl.startDate,
+      endDate: crawl.endDate,
       intimacyLevel: crawl.intimacyLevel,
       userID: crawl.userID ?? "",
       selectedBars: crawl.selectedBars.map(place => ({

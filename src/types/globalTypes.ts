@@ -28,6 +28,10 @@ export interface Bar {
 export interface BarCrawl {
   id: string | null;
   crawlName: string;
+  attendeess: Attendee[],
+  attendeeIds: string[],
+  endDate: string;
+  startDate: string;
   intimacyLevel: string;
   selectedBars: Bar[];
   userID: string;
