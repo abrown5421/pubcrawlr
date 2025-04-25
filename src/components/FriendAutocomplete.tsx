@@ -7,7 +7,11 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setActivePage } from '../store/slices/activePageSlice';
 import { useNavigate } from 'react-router-dom';
 
-const FriendAutocomplete: React.FC = () => {
+type FriendAutocompleteProps = {
+  onUserSelect?: (user: User) => void;
+};
+
+const FriendAutocomplete: React.FC<FriendAutocompleteProps> = ({ onUserSelect }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const token = useAppSelector((state) => state.authentication.token);
@@ -58,7 +62,11 @@ const FriendAutocomplete: React.FC = () => {
       onInputChange={(_, newValue) => setInputValue(newValue)}
       onChange={(_, selectedOption) => {
         if (selectedOption && typeof selectedOption !== 'string') {
-          handleViewProfile(selectedOption.docId); 
+          if (onUserSelect) {
+            onUserSelect(selectedOption);
+          } else {
+            handleViewProfile(selectedOption.docId); 
+          }
         }
       }}
       loading={loading}

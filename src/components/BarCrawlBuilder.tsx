@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Drawer, Box, TextField, Button, Typography, MenuItem, CircularProgress, Collapse } from "@mui/material";
-import { useTheme } from "@mui/system";
+import { Drawer, Box, TextField, Button, Typography, MenuItem, CircularProgress, Collapse, Divider, Paper, IconButton, Avatar } from "@mui/material";
+import { Grid, useTheme } from "@mui/system";
 import Form from "./Form";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setAlert } from "../store/slices/notificationSlice";
@@ -16,11 +16,14 @@ import { setLoading } from "../store/slices/buttonLoadSlice";
 import { setModal } from "../store/slices/modalSlice";
 import { setActivePage } from "../store/slices/activePageSlice";
 import { useNavigate } from "react-router-dom";
+import FriendAutocomplete from "./FriendAutocomplete";
+import AttendeeBox from "./AttendeeBox";
 
 const useBarCrawlStyles = (theme: any) => ({
   logo: {
     color: theme.palette.custom?.dark,
     fontFamily: "Primary",
+    marginBottom: "16px"
   },
   loginButton: {
     marginRight: "8px",
@@ -265,8 +268,16 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
   };
 
   const handleAddAttendee = (newAttendee: Attendee) => {
-    setAttendees(prev =>
-      creatorAttendancePersists([...prev, newAttendee], user?.docId ?? '')
+    setAttendees(prev => {
+      const alreadyExists = prev.some(att => att.docId === newAttendee.docId);
+      if (alreadyExists) return prev;
+      return creatorAttendancePersists([...prev, newAttendee], user?.docId ?? '');
+    });
+  };
+
+  const handleRemoveAttendee = (docIdToRemove: string) => {
+    setAttendees(prevAttendees =>
+      prevAttendees.filter(att => att.docId !== docIdToRemove || att.creator) 
     );
   };
 
@@ -376,11 +387,34 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
         </div>
         <Collapse in={formData.intimacyLevel === "Private"} timeout="auto" unmountOnExit>
           <Box sx={{ mt: 2, mb: 2 }}>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-              Invite Friends
-            </Typography>
-            {/* friend invitation module will go here */}
+            <FriendAutocomplete onUserSelect={(selectedUser) => {
+                handleAddAttendee({
+                  docId: selectedUser.docId,
+                  UserFirstName: selectedUser.UserFirstName,
+                  UserLastName: selectedUser.UserLastName,
+                  invited: true,
+                  attending: false,
+                  creator: false
+                });
+              }}
+            />
           </Box>
+          <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap'}}>
+            {attendees.map((att, index) => {
+              if (att.UserFirstName) {
+                return (
+                  <AttendeeBox
+                    key={index}
+                    creator={att.creator}
+                    firstName={att.UserFirstName}
+                    lastName={att.UserLastName ?? undefined}
+                    onRemove={() => handleRemoveAttendee(att.docId ?? '')}
+                    />
+                );
+              }
+            })}
+          </Box>
+          
         </Collapse>
         <Collapse in={formData.intimacyLevel === "Groups"} timeout="auto" unmountOnExit>
           <Box sx={{ mt: 2, mb: 2 }}>
@@ -390,6 +424,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
             {/* group selection module will go here */}
           </Box>
         </Collapse>
+        <Divider sx={{mt: 2}} />
         {selectedBars.length > 0 && (
           <div style={{ marginBottom: theme.spacing(2) }}>
             {selectedBars.map((bar, index) => (
