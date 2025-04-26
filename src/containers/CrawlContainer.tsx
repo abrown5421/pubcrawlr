@@ -1,47 +1,144 @@
-import { useEffect } from 'react';
-import { Box, CircularProgress, useTheme } from '@mui/material';
+import { useEffect, useRef, useState } from "react";
+import * as maplibregl from 'maplibre-gl';
+import "maplibre-gl/dist/maplibre-gl.css";
+import { Box, useTheme, width } from "@mui/system";
+import "../styles/pages/root.css";
 import '../styles/containers/crawl-container.css';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { useParams } from 'react-router-dom';
-import { setLoading } from '../store/slices/buttonLoadSlice';
 import { CrawlContainerProps } from '../types/globalTypes';
-import TrianglifyBanner from '../components/TrianglifyBanner';
+import { useAppSelector } from "../store/hooks";
+import { Button, Divider, Typography } from "@mui/material";
+import { formatDate } from "../utils/dateUtils"; 
+import GroupsIcon from '@mui/icons-material/Groups';
+import PublicIcon from '@mui/icons-material/Public';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import BarCard from "../components/BarCard";
 
 const useCrawlPageStyles = (theme: any) => ({
+    logo: {
+        color: theme.palette.custom?.dark,
+        marginBottom: 1,
+        fontWeight: 700,
+        fontFamily: "Primary",
+    },
+    actionButtonDark: {
+        backgroundColor: theme.palette.custom?.dark,
+        width: 'fit-content',
+        color: theme.palette.custom?.light,
+        "&:hover": {
+          backgroundColor: theme.palette.custom?.light,
+          color: theme.palette.custom?.dark,
+        },
+        marginTop: theme.spacing(2),
+    },
+    actionButtonLight: {
+        backgroundColor: theme.palette.custom?.light,
+        color: theme.palette.custom?.dark,
+        width: 'fit-content',
+        "&:hover": {
+          backgroundColor: theme.palette.custom?.grey,
+          color: theme.palette.custom?.dark,
+        },
+        marginTop: theme.spacing(2),
+    },
 });
 
 const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
     const theme = useTheme();
     const styles = useCrawlPageStyles(theme);
-    const isLoading = useAppSelector((state) => state.buttonLoad['crawlPage'] ?? false);
-    const dispatch = useAppDispatch();
-    const { slug } = useParams();
-  
+    const token = useAppSelector(state => state.authentication.token);
+    const crawl = useAppSelector(state => state.selectedBarCrawl.selectedBarCrawl);
+    const mapContainerRef = useRef<HTMLDivElement>(null);
+    const ownedCrawl = mode === 'owner';
+    const attendeesCount = Array.isArray(crawl?.attendees)
+    ? crawl.attendees.filter((attendee) => attendee.attending).length
+    : 0;
+    const formattedStartDate = formatDate(crawl?.startDate ?? "");
+    const formattedEndDate = formatDate(crawl?.endDate ?? "");
+
+    const [map, setMap] = useState<maplibregl.Map | null>(null);
+    const [isInvited, setIsInvited] = useState<boolean>(false);
+
     useEffect(() => {
-      if (!slug) return;
-  
-      dispatch(setLoading({ key: 'crawlPage', value: true }));
-  
-      const timeout = setTimeout(() => {
-        dispatch(setLoading({ key: 'crawlPage', value: false }));
-      }, 1000);
-  
-      return () => {
-        clearTimeout(timeout);
-      };
-    }, [slug]);
-  
+        const isInvitedValue = crawl?.attendeeIds.find(id => id === token);
+        setIsInvited(!!isInvitedValue);
+    }, [crawl, token]);
+
+    useEffect(() => {
+        if (!mapContainerRef.current || map) return;
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const mapInstance = new maplibregl.Map({
+              container: mapContainerRef.current!,
+              style: `https://api.maptiler.com/maps/openstreetmap/style.json?key=${import.meta.env.VITE_MAP_TILER_KEY}`,
+              center: [longitude, latitude],
+              zoom: 14,
+            });
+            mapInstance.addControl(new maplibregl.NavigationControl(), "top-right");
+    
+            new maplibregl.Marker({
+              color: theme.palette.custom.error
+            }).setLngLat([longitude, latitude]).addTo(mapInstance);
+    
+            setMap(mapInstance);
+          },
+          (err) => console.error("Geolocation error:", err),
+          { enableHighAccuracy: true }
+        );
+    }, [map]);
+    
     return (
       <Box className="crawl-container">
-        {isLoading ? (
-          <CircularProgress size="24px" sx={{ color: "#FFF" }} />
+        {isInvited ? (
+            <>
+                <div className='crawl-column map-controller'>
+                    {ownedCrawl ? (
+                        <>crawl editor will go here</>
+                    ) : (
+                        <>
+                            <Typography sx={styles.logo} variant="h5">
+                            {crawl?.crawlName}
+                            </Typography>
+                            <Typography className="center-row" variant="body2" color="text.secondary" >
+                            <CalendarMonthIcon sx={{mr: 1}} /> {formattedStartDate} - {formattedEndDate}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" className="center-row">
+                            <GroupsIcon sx={{mr: 1}} /> {attendeesCount === 1 ? `${attendeesCount} person going` : `${attendeesCount} people going`}
+                            </Typography>
+                            <Typography className="intimacy center-row" variant="body2" color="text.secondary" >
+                            {crawl?.intimacyLevel === 'public' ? <PublicIcon sx={{mr: 1}} /> : <AdminPanelSettingsIcon sx={{mr: 1}} />}{crawl?.intimacyLevel}
+                            </Typography>
+                            <Divider sx={{mt: 2}} />
+                            {crawl?.selectedBars.map((bar, index) => (
+                                <BarCard key={index} bar={bar} mode="viewing" />
+                            ))}
+                        </>
+                    )}
+                </div>
+                <div className='map-container' ref={mapContainerRef} />
+            </>
         ) : (
-          <>
-            <TrianglifyBanner />
-            {mode === 'owner'
-              ? "You are the creator of this crawl"
-              : "You are not the creator of this crawl"}
-          </>
+            <div className="no-access-container">
+                <Typography sx={styles.logo} variant="h5">Who do you know here?</Typography>
+                <Typography className="center-row" variant="body2" color="text.secondary" >You are not on the guest list of this private bar crawl.</Typography>
+                <Box className="crawl-row space-between w-500">
+                    <Button
+                    variant="contained"
+                    fullWidth
+                    sx={styles.actionButtonLight}
+                    >
+                        Dashboard
+                    </Button>
+                    <Button
+                    variant="contained"
+                    fullWidth
+                    sx={styles.actionButtonDark}
+                    >
+                        Create a Crawl
+                    </Button>
+                </Box>
+            </div>
         )}
       </Box>
     );

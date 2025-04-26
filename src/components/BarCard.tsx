@@ -7,6 +7,8 @@ import { BarCardProps } from "../types/globalTypes";
 import { addBar, setDrawerOpen } from '../store/slices/selectedBarSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { removeBar } from "../store/slices/selectedBarSlice";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 
 const useBarCardStyles = (theme: any) => ({
     logo: {
@@ -79,7 +81,7 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
                 </div>
             </div>
             <div className={mode === 'selected' ? "bar-card-col add-pad fl-1 jc-cent" : "bar-card-col fl-1 jc-cent"}>
-                {mode !== 'selected' && (
+                {mode !== 'selected' && mode !== 'viewing' && (
                     <Button
                         className="add-button"
                         variant="contained"
@@ -94,6 +96,16 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
                 <IconButton color="error" sx={{height: '40px'}} onClick={() => {handleRemoveBar(bar.name)}}>
                     <DeleteIcon />
                 </IconButton>
+            )}
+            {mode === 'viewing' && (
+                <>
+                    <IconButton color="success" sx={{ height: '40px', color: theme => theme.palette.custom?.accent}}>
+                    <ThumbUpIcon />
+                    </IconButton>
+                    <IconButton color="error" sx={{ height: '40px', color: theme => theme.palette.custom?.error }}>
+                    <ThumbDownIcon />
+                    </IconButton>
+                </>
             )}
         </div>
         <Divider />

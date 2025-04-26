@@ -1,4 +1,44 @@
 .crawl-container {
     display: flex;
+    flex-direction: row;
+}
+.crawl-row {
+    display: flex;
+    flex-direction: row;
+}
+.w-500 {
+    width: 300px;
+}
+.space-between {
+    justify-content: space-between;
+}
+.crawl-column {
+    display: flex;
     flex-direction: column;
+}
+.map-controller {
+    overflow: scroll;
+    flex: 3;
+    height: 100%;
+    padding: 15px 10px;
+}
+.map-container {
+    position: relative !important;
+    height: 100vh;
+    width: 100%;
+    flex: 8;
+    overflow: hidden;
+}
+.no-access-container {
+    width: 100%; 
+    height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+@media only screen and (max-width: 599px) {
+    .no-access-container {
+        height: calc(100vh - 54px);
+    }
 }
