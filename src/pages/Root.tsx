@@ -55,6 +55,7 @@ function Root() {
   const [map, setMap] = useState<maplibregl.Map | null>(null);
   const [visibleBars, setVisibleBars] = useState<Place[]>([]);
   const [drawerWidth, setDrawerWidth] = useState<number>(400);
+  const [locationCoords, setLocationCoords] = useState<object>({Lat: '', Lng: ''});
   const [directions, setDirections] = useState<MapLibreGlDirections | null>(null);
 
   const normalizePlace = async (place: any): Promise<Place | null> => {
@@ -146,6 +147,7 @@ function Root() {
     }).setLngLat([center.lng, center.lat]).addTo(mapInstance);
 
     fetchAndStoreBars(center.lat, center.lng);
+    setLocationCoords({Lat: center.lat, Lng: center.lng})
   };
 
   // Handle place selection from autocomplete input list
@@ -198,7 +200,7 @@ function Root() {
         new maplibregl.Marker({
           color: theme.palette.custom.error
         }).setLngLat([longitude, latitude]).addTo(mapInstance);
-
+        setLocationCoords({Lat: latitude, Lng: longitude})
         setMap(mapInstance);
       },
       (err) => console.error("Geolocation error:", err),
@@ -246,7 +248,7 @@ function Root() {
           includeAddBtn: true
         })))        
         .addTo(map);
-
+        setLocationCoords({Lat: lat, Lng: lng})
 
       marker.getElement().addEventListener('click', () => {
         map.flyTo({
@@ -379,6 +381,7 @@ function Root() {
         open={drawerOpen}
         onClose={toggleDrawer(false)}
         drawerWidth={drawerWidth}
+        locationCoords={locationCoords}
       />
     </AnimatedContainer>
   );

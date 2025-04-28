@@ -65,28 +65,30 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
     }, [crawl, token]);
 
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            console.log(position)
-            const { latitude, longitude } = position.coords;
-            const mapInstance = new maplibregl.Map({
-              container: mapContainerRef.current!,
-              style: `https://api.maptiler.com/maps/openstreetmap/style.json?key=${import.meta.env.VITE_MAP_TILER_KEY}`,
-              center: [longitude, latitude],
-              zoom: 14,
-            });
-            mapInstance.addControl(new maplibregl.NavigationControl(), "top-right");
+        if (!crawl?.centerLocation || !mapContainerRef.current) return;
     
-            new maplibregl.Marker({
-              color: theme.palette.custom.error
-            }).setLngLat([longitude, latitude]).addTo(mapInstance);
+        const coordObj = crawl.centerLocation as { Lat: number; Lng: number };
+        console.log(coordObj);
     
-            setMap(mapInstance);
-          },
-          (err) => console.error("Geolocation error:", err),
-          { enableHighAccuracy: true }
-        );
-    }, [map]);
+        const mapInstance = new maplibregl.Map({
+            container: mapContainerRef.current,
+            style: `https://api.maptiler.com/maps/openstreetmap/style.json?key=${import.meta.env.VITE_MAP_TILER_KEY}`,
+            center: [coordObj.Lng, coordObj.Lat],
+            zoom: 14,
+        });
+        mapInstance.addControl(new maplibregl.NavigationControl(), "top-right");
+    
+        new maplibregl.Marker({
+            color: theme.palette.custom.error
+        }).setLngLat([coordObj.Lng, coordObj.Lat]).addTo(mapInstance);
+    
+        setMap(mapInstance);
+    
+        return () => {
+            mapInstance.remove();
+        };
+    }, [crawl?.centerLocation]);
+    
     
     return (
       <Box className="crawl-container">

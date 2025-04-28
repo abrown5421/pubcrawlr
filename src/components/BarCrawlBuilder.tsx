@@ -46,7 +46,7 @@ const useBarCrawlStyles = (theme: any) => ({
   },
 });
 
-export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHereButtonProps) {
+export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCoords }: SearchHereButtonProps) {
   const theme = useTheme();
   const styles = useBarCrawlStyles(theme);
   const viewport = useAppSelector(state => state.viewport.type);
@@ -205,6 +205,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth }: SearchHe
       intimacyLevel: formData.intimacyLevel,
       attendees: attendees, 
       attendeeIds: [], 
+      centerLocation: locationCoords
     };
 
     saveBarCrawl(barCrawlData)

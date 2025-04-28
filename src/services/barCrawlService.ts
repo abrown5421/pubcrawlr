@@ -36,7 +36,8 @@ const ensureCreatorInAttendees = (attendees: any, userID: string | null): Attend
     UserLastName: null,
     invited: false,
     attending: true,
-    creator: true
+    creator: true,
+    seen: true
   };
 
   const isCreatorIncluded = validAttendees.some(a => a.docId === userID);
@@ -51,6 +52,7 @@ export const saveBarCrawl = async ({
   endDate,
   intimacyLevel,
   attendees, 
+  centerLocation
 }: BarCrawlInfo): Promise<void> => {
   try {
     const updatedSelectedBars = selectedBars.map(bar => {
@@ -77,6 +79,7 @@ export const saveBarCrawl = async ({
       intimacyLevel,
       attendees: finalAttendees,
       attendeeIds,
+      centerLocation
     };
 
     if (startDate) {

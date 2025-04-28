@@ -139,6 +139,7 @@ export interface BarCrawlInfo {
   intimacyLevel: string;
   attendees: Attendee[] | string;
   attendeeIds: string[];
+  centerLocation: object;
 }
 
 export interface TrianglifyBannerProps {
@@ -188,6 +189,7 @@ export type SearchHereButtonProps = {
   open: boolean;
   onClose: () => void;
   drawerWidth: number;
+  locationCoords: object;
 };
 
 export type FormHandle = {
