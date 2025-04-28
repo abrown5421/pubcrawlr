@@ -22,6 +22,8 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import PublicIcon from '@mui/icons-material/Public';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { setActivePage } from "../store/slices/activePageSlice";
+import { useNavigate } from "react-router-dom";
 
 const useBarCrawlCardStyles = (theme: any) => ({
   logo: {
@@ -65,6 +67,7 @@ const useBarCrawlCardStyles = (theme: any) => ({
 const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const styles = useBarCrawlCardStyles(theme);
   const isDeleteCrawlLoading = useAppSelector((state) => state.buttonLoad[`deleteCrawl-${crawl.id}`] ?? false);
   const isAttendCrawlLoading = useAppSelector((state) => state.buttonLoad[`attendCrawl-${crawl.id}`] ?? false);
@@ -158,6 +161,16 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
     }
   }
 
+  const handleEditCrawl = (barCrawlId: string) => {
+    dispatch(setActivePage({ key: "In", value: false }));
+    dispatch(setActivePage({ key: "Name", value: 'Crawl' }));
+
+    setTimeout(() => {
+      dispatch(setActivePage({ key: "In", value: true }));
+      navigate(`/Crawl/${barCrawlId}`);
+    }, 500);
+  }
+
   return (
     <Card className="bar-crawl-card" variant="outlined">
       
@@ -190,7 +203,15 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
       <CardActions className="button-group" sx={{ justifyContent: "flex-end" }}>
         {mode === 'owned' && (
           <>
-            <Button sx={styles.editButton} variant="contained">
+            <Button 
+              sx={styles.editButton} 
+              variant="contained" 
+              onClick={() => {
+                if (crawl.id) {
+                  handleEditCrawl(crawl.id);
+                }
+              }}
+            >
               Edit
             </Button>
 

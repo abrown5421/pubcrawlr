@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as maplibregl from 'maplibre-gl';
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Box, useTheme, width } from "@mui/system";
+import { Box, useTheme } from "@mui/system";
 import "../styles/pages/root.css";
 import '../styles/containers/crawl-container.css';
 import { CrawlContainerProps } from '../types/globalTypes';
@@ -65,9 +65,9 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
     }, [crawl, token]);
 
     useEffect(() => {
-        if (!mapContainerRef.current || map) return;
         navigator.geolocation.getCurrentPosition(
           (position) => {
+            console.log(position)
             const { latitude, longitude } = position.coords;
             const mapInstance = new maplibregl.Map({
               container: mapContainerRef.current!,
