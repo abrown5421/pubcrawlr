@@ -4,14 +4,14 @@ import { useTheme } from "@mui/system";
 import Form from "./Form";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setAlert } from "../store/slices/notificationSlice";
-import { clearBars, setDrawerOpen } from '../store/slices/selectedBarSlice';
+import { addBar, clearBars, setDrawerOpen } from '../store/slices/selectedBarSlice';
 import { BcFormFormData, BcFormValidationErrors, SearchHereButtonProps, FormHandle, Attendee } from "../types/globalTypes";
 import BarCard from "./BarCard";
 import PublicIcon from '@mui/icons-material/Public';
 import GroupsIcon from '@mui/icons-material/Groups';
 import LockPersonIcon from '@mui/icons-material/LockPerson';
 import '../styles/components/bar-crawl-builder.css';
-import { saveBarCrawl } from "../services/barCrawlService";
+import { saveBarCrawl, updateBarCrawl } from "../services/barCrawlService";
 import { setLoading } from "../store/slices/buttonLoadSlice";
 import { setModal } from "../store/slices/modalSlice";
 import { setActivePage } from "../store/slices/activePageSlice";
@@ -46,18 +46,18 @@ const useBarCrawlStyles = (theme: any) => ({
   },
 });
 
-export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCoords }: SearchHereButtonProps) {
+export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCoords, mode = 'crawlBeingMade' }: SearchHereButtonProps) {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
   const styles = useBarCrawlStyles(theme);
   const viewport = useAppSelector(state => state.viewport.type);
   const selectedBars = useAppSelector(state => state.selectedBars.selectedBars);
+  const crawl = useAppSelector(state => state.selectedBarCrawl.selectedBarCrawl);
   const token = useAppSelector((state) => state.authentication.token);
   const user = useAppSelector((state) => state.authentication.user ?? null);
   const isLoading = useAppSelector((state) => state.buttonLoad['saveCrawl'] ?? false);
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const crawlForm = useRef<FormHandle>(null);
-
   const [attendees, setAttendees] = useState<Attendee[]>(user ? [{
     docId: user?.docId ,
     UserFirstName: user?.UserFirstName,
@@ -67,7 +67,6 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
     creator: true,
     seen: true
   }] : [])
-  
   const [formData, setFormData] = useState<BcFormFormData>({
     barCrawlName: "",
     selectedBars: selectedBars,
@@ -75,8 +74,31 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
     startDate: "",
     endDate: ""
   });
-
   const [errors, setErrors] = useState<BcFormValidationErrors>({});
+
+  useEffect(() => {
+    if (mode === 'crawlBeingViewed' && crawl) {
+      
+      crawl.selectedBars.map((bar) => {
+        dispatch(addBar(bar));
+      })
+
+      setFormData({
+        barCrawlName: crawl.crawlName || "",
+        selectedBars: [],
+        intimacyLevel: (crawl.intimacyLevel === "Public" || crawl.intimacyLevel === "Groups" || crawl.intimacyLevel === "Private")
+          ? crawl.intimacyLevel
+          : "Public",
+        startDate: "", 
+        endDate: "",
+      });
+  
+      setAttendees(Array.isArray(crawl.attendees) ? crawl.attendees : []);
+    }
+  }, [mode, crawl]);
+
+  useEffect(()=>{console.log(crawl)}, [crawl])
+
   const parseDate = (dateStr: string): Date => {
     const [year, month, day] = dateStr.split('-').map(Number);
     return new Date(year, month - 1, day);
@@ -208,34 +230,67 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
       centerLocation: locationCoords
     };
 
-    saveBarCrawl(barCrawlData)
-      .then(() => {
-        setFormData({ barCrawlName: "", intimacyLevel: "Public", selectedBars: selectedBars, startDate: "", endDate: "" });
-        setErrors({});
-        crawlForm.current?.clear();
-        dispatch(clearBars())
-        dispatch(setDrawerOpen(false));
-        dispatch(
-          setAlert({
-            open: true,
-            message: "Bar crawl saved successfully",
-            severity: "success",
+    if (mode === 'crawlBeingMade') {
+      saveBarCrawl(barCrawlData)
+        .then(() => {
+          setFormData({ barCrawlName: "", intimacyLevel: "Public", selectedBars: selectedBars, startDate: "", endDate: "" });
+          setErrors({});
+          crawlForm.current?.clear();
+          dispatch(clearBars())
+          dispatch(setDrawerOpen(false));
+          dispatch(
+            setAlert({
+              open: true,
+              message: "Bar crawl saved successfully",
+              severity: "success",
+            })
+          );
+        })
+        .catch(error => {
+          console.error('Failed to save bar crawl:', error);
+          dispatch(
+            setAlert({
+              open: true,
+              message: "Bar crawl failed to save, please try again later",
+              severity: "error",
+            })
+          );
+        })
+        .finally(() => {
+          dispatch(setLoading({ key: 'saveCrawl', value: false }));
+        })
+    } else {
+      if (crawl?.id) {
+        updateBarCrawl(crawl?.id, barCrawlData)
+          .then(() => {
+            setFormData({ barCrawlName: "", intimacyLevel: "Public", selectedBars: selectedBars, startDate: "", endDate: "" });
+            setErrors({});
+            crawlForm.current?.clear();
+            dispatch(clearBars())
+            dispatch(setDrawerOpen(false));
+            dispatch(
+              setAlert({
+                open: true,
+                message: "Bar crawl saved successfully",
+                severity: "success",
+              })
+            );
           })
-        );
-      })
-      .catch(error => {
-        console.error('Failed to save bar crawl:', error);
-        dispatch(
-          setAlert({
-            open: true,
-            message: "Bar crawl failed to save, please try again later",
-            severity: "error",
+          .catch(error => {
+            console.error('Failed to save bar crawl:', error);
+            dispatch(
+              setAlert({
+                open: true,
+                message: "Bar crawl failed to save, please try again later",
+                severity: "error",
+              })
+            );
           })
-        );
-      })
-      .finally(() => {
-        dispatch(setLoading({ key: 'saveCrawl', value: false }));
-      })
+          .finally(() => {
+            dispatch(setLoading({ key: 'saveCrawl', value: false }));
+          })
+      }
+    }
   };
 
   const handleTextFieldChange = (field: keyof BcFormFormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -298,20 +353,8 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
     }));
   }, [selectedBars, errors.selectedBars]);
 
-  return (
-    <Drawer
-      anchor="left"
-      open={selectedBars.length > 0 && open}
-      onClose={onClose}
-      PaperProps={{
-        sx: {
-          width: viewport === "desktop" ? drawerWidth : viewport === "tablet" ? "75%" : "85%",
-          backgroundColor: theme.palette.custom?.light,
-          padding: 2,
-        },
-      }}
-    >
-      <Form onSave={handleSubmit} ref={crawlForm}>
+  const formContent = (
+    <Form onSave={handleSubmit} ref={crawlForm}>
         <TextField
           size="small"
           name="barCrawlName"
@@ -457,6 +500,26 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
           {isLoading ? <CircularProgress size="24px" sx={{ color: theme.palette.custom?.light }} /> :  'Save Bar Crawl'}
         </Button>
       </Form>
-    </Drawer>
-  );
+  )
+
+  if (mode === 'crawlBeingMade') {
+    return (
+      <Drawer
+        anchor="left"
+        open={selectedBars.length > 0 && open}
+        onClose={onClose}
+        PaperProps={{
+          sx: {
+            width: viewport === "desktop" ? drawerWidth : viewport === "tablet" ? "75%" : "85%",
+            backgroundColor: theme.palette.custom?.light,
+            padding: 2,
+          },
+        }}
+      >
+        {formContent}
+      </Drawer>
+    );
+  }
+
+  return formContent;
 }

@@ -13,6 +13,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import BarCard from "../components/BarCard";
+import BarCrawlBuilder from "../components/BarCrawlBuilder";
 
 const useCrawlPageStyles = (theme: any) => ({
     logo: {
@@ -55,8 +56,6 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
     : 0;
     const formattedStartDate = formatDate(crawl?.startDate ?? "");
     const formattedEndDate = formatDate(crawl?.endDate ?? "");
-
-    const [map, setMap] = useState<maplibregl.Map | null>(null);
     const [isInvited, setIsInvited] = useState<boolean>(false);
 
     useEffect(() => {
@@ -67,9 +66,7 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
     useEffect(() => {
         if (!crawl?.centerLocation || !mapContainerRef.current) return;
     
-        const coordObj = crawl.centerLocation as { Lat: number; Lng: number };
-        console.log(coordObj);
-    
+        const coordObj = crawl.centerLocation as { Lat: number; Lng: number };    
         const mapInstance = new maplibregl.Map({
             container: mapContainerRef.current,
             style: `https://api.maptiler.com/maps/openstreetmap/style.json?key=${import.meta.env.VITE_MAP_TILER_KEY}`,
@@ -82,13 +79,10 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
             color: theme.palette.custom.error
         }).setLngLat([coordObj.Lng, coordObj.Lat]).addTo(mapInstance);
     
-        setMap(mapInstance);
-    
         return () => {
             mapInstance.remove();
         };
     }, [crawl?.centerLocation]);
-    
     
     return (
       <Box className="crawl-container">
@@ -96,7 +90,13 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
             <>
                 <div className='crawl-column map-controller'>
                     {ownedCrawl ? (
-                        <>crawl editor will go here</>
+                        <BarCrawlBuilder
+                            open={true} 
+                            onClose={() => {}} 
+                            drawerWidth={400}
+                            locationCoords={{}}
+                            mode="crawlBeingViewed"
+                        />
                     ) : (
                         <>
                             <Typography sx={styles.logo} variant="h5">

@@ -19,7 +19,7 @@
 .map-controller {
     overflow: scroll;
     flex: 3;
-    height: 100%;
+    height: calc(100vh - 64px);
     padding: 15px 10px;
 }
 .map-container {
@@ -38,6 +38,9 @@
 }
 @media only screen and (max-width: 599px) {
     .no-access-container {
+        height: calc(100vh - 54px);
+    }
+    .map-controller {
         height: calc(100vh - 54px);
     }
 }

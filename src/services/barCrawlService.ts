@@ -257,4 +257,60 @@ export function subscribeToBarCrawls(callback: (crawls: BarCrawlInfo[]) => void)
   });
 }
 
+export const updateBarCrawl = async (id: string, {
+  userID,
+  selectedBars,
+  crawlName,
+  startDate,
+  endDate,
+  intimacyLevel,
+  attendees,
+  centerLocation
+}: BarCrawlInfo): Promise<void> => {
+  try {
+    const updatedSelectedBars = selectedBars.map(bar => {
+      const barLat = bar.geometry.location.lat;
+      const barLng = bar.geometry.location.lng;
+
+      const updatedGeometry = {
+        location: {
+          lat: barLat,
+          lng: barLng,
+        },
+      };
+
+      return sanitizeUndefined({ ...bar, geometry: updatedGeometry });
+    });
+
+    const finalAttendees = ensureCreatorInAttendees(attendees, userID);
+    const attendeeIds = finalAttendees.map(a => a.docId).filter(Boolean);
+
+    let barCrawlData: any = {
+      userID,
+      selectedBars: updatedSelectedBars,
+      crawlName,
+      intimacyLevel,
+      attendees: finalAttendees,
+      attendeeIds,
+      centerLocation
+    };
+
+    if (startDate) {
+      barCrawlData.startDate = startDate;
+    }
+
+    if (endDate) {
+      barCrawlData.endDate = endDate;
+    }
+
+    barCrawlData = sanitizeUndefined(barCrawlData);
+
+    await db.collection('BarCrawls').doc(id).update(barCrawlData);
+    console.log(`BarCrawl with ID ${id} updated successfully.`);
+  } catch (error) {
+    console.error('Error updating bar crawl:', error);
+    throw new Error('Error updating bar crawl');
+  }
+};
+
 

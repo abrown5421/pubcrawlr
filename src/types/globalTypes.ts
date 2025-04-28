@@ -190,6 +190,7 @@ export type SearchHereButtonProps = {
   onClose: () => void;
   drawerWidth: number;
   locationCoords: object;
+  mode?: 'crawlBeingMade' | 'crawlBeingViewed'
 };
 
 export type FormHandle = {
