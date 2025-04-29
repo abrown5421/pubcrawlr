@@ -28,6 +28,9 @@
 .app-jc-start {
     justify-content: flex-start;
 }
+.app-jc-start-imp {
+    justify-content: flex-start !important;
+}
 .app-jc-end {
     justify-content: flex-end;
 }
@@ -147,6 +150,15 @@
 }
 .app-sticky { 
     position: sticky;
+}
+.app-absolute-imp { 
+    position: absolute !important;
+}
+.app-fixed-imp { 
+    position: fixed !important;
+}
+.app-sticky-imp { 
+    position: sticky !important;
 }
 .app-overflow-hidden { 
     overflow: hidden; 

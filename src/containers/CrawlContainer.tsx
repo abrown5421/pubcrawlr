@@ -85,10 +85,10 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
     }, [crawl?.centerLocation]);
     
     return (
-      <Box className="crawl-container">
+      <Box className="app-flex app-row">
         {isInvited ? (
             <>
-                <div className='crawl-column map-controller'>
+                <div className='app-flex app-col app-overflow-scroll app-fl-3 map-controller'>
                     {ownedCrawl ? (
                         <BarCrawlBuilder
                             open={true} 
@@ -118,13 +118,13 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
                         </>
                     )}
                 </div>
-                <div className='map-container' ref={mapContainerRef} />
+                <div className='app-flex app-col app-relative app-overflow-hidden app-h-percent-100 app-fl-8 map-container' ref={mapContainerRef} />
             </>
         ) : (
-            <div className="no-access-container">
+            <div className="app-flex app-col app-jc-center app-ai-center app-w-percent-100 no-access-container">
                 <Typography sx={styles.logo} variant="h5">Who do you know here?</Typography>
                 <Typography className="center-row" variant="body2" color="text.secondary" >You are not on the guest list of this private bar crawl.</Typography>
-                <Box className="crawl-row space-between w-500">
+                <Box className="app-flex app-row app app-jc-between w-300">
                     <Button
                     variant="contained"
                     fullWidth

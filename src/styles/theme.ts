@@ -5,6 +5,7 @@ const themeOptions: ThemeOptions = {
     custom: {
       dark: "#00171f", 
       grey: "#e0e0e0",
+      lgtGrey: "#f0f2f5",
       light: "#FFF", 
       accent: "#0090c9", 
       highlight: "#00c3ff", 
@@ -18,6 +19,7 @@ declare module "@mui/material/styles" {
     custom?: {
       dark: string;
       grey: string;
+      lgtGrey: string;
       light: string;
       accent: string;
       highlight: string;
@@ -28,6 +30,7 @@ declare module "@mui/material/styles" {
     custom?: {
       dark: string;
       grey: string;
+      lgtGrey: string;
       light: string;
       accent: string;
       highlight: string;

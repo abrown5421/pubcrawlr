@@ -40,6 +40,13 @@ const useProfileStyles = (theme: any) => ({
       backgroundColor: theme.palette.custom?.highlight,
     },
   },
+  sidebarButton: {
+    backgroundColor: theme.palette.custom?.lgtGrey,
+    color: theme.palette.custom?.dark,
+    "&:hover": {
+      color: theme.palette.custom?.accent,
+    },
+  },
 });
 
 const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | "stranger" | "friend" }) => {
@@ -306,34 +313,34 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
   }, [slug]);
 
   return (
-    <Box className="prof-container">
+    <Box className="app-flex app-col">
       {isLoading ? (
         <CircularProgress size="24px" sx={{ color: "#FFF" }} />
       ) : (
         <>
-          <div className="profile-container-banner">
+          <div className="app-relative app-w-percent-100 profile-container-banner">
             <TrianglifyBanner {...(token ? { token } : {})} />
             <Avatar
-              className="profile-avatar"
+              className="app-absolute-imp profile-avatar"
               sx={{ backgroundColor: theme.palette.custom?.dark, cursor: "pointer" }}
             >
               {userProfile.profileUser?.UserFirstName.charAt(0)} {userProfile.profileUser?.UserLastName.charAt(0)}
             </Avatar>
             {mode === "personal" && (
-              <IconButton onClick={handleImageChange} sx={{ backgroundColor: theme.palette.custom?.light }} className="profile-banner-upload">
+              <IconButton onClick={handleImageChange} sx={{ backgroundColor: theme.palette.custom?.light }} className="app-absolute-imp profile-banner-upload">
                 <EditIcon />
               </IconButton>
             )}
           </div>
 
-          <div className="profile-container-content">
-            <div className="profile-sidebar">
-              <div className="profile-container-row">
+          <div className="app-flex app-row profile-container-content">
+            <div className="app-flex app-col app-relative profile-sidebar app-fl-3">
+              <div className="app-flex app-row">
                 <Typography variant="h5" fontWeight={700} sx={styles.logo}>
                   {userProfile.profileUser?.UserFirstName} {userProfile.profileUser?.UserLastName}
                 </Typography>
                 {mode === "personal" ? (
-                  <IconButton onClick={handleInfoChange} sx={{ backgroundColor: theme.palette.custom?.light }} className="profile-info-edit">
+                  <IconButton onClick={handleInfoChange} sx={{ backgroundColor: theme.palette.custom?.light }} className="app-absolute-imp profile-info-edit">
                     <EditIcon />
                   </IconButton>
                 ) : (
@@ -341,7 +348,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                     sx={styles.addButton}
                     variant="contained"
                     startIcon={<PersonAddIcon />}
-                    className="profile-info-edit"
+                    className="app-absolute-imp profile-info-edit"
                     onClick={handleRequestFriend}
                     disabled={alreadyFriend === true}
                   >
@@ -350,20 +357,20 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                 )}
               </div>
               <Typography variant="caption">{userProfile.profileUser?.UserEmail}</Typography>
-              <div className="profile-stat-container">
-                <div className="profile-stat-column">
+              <div className="app-flex app-row app-jc-between profile-stat-container">
+                <div className="app-flex app-col app-ai-center app-jc-center">
                   <Typography variant="h5" fontWeight={700} sx={styles.logo}>
                     {userProfile.barCrawls.length}
                   </Typography>
                   <Typography variant="caption">Bar Crawls</Typography>
                 </div>
-                <div className="profile-stat-column">
+                <div className="app-flex app-col app-ai-center app-jc-center">
                   <Typography variant="h5" fontWeight={700} sx={styles.logo}>
                     {acceptedFriendCount.length}
                   </Typography>
                   <Typography variant="caption">Friends</Typography>
                 </div>
-                <div className="profile-stat-column">
+                <div className="app-flex app-col app-ai-center app-jc-center">
                   <Typography variant="h5" fontWeight={700} sx={styles.logo}>0</Typography>
                   <Typography variant="caption">Groups</Typography>
                 </div>
@@ -373,7 +380,8 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                 startIcon={<LocalBarIcon />}
                 fullWidth
                 onClick={() => changeSection('barCrawls')}
-                className="sidebar-button"
+                sx={styles.sidebarButton} 
+                className="app-flex app-row app-jc-start-imp sidebar-button"
               >
                 <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
                   <span>Bar Crawls</span>
@@ -389,7 +397,8 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                 startIcon={<PeopleAltIcon />}
                 fullWidth
                 onClick={() => changeSection('friends')}
-                className="sidebar-button"
+                sx={styles.sidebarButton} 
+                className="app-flex app-row app-jc-start-imp sidebar-button"
               >
                 <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
                   <span>Friends</span>
@@ -405,13 +414,14 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                 startIcon={<GroupsIcon />}
                 fullWidth
                 onClick={() => changeSection('groups')}
-                className="sidebar-button"
+                sx={styles.sidebarButton} 
+                className="app-flex app-row app-jc-start-imp sidebar-button"
               >
                 Groups
               </Button>
               </Stack>
             </div>
-            <div className="profile-content">
+            <div className="app-flex app-col app-fl-8">
             <AnimatedContainer
               entry="animate__fadeIn"
               exit="animate__fadeOut"
