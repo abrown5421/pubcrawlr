@@ -51,8 +51,8 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
 
   return (
     <>
-        <div style={styles.card} className={mode === 'selected' ? "bar-card bar-card-row" : (viewport === 'desktop' ? "bar-card bar-card-row" : "bar-card bar-card-mobile")}>
-            <div className="bar-card-col fl-6">
+        <div style={styles.card} className={mode === 'selected' ? "bar-card app-flex app-row" : (viewport === 'desktop' ? "bar-card app-flex app-row" : "bar-card bar-card-mobile")}>
+            <div className="app-flex app-col app-fl-6">
                 <Typography
                     variant="h6"
                     component="div"
@@ -64,7 +64,7 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
                 <Typography variant="subtitle1" component="div">
                     {typeof bar.vicinity === 'string' ? bar.vicinity.length > 40 ? `${bar.vicinity.slice(0, 37)}...` : bar.vicinity : ''}
                 </Typography>
-                <div className="bar-card-row ai-cent">
+                <div className="app-flex app-row app-ai-center">
                     <Typography
                         onClick={() => handleLearnMore(bar.name, bar.vicinity ?? '')}
                         variant={viewport === "mobile" ? "subtitle1" : "caption"}
@@ -80,7 +80,7 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
                     </Typography>
                 </div>
             </div>
-            <div className={mode === 'selected' ? "bar-card-col add-pad fl-1 jc-cent" : "bar-card-col fl-1 jc-cent"}>
+            <div className={mode === 'selected' ? "app-flex app-col add-pad app-fl-1 app-jc-center" : "app-flex app-col app-fl-1 app-jc-center"}>
                 {mode !== 'selected' && mode !== 'viewing' && (
                     <Button
                         className="add-button"

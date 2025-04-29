@@ -13,8 +13,14 @@
 .app-row {
     flex-direction: row;
 }
+.app-row-reverse {
+    flex-direction: row-reverse;
+}
 .app-col {
     flex-direction: column;
+}
+.app-col-reverse {
+    flex-direction: column-reverse;
 }
 .app-wrap {
     flex-wrap: wrap;
@@ -126,7 +132,7 @@
 }
 .app-h-percent-25 {
     height: 25%
-}
+} 
 .app-h-vw-100 {
     height: 100vw
 }

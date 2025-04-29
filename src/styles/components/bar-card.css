@@ -9,40 +9,7 @@
     border-radius: 5px;
     height: 100%;
     min-width: 150px;
-}
-.bar-card-row {
-    display: flex;
-    flex-direction: row;
-}
-.bar-card-col {
-    display: flex;
-    flex-direction: column;
-}
-.jc-cent {
-    justify-content: center;
-}
-.ai-cent {
-    align-items: center;
-}
-.fl-1 {
-    flex: 1;
-}
-.fl-6 {
-    flex: 6;
-}
+} 
 .add-pad {
     padding-left: 18px;
-}
-.card-image {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-}
-.card-image-small {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-}
-.pipe {
-    margin: 0px 7px;
 }

@@ -296,7 +296,7 @@ function Root() {
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"} sx={{height: '100%'}}>
       <Box sx={{ height: "100%", backgroundColor: theme.palette.custom?.light }} className={viewport === 'desktop' ? "app-flex app-row" : "app-flex app-col"}>
         <div ref={mapControllerRef} className="app-flex app-col app-overflow-scroll app-h-percent-100 app-fl-3 map-controller">
-          <div className="app-flex app-row app-gap-1">
+          <div className={barResults.length > 0 ? "app-flex app-row app-gap-1" : "app-flex app-row"}>
             <div style={{ flexGrow: 1 }}>
               <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
             </div>

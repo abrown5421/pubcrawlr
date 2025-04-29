@@ -102,7 +102,7 @@ const Navbar: React.FC = () => {
   return (
     <>
       <AppBar position="static" sx={styles.appBar} className="nav-appBar">
-        <Toolbar className="nav-toolbar" disableGutters sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Toolbar className="app-flex app-js-between nav-toolbar" disableGutters sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Typography
             variant="h4"
             className="nav-logo"
@@ -154,7 +154,7 @@ const Navbar: React.FC = () => {
       </AppBar>
 
       <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <Box className="drawer-content" sx={styles.drawerContent}>
+        <Box className="app-flex app-col app-h-percent-100 app-jc-between drawer-content" sx={styles.drawerContent}>
           <Box>
             <Typography variant="h6" gutterBottom>
               Welcome, {getFullName()}

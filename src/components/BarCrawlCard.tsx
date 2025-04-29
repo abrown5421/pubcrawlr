@@ -176,24 +176,21 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
       
       <CardContent className="mui-cc-ovrd">
         <Box
-          className="bar-crawl-header"
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
+          className="app-flex app-col ap-jc-between app-ai-start"
         >
-          <Box className="bar-crawl-header-col">
+          <Box className="app-flex app-col app-h-percent-100 app-w-percent-100">
             <Typography sx={styles.logo} variant="h5">
               {crawl.crawlName}
             </Typography>
             {formattedStartDate && (
-              <Typography className="center-row" variant="body2" color="text.secondary" >
+              <Typography className="app-flex app-ai-center" variant="body2" color="text.secondary" >
                 <CalendarMonthIcon sx={{mr: 1}} /> {formattedStartDate} - {formattedEndDate}
               </Typography>
             )}
-            <Typography variant="body2" color="text.secondary" className="center-row">
+            <Typography variant="body2" color="text.secondary" className="app-flex app-ai-center">
               <GroupsIcon sx={{mr: 1}} /> {attendeesCount === 1 ? `${attendeesCount} person going` : `${attendeesCount} people going`}
             </Typography>
-            <Typography className="intimacy center-row" variant="body2" color="text.secondary" >
+            <Typography className="intimacy app-flex app-ai-center" variant="body2" color="text.secondary" >
               {crawl.intimacyLevel === 'public' ? <PublicIcon sx={{mr: 1}} /> : <AdminPanelSettingsIcon sx={{mr: 1}} />}{crawl.intimacyLevel}
             </Typography>
           </Box>
@@ -202,7 +199,7 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
 
       <Divider />
 
-      <CardActions className="button-group" sx={{ justifyContent: "flex-end" }}>
+      <CardActions className="app-flex app-jc-end app-gap-1 button-group" sx={{ justifyContent: "flex-end" }}>
         {mode === 'owned' && (
           <>
             <Button 

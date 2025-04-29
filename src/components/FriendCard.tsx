@@ -152,7 +152,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, mode }) => {
         <Typography variant="body2" color="textSecondary">
           Email: {friend.FriendEmail}
         </Typography>
-        <Box className="button-group">
+        <Box className="app-flex app-jc-end button-group">
           <Button sx={styles.viewButton} variant="contained" onClick={() => handleViewProfile(friend.FriendDocId)}>View</Button>
           {renderActions()}
         </Box>

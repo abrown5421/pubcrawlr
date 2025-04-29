@@ -88,15 +88,15 @@ const TrianglifyCustomizer = () => {
     <div>
       <Typography>{label}</Typography>
       {trianglify[key].map((color, index) => (
-        <div className='tc-row'>
+        <div className='app-flex app-row'>
           {key === 'xColors' && (
-            <div className='tc-col flx-1'>
+            <div className='app-flex app-col app-fl-1'>
                 <IconButton onClick={() => removeColor(key, index)} color="error">
                     <DeleteIcon />
                 </IconButton>
             </div>
           )}
-          <div className='tc-col flx-3'>
+          <div className='app-flex app-col app-fl-3'>
           <TextField
             value={color}
             onClick={() => handleColorClick(key, index)}
@@ -110,7 +110,7 @@ const TrianglifyCustomizer = () => {
           </div>
           
           {key !== 'xColors' && (
-            <div className='tc-col flx-1'>
+            <div className='app-flex app-col app-fl-1'>
                 <IconButton onClick={() => removeColor(key, index)} color="error">
                     <DeleteIcon />
                 </IconButton>
@@ -118,11 +118,11 @@ const TrianglifyCustomizer = () => {
           )}
         </div>
       ))}
-      <div className={label !== 'X Colors' ? 'tc-row-rev' : 'tc-row'}>
-        <div className='tc-col flx-1'>
+      <div className={label !== 'X Colors' ? 'app-flex app-row-reverse' : 'app-flex app-row'}>
+        <div className='app-flex app-col app-fl-1'>
             &nbsp;
         </div>
-        <div className='tc-col flx-3'>
+        <div className='app-flex app-col app-fl-3'>
         <Button
             variant="outlined"
             startIcon={<AddIcon />}
@@ -170,11 +170,11 @@ const TrianglifyCustomizer = () => {
           dispatch(setTrianglifyValue({ key: 'variance', value: val as number }))
         }
       />
-      <div className="tc-row">
-        <div className="tc-col mr-2">
+      <div className="app-flex app-row">
+        <div className="app-flex app-col mr-2">
             {renderColorPickers('X Colors', 'xColors')}
         </div>
-        <div className="tc-col">
+        <div className="app-flex app-col">
             {renderColorPickers('Y Colors', 'yColors')}
         </div>
       </div>

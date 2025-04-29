@@ -30,18 +30,18 @@ export default function Modal() {
       disableEscapeKeyDown={!closeable}
       maxWidth="sm"
       fullWidth
-      PaperProps={{ className: 'modal-container' }}
+      PaperProps={{ className: 'app-relative modal-container' }}
     >
       {closeable && (
-        <IconButton onClick={handleClose} className="modal-close-button">
+        <IconButton onClick={handleClose} className="app-absolute-imp modal-close-button">
           <CloseIcon />
         </IconButton>
       )}
 
-      <DialogTitle className="modal-title">{title}</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
 
       <DialogContent>
-        <DialogContentText className="modal-body-text">
+        <DialogContentText>
           {body}
         </DialogContentText>
       </DialogContent>

@@ -3,7 +3,6 @@ import Trianglify from 'trianglify';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { TrianglifyBannerProps } from '../types/globalTypes';
-import '../styles/components/tryianglify-banner.css';
 
 const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
   const ref = useRef<HTMLDivElement>(null);

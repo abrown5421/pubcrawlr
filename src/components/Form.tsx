@@ -1,5 +1,4 @@
-import { ComponentPropsWithoutRef, FormEvent, forwardRef, useImperativeHandle, useRef } from "react"
-import '../styles/components/form.css';
+import { FormEvent, forwardRef, useImperativeHandle, useRef } from "react"
 import { FormHandle, FormProps } from "../types/globalTypes";
 
 
@@ -24,7 +23,7 @@ const Form = forwardRef<FormHandle, FormProps>(function Form({onSave, children, 
     }
 
     return (
-        <form className="form-element" onSubmit={handleSubmit} {...otherProps} ref={form}>
+        <form className="app-w-percent-100" onSubmit={handleSubmit} {...otherProps} ref={form}>
             {children}
         </form>
     )

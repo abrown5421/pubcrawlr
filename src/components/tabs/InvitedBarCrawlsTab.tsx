@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import BarCrawlCard from '../BarCrawlCard';
-import "../../styles/components/profile-manager.css";
+import "../../styles/components/card-deck.css";
 import { useEffect } from 'react';
 import { clearBarCrawlInvites } from '../../store/slices/requestSlice';
 import { markBarCrawlInvitesAsSeen } from '../../services/requestService';
@@ -21,7 +21,7 @@ export default function InvitedBarCrawlsTab({ mode }: { mode?: string }) {
 
   return (
     <Box sx={{ width: '100%', overflow: 'scroll' }}>
-        <Box className={userProfile.invitedBarCrawls.length > 0 ? "card-deck" : "disclaim-box"}>
+        <Box className={userProfile.invitedBarCrawls.length > 0 ? "app-flex app-wrap app-gap-1 card-deck" : "disclaim-box"}>
         {userProfile.invitedBarCrawls.length < 1 && <Typography variant="caption">{mode === 'owned' ? "You aren't currently invited to any bar crawls." : "This user is not currently invited to any bar crawls."}</Typography>}
         {userProfile.invitedBarCrawls.length > 0 && userProfile.invitedBarCrawls.map((crawl) => (
             <BarCrawlCard key={crawl.crawlName} crawl={crawl} mode="invited" />

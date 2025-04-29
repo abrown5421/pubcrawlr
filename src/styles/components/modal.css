@@ -1,36 +1,15 @@
-.modal-container {
+  .modal-container {
     border-radius: 6px;
     padding: 16px;
     margin: 0px !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    position: relative !important;
   }
   
   .modal-close-button {
-    position: absolute !important;
     top: 8px !important;
     right: 8px !important;
-    color: #888;
-    transition: color 0.2s ease;
   }
-  
-  .modal-close-button:hover {
-    color: #333;
-  }
-  
-  .modal-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    padding-right: 40px; 
-  }
-  
-  .modal-body-text {
-    font-size: 1rem;
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 16px;
-  }
+
   @media screen and (max-width: 600px) {
     .modal-container {
       width: 95% !important;

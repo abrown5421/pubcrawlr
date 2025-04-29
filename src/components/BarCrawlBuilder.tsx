@@ -191,7 +191,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
             <Typography id="auth-modal-description" sx={{ mb: 3 }}>
               Log into your account to save it and start inviting friends. Or alternatively, you can create an account and save it then!
             </Typography>
-            <div className="bcb-row">
+            <div className="app-flex app-row">
             <Button
               type="submit"
               loading={isLoading}
@@ -384,29 +384,29 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
             sx: { display: 'flex', alignItems: 'center' },
           }}
         >
-          <MenuItem value="Public" sx={{ display: 'flex', flexDirection: 'row', padding: '6px' }}>
-            <div className="bcb-col"><PublicIcon sx={{ marginRight: 1 }} /></div>
-            <div className="bcb-col">
+          <MenuItem value="Public" className="app-flex app-row" sx={{ padding: '6px' }}>
+            <div className="app-flex app-col"><PublicIcon sx={{ marginRight: 1 }} /></div>
+            <div className="app-flex app-col">
               Public
               <Typography variant="caption">Everyone will have access</Typography>
             </div>
           </MenuItem>
-          <MenuItem value="Groups" sx={{ display: 'flex', flexDirection: 'row', padding: '6px' }}>
-            <div className="bcb-col"><GroupsIcon sx={{ marginRight: 1 }} /></div>
-            <div className="bcb-col">
+          <MenuItem value="Groups" className="app-flex app-row" sx={{ padding: '6px' }}>
+            <div className="app-flex app-col"><GroupsIcon sx={{ marginRight: 1 }} /></div>
+            <div className="app-flex app-col">
               Group
               <Typography variant="caption">Only a specified group will have access</Typography>
             </div>
           </MenuItem>
-          <MenuItem value="Private" sx={{ display: 'flex', flexDirection: 'row', padding: '6px' }}>
-            <div className="bcb-col"><LockPersonIcon sx={{ marginRight: 1 }} /></div>
-            <div className="bcb-col">
+          <MenuItem value="Private" className="app-flex app-row" sx={{ padding: '6px' }}>
+            <div className="app-flex app-col"><LockPersonIcon sx={{ marginRight: 1 }} /></div>
+            <div className="app-flex app-col">
               Private
               <Typography variant="caption">Only invited individuals will have access</Typography>
             </div>
           </MenuItem>
         </TextField>
-        <div className="bcb-row">
+        <div className="app-flex app-row">
           <TextField
             size="small"
             name="startDate"
@@ -452,7 +452,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
               }}
             />
           </Box>
-          <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap'}}>
+          <Box style={{justifyContent: 'space-between', flexWrap: 'wrap'}}>
             {attendees.map((att, index) => {
               if (att.UserFirstName) {
                 return (
