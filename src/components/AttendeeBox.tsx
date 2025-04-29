@@ -1,14 +1,8 @@
 import { Box, Avatar, Typography, IconButton, useTheme } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { UserBoxProps } from '../types/globalTypes';
 
-interface UserBoxProps {
-  firstName: string;
-  lastName?: string;
-  creator: boolean;
-  onRemove: () => void;
-}
-
-const AttendeeBox: React.FC<UserBoxProps> = ({ firstName, lastName, creator, onRemove }) => {
+const AttendeeBox: React.FC<UserBoxProps> = ({ firstName, lastName, creator, onRemove, attending }) => {
   const theme = useTheme();
   const initials = `${firstName[0] ?? ''}${lastName?.[0] ?? ''}`;
 
@@ -33,7 +27,7 @@ const AttendeeBox: React.FC<UserBoxProps> = ({ firstName, lastName, creator, onR
       <Typography variant="subtitle1" fontWeight="bold">
         {firstName} {lastName ?? ''}
       </Typography>
-      {creator && <Typography variant="caption">(Creator)</Typography>}
+      {creator ? <Typography variant="caption">(Creator)</Typography> : (attending ? <Typography variant="caption">(Attending)</Typography> : <Typography variant="caption">(Pending)</Typography>)}
       {!creator && (
         <IconButton
             onClick={onRemove}
@@ -41,7 +35,7 @@ const AttendeeBox: React.FC<UserBoxProps> = ({ firstName, lastName, creator, onR
             position: 'absolute',
             top: 8,
             right: 8,
-            color: '#ff1744',
+            color: theme.palette.custom?.error,
             }}
             aria-label="remove user"
         >

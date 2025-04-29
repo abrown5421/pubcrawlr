@@ -175,6 +175,14 @@ export interface CrawlContainerProps {
   mode: string;
 }
 
+export interface UserBoxProps {
+  firstName: string;
+  lastName?: string;
+  creator: boolean;
+  attending: boolean;
+  onRemove: () => void;
+}
+
 export type BarCardProps = {
     bar: Place;
     mode: String;  

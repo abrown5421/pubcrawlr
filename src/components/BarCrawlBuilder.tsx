@@ -461,8 +461,9 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
                     creator={att.creator}
                     firstName={att.UserFirstName}
                     lastName={att.UserLastName ?? undefined}
+                    attending={att.attending}
                     onRemove={() => handleRemoveAttendee(att.docId ?? '')}
-                    />
+                  />
                 );
               }
             })}
