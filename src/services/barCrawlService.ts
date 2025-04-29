@@ -3,7 +3,7 @@ import {
   collection,
   onSnapshot,
 } from "firebase/firestore";
-import { BarCrawlInfo, Attendee } from '../types/globalTypes';
+import { BarCrawlInfo, UpdateBarCrawlInfo, Attendee } from '../types/globalTypes';
 
 const sanitizeUndefined = (obj: any): any => {
   if (Array.isArray(obj)) {
@@ -257,16 +257,18 @@ export function subscribeToBarCrawls(callback: (crawls: BarCrawlInfo[]) => void)
   });
 }
 
-export const updateBarCrawl = async (id: string, {
-  userID,
-  selectedBars,
-  crawlName,
-  startDate,
-  endDate,
-  intimacyLevel,
-  attendees,
-  centerLocation
-}: BarCrawlInfo): Promise<void> => {
+export const updateBarCrawl = async (
+  id: string,
+  {
+    userID,
+    selectedBars,
+    crawlName,
+    startDate,
+    endDate,
+    intimacyLevel,
+    attendees
+  }: UpdateBarCrawlInfo
+): Promise<void> => {
   try {
     const updatedSelectedBars = selectedBars.map(bar => {
       const barLat = bar.geometry.location.lat;
@@ -292,7 +294,6 @@ export const updateBarCrawl = async (id: string, {
       intimacyLevel,
       attendees: finalAttendees,
       attendeeIds,
-      centerLocation
     };
 
     if (startDate) {

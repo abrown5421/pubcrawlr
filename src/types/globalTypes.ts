@@ -142,6 +142,8 @@ export interface BarCrawlInfo {
   centerLocation: object;
 }
 
+export type UpdateBarCrawlInfo = Omit<BarCrawlInfo, 'centerLocation'>;
+
 export interface TrianglifyBannerProps {
   token?: string; 
 }

@@ -261,7 +261,9 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
         })
     } else {
       if (crawl?.id) {
-        updateBarCrawl(crawl?.id, barCrawlData)
+        const { centerLocation, ...barCrawlDataWithoutCenter } = barCrawlData;
+
+      updateBarCrawl(crawl?.id, barCrawlDataWithoutCenter)
           .then(() => {
             setFormData({ barCrawlName: "", intimacyLevel: "Public", selectedBars: selectedBars, startDate: "", endDate: "" });
             setErrors({});
