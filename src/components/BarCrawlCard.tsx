@@ -185,9 +185,11 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
             <Typography sx={styles.logo} variant="h5">
               {crawl.crawlName}
             </Typography>
-            <Typography className="center-row" variant="body2" color="text.secondary" >
-              <CalendarMonthIcon sx={{mr: 1}} /> {formattedStartDate} - {formattedEndDate}
-            </Typography>
+            {formattedStartDate && (
+              <Typography className="center-row" variant="body2" color="text.secondary" >
+                <CalendarMonthIcon sx={{mr: 1}} /> {formattedStartDate} - {formattedEndDate}
+              </Typography>
+            )}
             <Typography variant="body2" color="text.secondary" className="center-row">
               <GroupsIcon sx={{mr: 1}} /> {attendeesCount === 1 ? `${attendeesCount} person going` : `${attendeesCount} people going`}
             </Typography>

@@ -18,6 +18,7 @@ import { setActivePage } from "../store/slices/activePageSlice";
 import { useNavigate } from "react-router-dom";
 import FriendAutocomplete from "./FriendAutocomplete";
 import AttendeeBox from "./AttendeeBox";
+import { formatDate } from "../utils/dateUtils";
 
 const useBarCrawlStyles = (theme: any) => ({
   logo: {
@@ -75,6 +76,8 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
     endDate: ""
   });
   const [errors, setErrors] = useState<BcFormValidationErrors>({});
+  const isoStartDate = crawl?.startDate?.slice(0, 10) ?? "";
+  const isoEndDate = crawl?.endDate?.slice(0, 10) ?? "";
 
   useEffect(() => {
     if (mode === 'crawlBeingViewed' && crawl) {
@@ -89,8 +92,8 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
         intimacyLevel: (crawl.intimacyLevel === "Public" || crawl.intimacyLevel === "Groups" || crawl.intimacyLevel === "Private")
           ? crawl.intimacyLevel
           : "Public",
-        startDate: "", 
-        endDate: "",
+          startDate: isoStartDate,
+          endDate: isoEndDate,
       });
   
       setAttendees(Array.isArray(crawl.attendees) ? crawl.attendees : []);
