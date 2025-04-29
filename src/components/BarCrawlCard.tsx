@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../styles/components/bar-crawl-card.css";
 import { BarCrawlCardProps } from "../types/globalTypes";
 import { useTheme } from "@emotion/react";
@@ -182,9 +182,13 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
             <Typography sx={styles.logo} variant="h5">
               {crawl.crawlName}
             </Typography>
-            {formattedStartDate && (
+            {formattedStartDate !== 'Invalid Date' ? (
               <Typography className="app-flex app-ai-center" variant="body2" color="text.secondary" >
                 <CalendarMonthIcon sx={{mr: 1}} /> {formattedStartDate} - {formattedEndDate}
+              </Typography>
+            ) : (
+              <Typography className="app-flex app-ai-center" variant="body2" color="text.secondary" >
+                <CalendarMonthIcon sx={{mr: 1}} /> No Date Set
               </Typography>
             )}
             <Typography variant="body2" color="text.secondary" className="app-flex app-ai-center">
