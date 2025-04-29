@@ -18,11 +18,11 @@ const barsSlice = createSlice({
     removeBar: (state, action: PayloadAction<string>) => {
       state.bars = state.bars.filter(bar => bar.name !== action.payload);
     },
-    clearBars: (state) => {
+    clearLocalBars: (state) => {
       state.bars = [];
     }
   },
 });
 
-export const { addBars, removeBar, clearBars } = barsSlice.actions;
+export const { addBars, removeBar, clearLocalBars } = barsSlice.actions;
 export default barsSlice.reducer;

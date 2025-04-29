@@ -5,6 +5,7 @@ import Form from "./Form";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setAlert } from "../store/slices/notificationSlice";
 import { addBar, clearBars, setDrawerOpen } from '../store/slices/selectedBarSlice';
+import { clearLocalBars } from "../store/slices/localBarSlice";
 import { BcFormFormData, BcFormValidationErrors, SearchHereButtonProps, FormHandle, Attendee } from "../types/globalTypes";
 import BarCard from "./BarCard";
 import PublicIcon from '@mui/icons-material/Public';
@@ -18,7 +19,6 @@ import { setActivePage } from "../store/slices/activePageSlice";
 import { useNavigate } from "react-router-dom";
 import FriendAutocomplete from "./FriendAutocomplete";
 import AttendeeBox from "./AttendeeBox";
-import { formatDate } from "../utils/dateUtils";
 
 const useBarCrawlStyles = (theme: any) => ({
   logo: {
@@ -240,6 +240,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
           setErrors({});
           crawlForm.current?.clear();
           dispatch(clearBars())
+          dispatch(clearLocalBars())
           dispatch(setDrawerOpen(false));
           dispatch(
             setAlert({
@@ -260,6 +261,15 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
           );
         })
         .finally(() => {
+          dispatch(setDrawerOpen(false));
+          dispatch(setActivePage({ key: "In", value: false }));
+          dispatch(setActivePage({ key: 'Name', value: 'Dashboard' }));
+          
+          setTimeout(() => {
+            dispatch(setActivePage({ key: 'In', value: true }));
+            navigate(`/Dashboard/${token}`);
+          }, 500);
+
           dispatch(setLoading({ key: 'saveCrawl', value: false }));
         })
     } else {
@@ -272,6 +282,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
             setErrors({});
             crawlForm.current?.clear();
             dispatch(clearBars())
+            dispatch(clearLocalBars())
             dispatch(setDrawerOpen(false));
             dispatch(
               setAlert({

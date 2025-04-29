@@ -8,7 +8,7 @@ import PlaceAutocomplete from "../components/PlaceAutocomplete";
 import "../styles/pages/root.css";
 import { SearchHereButton } from "../utils/CustomMapControls";
 import { fetchBars } from "../utils/fetchBars";
-import { addBars, clearBars } from "../store/slices/localBarSlice";
+import { addBars, clearLocalBars } from "../store/slices/localBarSlice";
 import { setDrawerOpen } from '../store/slices/selectedBarSlice';
 import { Place } from "../types/globalTypes";
 import BarCard from "../components/BarCard";
@@ -289,7 +289,7 @@ function Root() {
   }, [selectedBars, directions]);
   
   const handleClearBarResults = () => {
-    dispatch(clearBars())
+    dispatch(clearLocalBars())
   }
   
   return (
