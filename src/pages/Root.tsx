@@ -294,9 +294,9 @@ function Root() {
   
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === "Root"} sx={{height: '100%'}}>
-      <Box sx={{ height: "100%", backgroundColor: theme.palette.custom?.light }} className="root-container">
-        <div ref={mapControllerRef} className="map-controller">
-          <div className="root-row">
+      <Box sx={{ height: "100%", backgroundColor: theme.palette.custom?.light }} className={viewport === 'desktop' ? "app-flex app-row" : "app-flex app-col"}>
+        <div ref={mapControllerRef} className="app-flex app-col app-overflow-scroll app-h-percent-100 app-fl-3 map-controller">
+          <div className="app-flex app-row app-gap-1">
             <div style={{ flexGrow: 1 }}>
               <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
             </div>
@@ -304,7 +304,6 @@ function Root() {
               <Collapse orientation="horizontal" in={barResults.length > 0}>
                 <div>
                   <Button
-                    className="add-button"
                     variant="contained"
                     sx={styles.clearButton}
                     onClick={handleClearBarResults}
@@ -322,7 +321,7 @@ function Root() {
             )
           })}
         </div>
-        <div ref={mapContainerRef} className="map-container">
+        <div ref={mapContainerRef} className="app-flex app-col app-relative app-overflow-hidden app-h-percent-100 app-fl-8 map-container">
           <AnimatedContainer 
             entry="animate__slideInRight" 
             exit="animate__slideOutRight" 
@@ -335,7 +334,7 @@ function Root() {
             }}
           >
             <Button
-              className="open-bar-crawl-button"
+              className="app-absolute open-bar-crawl-button"
               aria-label="Open Bar Crawl"
               sx={styles.openCrawlButton}
               startIcon={<OpenInNewIcon />}
@@ -359,7 +358,7 @@ function Root() {
         entry="animate__slideInRight" 
         exit="animate__slideOutRight" 
         isEntering={selectedBars.length > 0 && viewport === "desktop"}
-        className={selectedBars.length === 0 ? "d-none" : ""}
+        className={selectedBars.length === 0 ? "app-hidden" : ""}
         sx={{
           position: 'absolute',
           minWidth: '200px',

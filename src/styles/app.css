@@ -1,0 +1,204 @@
+.app-flex {
+    display: flex;
+}
+.app-block { 
+    display: block; 
+}
+.app-inline-block { 
+    display: inline-block; 
+}
+.app-hidden { 
+    display: none;
+}
+.app-row {
+    flex-direction: row;
+}
+.app-col {
+    flex-direction: column;
+}
+.app-wrap {
+    flex-wrap: wrap;
+}
+.app-nowrap {
+    flex-wrap: nowrap;
+}
+.app-wrap-reverse {
+    flex-wrap: wrap-reverse;
+}
+.app-jc-start {
+    justify-content: flex-start;
+}
+.app-jc-end {
+    justify-content: flex-end;
+}
+.app-jc-center {
+    justify-content: center;
+}
+.app-jc-between {
+    justify-content: space-between;
+}
+.app-jc-around {
+    justify-content: space-around;
+}
+.app-jc-evenly {
+    justify-content: space-evenly;
+}
+.app-ai-start {
+    align-items: flex-start;
+}
+.app-ai-end {
+    align-items: flex-end;
+}
+.app-ai-center {
+    align-items: center;
+}
+.app-ai-baseline {
+    align-items: baseline;
+}
+.app-ai-stretch {
+    align-items: stretch;
+}
+.app-m1 {
+    margin: 1rem;
+}
+.app-m2 {
+    margin: 2rem;
+}
+.app-m3 {
+    margin: 3rem;
+}
+.app-m4 {
+    margin: 4rem;
+}
+.app-m5 {
+    margin: 5rem;
+}
+.app-p1 {
+    padding: 1rem;
+}
+.app-p2 {
+    padding: 2rem;
+}
+.app-p3 {
+    padding: 3rem;
+}
+.app-p4 {
+    padding: 4rem;
+}
+.app-p5 {
+    padding: 5rem;
+}
+.app-w-percent-100 {
+    width: 100%
+}
+.app-w-percent-75 {
+    width: 75%
+}
+.app-w-percent-50 {
+    width: 50%
+}
+.app-w-percent-25 {
+    width: 25%
+}
+.app-w-vw-100 {
+    width: 100vw
+}
+.app-w-vw-75 {
+    width: 75vw
+}
+.app-w-vw-50 {
+    width: 50vw
+}
+.app-w-vw-25 {
+    width: 25vw
+}
+.app-h-percent-100 {
+    height: 100%
+}
+.app-h-percent-75 {
+    height: 75%
+}
+.app-h-percent-50 {
+    height: 50%
+}
+.app-h-percent-25 {
+    height: 25%
+}
+.app-h-vw-100 {
+    height: 100vw
+}
+.app-h-vw-75 {
+    height: 75vw
+}
+.app-h-vw-50 {
+    height: 50vw
+}
+.app-h-vw-25 {
+    height: 25vw
+}
+.app-relative { 
+    position: relative; 
+}
+.app-absolute { 
+    position: absolute;
+}
+.app-fixed { 
+    position: fixed;
+}
+.app-sticky { 
+    position: sticky;
+}
+.app-overflow-hidden { 
+    overflow: hidden; 
+}
+.app-overflow-scroll { 
+    overflow: scroll; 
+}
+.app-overflow-auto { 
+    overflow: auto; 
+}
+.app-gap-1 { 
+    gap: 1rem;
+}
+.app-gap-2 { 
+    gap: 2rem; 
+}
+.app-gap-3 { 
+    gap: 3rem; 
+}
+.app-fl-1 {
+    flex: 1;
+}
+.app-fl-2 {
+    flex: 2;
+}
+.app-fl-3 {
+    flex: 3;
+}
+.app-fl-4 {
+    flex: 4;
+}
+.app-fl-5 {
+    flex: 5;
+}
+.app-fl-6 {
+    flex: 6;
+}
+.app-fl-7 {
+    flex: 7;
+}
+.app-fl-8 {
+    flex: 8;
+}
+.app-fl-9 {
+    flex: 9;
+}
+.app-fl-10 {
+    flex: 10;
+}
+.app-fl-11 {
+    flex: 11;
+}
+.app-fl-12 {
+    flex: 12;
+}

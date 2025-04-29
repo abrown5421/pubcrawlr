@@ -17,7 +17,7 @@ const NotFound = () => {
   const styles = nestedContainerStyles(theme);
   return (
     <AnimatedContainer isEntering={enter.In && enter.Name === 'NotFound'} sx={{height: '100%'}}>
-      <Box className="not-found-container" sx={styles.root}>
+      <Box className="app-flex app-col app-ai-center app-jc-center app-h-percent-100 not-found-container" sx={styles.root}>
         <Typography variant="h1">
             404
         </Typography>

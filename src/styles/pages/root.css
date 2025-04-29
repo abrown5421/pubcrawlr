@@ -1,47 +1,15 @@
-.root-container {
-    display: flex;
-    flex-direction: row;
-}
-.root-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-}
-.map-controller {
-    display: flex;
-    flex-direction: column;
-    overflow: scroll;
-    flex: 3;
-    height: 100%;
-    padding: 15px 10px;
-}
-.map-container {
-    display: flex;
-    position: relative !important;
-    flex-direction: column;
-    height: 100%;
-    flex: 8;
-    overflow: hidden;
-}
 .open-bar-crawl-button {
-    position: absolute !important;
     bottom: 10px;
     right: 10px;
 }
-.d-none {
-    display: none !important;
-}
+
 @media (max-width: 1200px) {
     .map-container {
-        flex: 6;
+        flex: 6 !important;
     }
 }
 
 @media (max-width: 1024px) {
-    .root-container {
-        display: flex;
-    }
     .map-controller {
         height: unset !important;
         flex: unset !important;

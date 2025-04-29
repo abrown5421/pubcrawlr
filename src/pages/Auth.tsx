@@ -269,7 +269,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
 
   return (
     <AnimatedContainer entry="animate__slideInUp" exit="animate__slideOutDown" isEntering={enter.In && enter.Name === 'Auth'} sx={{height: '100%'}}>
-      <Box className="auth-box" sx={styles.authBox}>
+      <Box className="app-w-percent-50 app-flex app-col app-jc-center app-ai-center app-absolute auth-box" sx={styles.authBox}>
         <Typography className="auth-title" sx={styles.formTitle} variant="h5">{mode === 'login' ? forgotPw ? "Reset Password" : 'Login' : 'Signup'}</Typography>
         <Form onSave={handleSubmit} ref={customForm}>
           {mode === 'signup' && renderInputField('firstName', 'First Name', 'text')}
@@ -281,7 +281,7 @@ const Auth: React.FC<AuthProps> = ({ mode }) => {
             <Button 
               variant="text" 
               size="small" 
-              className="forgot-pw-button"
+              className="forgot-pw-button app-block"
               sx={{ 
                 color: theme.palette.custom?.accent,                
               }} 
