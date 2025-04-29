@@ -6,6 +6,9 @@
     display: flex;
     flex-direction: row;
 }
+.jc-spa-bet {
+    justify-content: space-between;
+}
 .w-500 {
     width: 300px;
 }
@@ -31,6 +34,7 @@
 }
 .no-access-container {
     width: 100%; 
+    height: calc(100vh - 64px);
     display: flex;
     flex-direction: column;
     justify-content: center;

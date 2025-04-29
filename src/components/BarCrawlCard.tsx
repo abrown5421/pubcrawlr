@@ -161,7 +161,7 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
     }
   }
 
-  const handleEditCrawl = (barCrawlId: string) => {
+  const handleOpenCrawl = (barCrawlId: string) => {
     dispatch(setActivePage({ key: "In", value: false }));
     dispatch(setActivePage({ key: "Name", value: 'Crawl' }));
 
@@ -210,7 +210,7 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
               variant="contained" 
               onClick={() => {
                 if (crawl.id) {
-                  handleEditCrawl(crawl.id);
+                  handleOpenCrawl(crawl.id);
                 }
               }}
             >
@@ -234,7 +234,12 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
           <>
             <Button
               sx={styles.viewButton}
-              variant="contained"
+              variant="contained" 
+              onClick={() => {
+                if (crawl.id) {
+                  handleOpenCrawl(crawl.id);
+                }
+              }}
             >
               View
             </Button>
@@ -276,7 +281,12 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
           <>
             <Button
               sx={styles.viewButton}
-              variant="contained"
+              variant="contained" 
+              onClick={() => {
+                if (crawl.id) {
+                  handleOpenCrawl(crawl.id);
+                }
+              }}
             >
               View
             </Button>
