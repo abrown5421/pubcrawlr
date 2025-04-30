@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { removeBar } from "../store/slices/selectedBarSlice";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import { removeLocalBar } from "../store/slices/localBarSlice";
 
 const useBarCardStyles = (theme: any) => ({
     logo: {
@@ -36,6 +37,7 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
 
   const handleAddBar = () => {
     dispatch(addBar(bar));
+    dispatch(removeLocalBar(bar.name))
     dispatch(setDrawerOpen(true));
   };
   

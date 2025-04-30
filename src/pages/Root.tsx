@@ -142,10 +142,6 @@ function Root() {
       accentPinRef.current.remove();
     }
 
-    accentPinRef.current = new maplibregl.Marker({
-      color: theme.palette.custom.highlight
-    }).setLngLat([center.lng, center.lat]).addTo(mapInstance);
-
     fetchAndStoreBars(center.lat, center.lng);
     setLocationCoords({Lat: center.lat, Lng: center.lng})
   };
@@ -159,11 +155,7 @@ function Root() {
       if (accentPinRef.current) {
         accentPinRef.current.remove();
       }
-
-      accentPinRef.current = new maplibregl.Marker({
-        color: theme.palette.custom.highlight
-      }).setLngLat([lng, lat]).addTo(map);
-
+      
       await fetchAndStoreBars(lat, lng);
     },
     [map]
@@ -196,7 +188,7 @@ function Root() {
           setDirections(newDirections);
         });
 
-        // Add error pin
+        // Add original clocked location pin
         new maplibregl.Marker({
           color: theme.palette.custom.error
         }).setLngLat([longitude, latitude]).addTo(mapInstance);
@@ -235,6 +227,29 @@ function Root() {
     markerRef.current.forEach(marker => marker.remove());
     markerRef.current = [];
 
+    selectedBars.forEach(bar => {
+      const lat = bar.geometry.location.lat;
+      const lng = bar.geometry.location.lng;
+
+      const marker = new maplibregl.Marker({
+        color: theme.palette.custom.highlight
+      })
+        .setLngLat([lng, lat])
+        .setPopup(new maplibregl.Popup().setHTML(getMarkerPopup({
+          name: bar.name,
+          includeAddBtn: true
+        })))        
+        .addTo(map);
+        setLocationCoords({Lat: lat, Lng: lng})
+      
+      marker.getElement().addEventListener('click', () => {
+        map.flyTo({
+          center: [lng, lat],
+          speed: 0.5,
+        });
+      });
+    })
+
     visibleBars.forEach(bar => {
       const lat = bar.geometry.location.lat;
       const lng = bar.geometry.location.lng;
@@ -259,7 +274,7 @@ function Root() {
 
       markerRef.current.push(marker);
     });
-  }, [map, visibleBars]);
+  }, [map, visibleBars, selectedBars]);
 
   // Adjust drawer width based on map container size
   useEffect(() => {
