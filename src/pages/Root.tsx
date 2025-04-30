@@ -339,30 +339,30 @@ function Root() {
           })}
         </div>
         <div ref={mapContainerRef} className="app-flex app-col app-relative app-overflow-hidden app-h-percent-100 app-fl-8 map-container">
-          {viewport !== 'desktop' && (
-            <AnimatedContainer 
-              entry="animate__slideInRight" 
-              exit="animate__slideOutRight" 
-              isEntering={selectedBars.length > 0}
-              sx={{
-                position: 'absolute',
-                minWidth: '200px',
-                top: 0,
-                left: 0,
-                zIndex: 10
-              }}
+          <AnimatedContainer 
+            entry={viewport !== 'desktop' ? "animate__slideInLeft" : "animate__slideInRight"}
+            exit={viewport !== 'desktop' ? "animate__slideOutLeft" : "animate__slideOutRight"} 
+            isEntering={selectedBars.length > 0}
+            sx={{
+              position: 'absolute',
+              minWidth: '200px',
+              top: viewport !== 'desktop' ? 0 : 'unset',
+              left: viewport !== 'desktop' ? 0 : 'unset',
+              right: viewport !== 'desktop' ? 'unset' : -20,
+              bottom: viewport !== 'desktop' ? 'unset' : 0,
+              zIndex: 10
+            }}
+          >
+            <Button
+              className="app-absolute open-bar-crawl-button"
+              aria-label="Open Bar Crawl"
+              sx={styles.openCrawlButton}
+              startIcon={<OpenInNewIcon />}
+              onClick={toggleDrawer(true)}
             >
-              <Button
-                className="app-absolute open-bar-crawl-button"
-                aria-label="Open Bar Crawl"
-                sx={styles.openCrawlButton}
-                startIcon={<OpenInNewIcon />}
-                onClick={toggleDrawer(true)}
-              >
-                View Bar Crawl
-              </Button>
-            </AnimatedContainer>
-          )}
+              View Bar Crawl
+            </Button>
+          </AnimatedContainer>
         </div>
         {viewport !== 'desktop' && (
           <Box sx={{ display: "flex", overflowX: "auto", position: "absolute", bottom: 0, width: "100%", padding: "8px", zIndex: 1 }}>
@@ -374,29 +374,7 @@ function Root() {
           </Box>
         )}
       </Box>
-      {viewport === 'desktop' && (
-        <AnimatedContainer 
-          entry="animate__slideInRight" 
-          exit="animate__slideOutRight" 
-          isEntering={selectedBars.length > 0}
-          sx={{
-            position: 'absolute',
-            minWidth: '200px',
-            bottom: 0,
-            right: 0
-          }}
-        >
-          <Button
-            className="app-absolute open-bar-crawl-button"
-            aria-label="Open Bar Crawl"
-            sx={styles.openCrawlButton}
-            startIcon={<OpenInNewIcon />}
-            onClick={toggleDrawer(true)}
-          >
-            View Bar Crawl
-          </Button>
-        </AnimatedContainer>
-      )}
+      
       <BarCrawlBuilder
         open={drawerOpen}
         onClose={toggleDrawer(false)}
