@@ -125,8 +125,8 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
           }}
         />
         <div
+          className="app-absolute"
           style={{
-            position: "absolute",
             top: "100%",
             left: 0,
             right: 0,
