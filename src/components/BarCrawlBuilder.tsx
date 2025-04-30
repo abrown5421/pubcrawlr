@@ -463,7 +463,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
               }}
             />
           </Box>
-          <Box style={{justifyContent: 'space-between', flexWrap: 'wrap'}}>
+          <Box className='app-js-between app-wrap'>
             {attendees.map((att, index) => {
               if (att.UserFirstName) {
                 return (

@@ -86,7 +86,7 @@ function App() {
         <MainContainer>
           <ViewportTracker>
             {isLoading ? (
-              <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%'}}>
+              <div className='app-flex app-jc-center app-ai-center app-w-percent-100 app-h-percent-100'>
                 <CircularProgress size="24px" sx={{ color: "#FFF" }} />
               </div>
 

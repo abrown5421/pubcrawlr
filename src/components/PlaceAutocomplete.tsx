@@ -103,7 +103,7 @@ const PlaceAutocomplete = ({ onPlaceSelected }: PlaceAutocompleteProps) => {
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
-      <div style={{ position: "relative" }}>
+      <div className="app-relative">
         <TextField
           inputRef={inputRef}
           label="So, where to?"

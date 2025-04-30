@@ -102,7 +102,7 @@ function Root() {
       open: true,
       title: '',
       body: (
-        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%'}}>
+        <div className="app-flex app-col app-jc-center app-ai-center app-w-percent-100 app-h-percent-100">
           <CircularProgress size="24px" sx={{ color: "#000" }} />
           <Typography sx={{mt: 2}}>Fetching Bars, Please Wait...</Typography>
         </div>
@@ -315,19 +315,21 @@ function Root() {
             <div style={{ flexGrow: 1 }}>
               <PlaceAutocomplete onPlaceSelected={handlePlaceSelect} />
             </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Collapse orientation="horizontal" in={barResults.length > 0}>
-                <div>
-                  <Button
-                    variant="contained"
-                    sx={styles.clearButton}
-                    onClick={handleClearBarResults}
-                  >
-                    Clear Results
-                  </Button>
-                </div>
-              </Collapse>
-            </div>
+            {barResults.length > 0 && (
+              <div className='app-flex app-ai-center'>
+                <Collapse orientation="horizontal" in={barResults.length > 0}>
+                  <div>
+                    <Button
+                      variant="contained"
+                      sx={styles.clearButton}
+                      onClick={handleClearBarResults}
+                    >
+                      Clear Results
+                    </Button>
+                  </div>
+                </Collapse>
+              </div>
+            )}
           </div>
           {viewport === 'desktop' && visibleBars.map((bar) => {
             // console.log(bar)
