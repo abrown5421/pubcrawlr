@@ -202,19 +202,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
             <MyFriendsTab />
           )
         }
-      case 'groups':
-        if (isThisTheirProfile) {
-          return (
-            <TabManager tabs={['Groups', 'New Group']}>
-              <div>My Groups content here</div>
-              <div>Create a New Group form here</div>
-            </TabManager>
-          );
-        } else {
-          return(
-            <div>My Groups content here</div>
-          )
-        }
+      
       default:
         return null;
     }
@@ -363,17 +351,19 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                   <Typography variant="h5" fontWeight={700} sx={styles.logo}>
                     {userProfile.barCrawls.length}
                   </Typography>
-                  <Typography variant="caption">Bar Crawls</Typography>
+                  <Typography variant="caption">Bar Crawl{userProfile.barCrawls.length > 1 && 's'}</Typography>
+                </div>
+                <div className="app-flex app-col app-ai-center app-jc-center">
+                  <Typography variant="h5" fontWeight={700} sx={styles.logo}>
+                    {userProfile.barCrawls.length}
+                  </Typography>
+                  <Typography variant="caption">Bar Crawl{userProfile.barCrawls.length > 1 && 's'} Attended</Typography>
                 </div>
                 <div className="app-flex app-col app-ai-center app-jc-center">
                   <Typography variant="h5" fontWeight={700} sx={styles.logo}>
                     {acceptedFriendCount.length}
                   </Typography>
                   <Typography variant="caption">Friends</Typography>
-                </div>
-                <div className="app-flex app-col app-ai-center app-jc-center">
-                  <Typography variant="h5" fontWeight={700} sx={styles.logo}>0</Typography>
-                  <Typography variant="caption">Groups</Typography>
                 </div>
               </div>
               <Stack spacing={1} sx={{ mt: 2 }}>
@@ -410,15 +400,6 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                     sx={{ mr: 1 }}
                   />
                 </Box>
-              </Button>
-              <Button
-                startIcon={<GroupsIcon />}
-                fullWidth
-                onClick={() => changeSection('groups')}
-                sx={styles.sidebarButton} 
-                className="app-flex app-row app-jc-start-imp sidebar-button"
-              >
-                Groups
               </Button>
               </Stack>
             </div>

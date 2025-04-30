@@ -402,13 +402,6 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
               <Typography variant="caption">Everyone will have access</Typography>
             </div>
           </MenuItem>
-          <MenuItem value="Groups" className="app-flex app-row" sx={{ padding: '6px' }}>
-            <div className="app-flex app-col"><GroupsIcon sx={{ marginRight: 1 }} /></div>
-            <div className="app-flex app-col">
-              Group
-              <Typography variant="caption">Only a specified group will have access</Typography>
-            </div>
-          </MenuItem>
           <MenuItem value="Private" className="app-flex app-row" sx={{ padding: '6px' }}>
             <div className="app-flex app-col"><LockPersonIcon sx={{ marginRight: 1 }} /></div>
             <div className="app-flex app-col">
@@ -480,14 +473,6 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
             })}
           </Box>
           
-        </Collapse>
-        <Collapse in={formData.intimacyLevel === "Groups"} timeout="auto" unmountOnExit>
-          <Box sx={{ mt: 2, mb: 2 }}>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>
-              Select Group
-            </Typography>
-            {/* group selection module will go here */}
-          </Box>
         </Collapse>
         <Divider sx={{mt: 2}} />
         {selectedBars.length > 0 && (
