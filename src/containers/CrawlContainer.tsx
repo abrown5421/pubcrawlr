@@ -86,7 +86,7 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
     
     return (
       <Box className="app-flex app-row">
-        {isInvited ? (
+        {(crawl?.intimacyLevel ===  'Private' && isInvited) || crawl?.intimacyLevel === 'Public' ? (
             <>
                 <div className='app-flex app-col app-overflow-scroll app-fl-3 map-controller'>
                     {ownedCrawl ? (
@@ -109,7 +109,7 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
                             <GroupsIcon sx={{mr: 1}} /> {attendeesCount === 1 ? `${attendeesCount} person going` : `${attendeesCount} people going`}
                             </Typography>
                             <Typography className="intimacy center-row" variant="body2" color="text.secondary" >
-                            {crawl?.intimacyLevel === 'public' ? <PublicIcon sx={{mr: 1}} /> : <AdminPanelSettingsIcon sx={{mr: 1}} />}{crawl?.intimacyLevel}
+                            {crawl?.intimacyLevel === 'Public' ? <PublicIcon sx={{mr: 1}} /> : <AdminPanelSettingsIcon sx={{mr: 1}} />}{crawl?.intimacyLevel}
                             </Typography>
                             <Divider sx={{mt: 2}} />
                             {crawl?.selectedBars.map((bar, index) => (
