@@ -1,9 +1,11 @@
 import { db } from '../config/Firebase';
 import {
   collection,
+  getDocs,
   onSnapshot,
 } from "firebase/firestore";
-import { BarCrawlInfo, UpdateBarCrawlInfo, Attendee } from '../types/globalTypes';
+import { BarCrawlInfo, UpdateBarCrawlInfo, BarCrawl, Attendee, Bar  } from '../types/globalTypes';
+import { getDistanceInMiles } from '../utils/getDistanceInMiles';
 
 const sanitizeUndefined = (obj: any): any => {
   if (Array.isArray(obj)) {
@@ -314,4 +316,39 @@ export const updateBarCrawl = async (
   }
 };
 
+export const getNearbyBarCrawls = async (lat: number, lng: number, userID: string): Promise<BarCrawl[]> => {
+  const barCrawlSnapshot = await getDocs(collection(db, "BarCrawls"));
+  const results: BarCrawl[] = [];
 
+  barCrawlSnapshot.forEach(doc => {
+    const data = doc.data();
+    const center = data.centerLocation;
+
+    if (!center?.Lat || !center?.Lng) return;
+
+    const isOwner = data.userID === userID;
+    const isAttending = (data.attendeeIds || []).includes(userID);
+    const isPublic = data.intimacyLevel === "Public";
+
+    if (isOwner || isAttending || !isPublic) return;
+
+    const distance = getDistanceInMiles(lat, lng, center.Lat, center.Lng);
+    if (distance <= 15) {
+      const crawl: BarCrawl = {
+        id: doc.id,
+        crawlName: data.crawlName || "",
+        attendeess: (data.attendees || []) as Attendee[],
+        attendeeIds: data.attendeeIds || [],
+        startDate: data.startDate || undefined,
+        endDate: data.endDate || undefined,
+        intimacyLevel: data.intimacyLevel || "Public",
+        selectedBars: (data.selectedBars || []) as Bar[],
+        userID: data.userID || "",
+      };
+
+      results.push(crawl);
+    }
+  });
+
+  return results;
+};

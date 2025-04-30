@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "../styles/components/bar-crawl-card.css";
 import { BarCrawlCardProps } from "../types/globalTypes";
 import { useTheme } from "@emotion/react";
@@ -314,6 +314,11 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
             <Button
               sx={styles.viewButton}
               variant="contained"
+              onClick={() => {
+                if (crawl.id) {
+                  handleOpenCrawl(crawl.id);
+                }
+              }}
             >
               View
             </Button>

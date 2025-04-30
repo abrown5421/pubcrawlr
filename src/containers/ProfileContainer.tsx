@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { Avatar, Box, CircularProgress, IconButton, Typography, useTheme, Button, Stack, Badge } from '@mui/material';
-import GroupsIcon from '@mui/icons-material/Groups';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
 import EditIcon from '@mui/icons-material/Edit';
@@ -136,8 +135,8 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
       }))
     }));
     
-    dispatch(setBarCrawls(formattedCrawls)); // first err here
-    dispatch(setInvitedBarCrawls(formattedInvitedCrawls)); // Second err here
+    dispatch(setBarCrawls(formattedCrawls)); 
+    dispatch(setInvitedBarCrawls(formattedInvitedCrawls)); 
   };
 
   const fetchUserFriends = async (uid: string) => {
@@ -351,13 +350,13 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
                   <Typography variant="h5" fontWeight={700} sx={styles.logo}>
                     {userProfile.barCrawls.length}
                   </Typography>
-                  <Typography variant="caption">Bar Crawl{userProfile.barCrawls.length > 1 && 's'}</Typography>
+                  <Typography variant="caption">Crawl{userProfile.barCrawls.length > 1 || userProfile.barCrawls.length === 0 && 's'} Created</Typography>
                 </div>
                 <div className="app-flex app-col app-ai-center app-jc-center">
                   <Typography variant="h5" fontWeight={700} sx={styles.logo}>
                     {userProfile.barCrawls.length}
                   </Typography>
-                  <Typography variant="caption">Bar Crawl{userProfile.barCrawls.length > 1 && 's'} Attended</Typography>
+                  <Typography variant="caption">Crawl{userProfile.barCrawls.length > 1 || userProfile.barCrawls.length === 0 && 's'} Attended</Typography>
                 </div>
                 <div className="app-flex app-col app-ai-center app-jc-center">
                   <Typography variant="h5" fontWeight={700} sx={styles.logo}>
