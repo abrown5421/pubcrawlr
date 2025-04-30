@@ -82,6 +82,12 @@
 .app-m5 {
     margin: 5rem;
 }
+.app-v-m {
+    margin: 1rem 0px;
+}
+.app-h-m {
+    margin: 0px 1rem;
+}
 .app-p1 {
     padding: 1rem;
 }

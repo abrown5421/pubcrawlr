@@ -1,10 +1,21 @@
-import { Box, CircularProgress, Typography, useTheme } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  useTheme,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Stack,
+} from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import BarCrawlCard from '../BarCrawlCard';
 import "../../styles/components/card-deck.css";
 import { useEffect, useState } from 'react';
 import { getNearbyBarCrawls } from '../../services/barCrawlService';
 import { setLoading } from '../../store/slices/buttonLoadSlice';
+import PlaceAutocomplete from '../PlaceAutocomplete'; // adjust import if necessary
 
 export default function PublicCrawlsTab() {
   const dispatch = useAppDispatch();
@@ -13,35 +24,38 @@ export default function PublicCrawlsTab() {
   const isLoading = useAppSelector(state => state.buttonLoad['discoverPage'] ?? false);
 
   const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
+  const [distance, setDistance] = useState<number>(15); // default 15 miles
   const [crawls, setCrawls] = useState<any[]>([]);
 
+  // Fetch current location on mount
   useEffect(() => {
-    dispatch(setLoading({ key: 'discoverPage', value: true }));
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-          });
-          dispatch(setLoading({ key: 'discoverPage', value: false }));
-        }
-      );
-    } else {
-      dispatch(setLoading({ key: 'discoverPage', value: false }));
+    if (!location) {
+      dispatch(setLoading({ key: 'discoverPage', value: true }));
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocation({
+              lat: position.coords.latitude,
+              lon: position.coords.longitude,
+            });
+            dispatch(setLoading({ key: 'discoverPage', value: false }));
+          },
+          () => dispatch(setLoading({ key: 'discoverPage', value: false }))
+        );
+      } else {
+        dispatch(setLoading({ key: 'discoverPage', value: false }));
+      }
     }
-  }, []);
+  }, [location, dispatch]);
 
+  // Fetch crawls when location or distance changes
   useEffect(() => {
     const fetchNearestCrawls = async () => {
+      if (!location || !token) return;
       dispatch(setLoading({ key: 'discoverPage', value: true }));
       try {
-        if (location && token) {
-          const crawlData = await getNearbyBarCrawls(location.lat, location.lon, token);
-          if (crawlData) {
-            setCrawls(crawlData);
-          }
-        }
+        const crawlData = await getNearbyBarCrawls(location.lat, location.lon, token, distance);
+        if (crawlData) setCrawls(crawlData);
       } catch (err) {
         console.error(err);
       } finally {
@@ -50,10 +64,30 @@ export default function PublicCrawlsTab() {
     };
 
     fetchNearestCrawls();
-  }, [location]);
+  }, [location, distance, token, dispatch]);
 
   return (
-    <Box className="app-w-percent-100 app-overflow-scroll">
+    <Box className="app-w-percent-100 app-overflow-scroll" >
+      <div className='app-flex app-row app-jc-between app-gap-1 app-v-m'>
+        <div className='app-flex app-col app-fl-10'>
+        <PlaceAutocomplete onPlaceSelected={(lat, lon) => setLocation({ lat, lon })} />
+        </div>
+        <div className='app-flex app-col app-fl-2'>
+          <FormControl size="small" fullWidth>
+            <InputLabel id="distance-select-label">Search Radius</InputLabel>
+            <Select
+              labelId="distance-select-label"
+              value={distance}
+              label="Search Radius"
+              onChange={(e) => setDistance(Number(e.target.value))}
+            >
+              {[5, 10, 15, 20, 25, 30].map((mile) => (
+                <MenuItem key={mile} value={mile}>{mile} miles</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+      </div>
       {isLoading ? (
         <CircularProgress size="24px" sx={{ color: theme.palette.custom?.dark }} />
       ) : (

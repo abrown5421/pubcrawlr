@@ -316,7 +316,12 @@ export const updateBarCrawl = async (
   }
 };
 
-export const getNearbyBarCrawls = async (lat: number, lng: number, userID: string): Promise<BarCrawl[]> => {
+export const getNearbyBarCrawls = async (
+  lat: number,
+  lng: number,
+  userID: string,
+  radiusMiles: number = 15
+): Promise<BarCrawl[]> => {
   const barCrawlSnapshot = await getDocs(collection(db, "BarCrawls"));
   const results: BarCrawl[] = [];
 
@@ -333,7 +338,7 @@ export const getNearbyBarCrawls = async (lat: number, lng: number, userID: strin
     if (isOwner || isAttending || !isPublic) return;
 
     const distance = getDistanceInMiles(lat, lng, center.Lat, center.Lng);
-    if (distance <= 15) {
+    if (distance <= radiusMiles) {
       const crawl: BarCrawl = {
         id: doc.id,
         crawlName: data.crawlName || "",
