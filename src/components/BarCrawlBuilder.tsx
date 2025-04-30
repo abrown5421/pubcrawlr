@@ -504,7 +504,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
       </Form>
   )
 
-  if (mode === 'crawlBeingMade') {
+  if (mode === 'crawlBeingMade' || mode === 'crawlBeingMadeOnMobile') {
     return (
       <Drawer
         anchor="left"

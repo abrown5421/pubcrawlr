@@ -200,7 +200,7 @@ export type SearchHereButtonProps = {
   onClose: () => void;
   drawerWidth: number;
   locationCoords: object;
-  mode?: 'crawlBeingMade' | 'crawlBeingViewed'
+  mode?: 'crawlBeingMade' | 'crawlBeingViewed' | 'crawlBeingMadeOnMobile'
 };
 
 export type FormHandle = {

@@ -236,6 +236,7 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
                 onClose={toggleDrawer(false)}
                 drawerWidth={400}
                 locationCoords={{}}
+                mode="crawlBeingMadeOnMobile"
             />
         )}
       </Box>
