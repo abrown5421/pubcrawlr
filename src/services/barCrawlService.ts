@@ -24,7 +24,6 @@ const sanitizeUndefined = (obj: any): any => {
 export const deleteBarCrawl = async (id: string): Promise<void> => {
   try {
     await db.collection('BarCrawls').doc(id).delete();
-    console.log(`BarCrawl with ID ${id} deleted successfully.`);
   } catch (error) {
     console.error('Error deleting BarCrawl:', error);
   }
@@ -207,12 +206,51 @@ export const markUserAsAttending = async (barCrawlId: string, userId: string): P
       attendees: updatedAttendees,
     });
 
-    console.log(`User ${userId} marked as attending for BarCrawl ${barCrawlId}`);
   } catch (error) {
     console.error('Error marking user as attending:', error);
     throw new Error('Error marking user as attending');
   }
 };
+
+export const addPublicAttendeeToBarCrawl = async (
+  barCrawlId: string,
+  newAttendee: Attendee
+): Promise<void> => {
+  try {
+    const barCrawl = await getBarCrawlByID(barCrawlId);
+    if (!barCrawl) {
+      console.warn(`Bar crawl with ID ${barCrawlId} not found.`);
+      return;
+    }
+
+    const existingAttendees = Array.isArray(barCrawl.attendees) ? barCrawl.attendees : [];
+    const attendeeIds = Array.isArray(barCrawl.attendeeIds) ? barCrawl.attendeeIds : [];
+
+    const alreadyAttending = existingAttendees.some(
+      (attendee: Attendee) => attendee.docId === newAttendee.docId
+    );
+
+    if (alreadyAttending) {
+      console.warn(`User ${newAttendee.docId} is already attending BarCrawl ${barCrawlId}`);
+      return;
+    }
+
+    const updatedAttendees = [...existingAttendees, newAttendee];
+    const updatedAttendeeIds = newAttendee.docId && !attendeeIds.includes(newAttendee.docId)
+      ? [...attendeeIds, newAttendee.docId]
+      : attendeeIds;
+
+    await db.collection('BarCrawls').doc(barCrawlId).update({
+      attendees: updatedAttendees,
+      attendeeIds: updatedAttendeeIds,
+    });
+
+  } catch (error) {
+    console.error('Error adding public attendee to bar crawl:', error);
+    throw new Error('Error adding public attendee to bar crawl');
+  }
+};
+
 
 export const declineBarCrawlInvite = async (barCrawlId: string, userId: string): Promise<void> => {
   try {
@@ -240,7 +278,6 @@ export const declineBarCrawlInvite = async (barCrawlId: string, userId: string):
       attendeeIds: updatedAttendeeIds,
     });
 
-    console.log(`User ${userId} removed from invite list for BarCrawl ${barCrawlId}`);
   } catch (error) {
     console.error('Error declining bar crawl invite:', error);
     throw new Error('Error declining bar crawl invite');
@@ -309,7 +346,6 @@ export const updateBarCrawl = async (
     barCrawlData = sanitizeUndefined(barCrawlData);
 
     await db.collection('BarCrawls').doc(id).update(barCrawlData);
-    console.log(`BarCrawl with ID ${id} updated successfully.`);
   } catch (error) {
     console.error('Error updating bar crawl:', error);
     throw new Error('Error updating bar crawl');

@@ -13,9 +13,9 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import BarCrawlCard from '../BarCrawlCard';
 import "../../styles/components/card-deck.css";
 import { useEffect, useState } from 'react';
-import { getNearbyBarCrawls } from '../../services/barCrawlService';
+import { getNearbyBarCrawls, subscribeToBarCrawls } from '../../services/barCrawlService';
 import { setLoading } from '../../store/slices/buttonLoadSlice';
-import PlaceAutocomplete from '../PlaceAutocomplete'; // adjust import if necessary
+import PlaceAutocomplete from '../PlaceAutocomplete'; 
 
 export default function PublicCrawlsTab() {
   const dispatch = useAppDispatch();
@@ -24,10 +24,9 @@ export default function PublicCrawlsTab() {
   const isLoading = useAppSelector(state => state.buttonLoad['discoverPage'] ?? false);
 
   const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
-  const [distance, setDistance] = useState<number>(15); // default 15 miles
+  const [distance, setDistance] = useState<number>(15); 
   const [crawls, setCrawls] = useState<any[]>([]);
 
-  // Fetch current location on mount
   useEffect(() => {
     if (!location) {
       dispatch(setLoading({ key: 'discoverPage', value: true }));
@@ -48,10 +47,10 @@ export default function PublicCrawlsTab() {
     }
   }, [location, dispatch]);
 
-  // Fetch crawls when location or distance changes
   useEffect(() => {
+    if (!location || !token) return;
+  
     const fetchNearestCrawls = async () => {
-      if (!location || !token) return;
       dispatch(setLoading({ key: 'discoverPage', value: true }));
       try {
         const crawlData = await getNearbyBarCrawls(location.lat, location.lon, token, distance);
@@ -62,8 +61,14 @@ export default function PublicCrawlsTab() {
         dispatch(setLoading({ key: 'discoverPage', value: false }));
       }
     };
+  
+    const unsubscribeBarCrawls = subscribeToBarCrawls(() => {
+      fetchNearestCrawls();
+    });
 
-    fetchNearestCrawls();
+    return () => {
+      unsubscribeBarCrawls?.();
+    };
   }, [location, distance, token, dispatch]);
 
   return (

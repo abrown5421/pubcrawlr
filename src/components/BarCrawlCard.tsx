@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../styles/components/bar-crawl-card.css";
-import { BarCrawlCardProps } from "../types/globalTypes";
+import { BarCrawlCardProps, Attendee } from "../types/globalTypes";
 import { useTheme } from "@emotion/react";
-import { declineBarCrawlInvite, deleteBarCrawl, markUserAsAttending } from "../services/barCrawlService";
+import { addPublicAttendeeToBarCrawl, declineBarCrawlInvite, deleteBarCrawl, markUserAsAttending } from "../services/barCrawlService";
 import {
   Button,
   Card,
@@ -69,8 +69,10 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const styles = useBarCrawlCardStyles(theme);
+  const userProfile = useAppSelector((state) => state.userProfile.profileUser);
   const isDeleteCrawlLoading = useAppSelector((state) => state.buttonLoad[`deleteCrawl-${crawl.id}`] ?? false);
   const isAttendCrawlLoading = useAppSelector((state) => state.buttonLoad[`attendCrawl-${crawl.id}`] ?? false);
+  const isAttendPublicCrawlLoading = useAppSelector((state) => state.buttonLoad[`attendPublicCrawl-${crawl.id}`] ?? false);
   const isDeclineCrawlLoading = useAppSelector((state) => state.buttonLoad[`declineCrawl-${crawl.id}`] ?? false);
   const barCrawls = useAppSelector((state) => state.userProfile.barCrawls);
   const token = useAppSelector((state) => state.authentication.token);
@@ -78,7 +80,7 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
   const attendeesCount = crawl.attendeess.filter(attendee => attendee.attending).length;
   const formattedStartDate = formatDate(crawl?.startDate ?? "");
   const formattedEndDate = formatDate(crawl?.endDate ?? "");
-
+  
   const handleDelete = async (id: string) => {
     dispatch(setLoading({ key: `deleteCrawl-${id}`, value: true }));
   
@@ -108,6 +110,32 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
       dispatch(setLoading({ key: `deleteCrawl-${id}`, value: false }));
     }
   };
+
+  const handleAttendPublicCrawl = async (barCrawlId: string, attendee: Attendee) => {
+    dispatch(setLoading({ key: `attendPublicCrawl-${barCrawlId}`, value: true }));
+    try {
+      await addPublicAttendeeToBarCrawl(barCrawlId, attendee)
+  
+      dispatch(
+        setAlert({
+          open: true,
+          message: "You are going to the bar crawl!",
+          severity: "success",
+        })
+      );
+    } catch (error) {
+      console.error("Failed to mark bar crawl attendance:", error);
+      dispatch(
+        setAlert({
+          open: true,
+          message: "Failed to mark bar crawl attendance.",
+          severity: "error",
+        })
+      );
+    } finally {
+      dispatch(setLoading({ key: `attendPublicCrawl-${barCrawlId}`, value: false }));
+    }
+  }
 
   const handleAttendBarCrawl = async (barCrawlId: string, userId: string) => {
     dispatch(setLoading({ key: `attendCrawl-${barCrawlId}`, value: true }));
@@ -323,8 +351,22 @@ const BarCrawlCard: React.FC<BarCrawlCardProps> = ({ crawl, mode }) => {
               View
             </Button>
 
-            <Button sx={styles.acceptButton} variant="contained">
-              {isAttendCrawlLoading ? (
+            <Button sx={styles.acceptButton} variant="contained"
+              onClick={() => {
+                if (crawl.id && userProfile) {
+                  handleAttendPublicCrawl(crawl.id, {
+                    UserFirstName: userProfile.UserFirstName,
+                    UserLastName: userProfile.UserLastName,
+                    attending: true,
+                    creator: false,
+                    docId: token,
+                    invited: true,
+                    seen: true
+                  });
+                }
+              }}
+            >
+              {isAttendPublicCrawlLoading ? (
                 <CircularProgress size="24px" sx={{ color: "#FFF" }}/>
               ) : (
                 "Attend"
