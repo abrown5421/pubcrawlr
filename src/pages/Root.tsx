@@ -155,7 +155,7 @@ function Root() {
       if (accentPinRef.current) {
         accentPinRef.current.remove();
       }
-      
+
       await fetchAndStoreBars(lat, lng);
     },
     [map]
@@ -340,12 +340,13 @@ function Root() {
           <AnimatedContainer 
             entry="animate__slideInRight" 
             exit="animate__slideOutRight" 
-            isEntering={selectedBars.length > 0 && viewport !== "desktop"}
+            isEntering={selectedBars.length > 0}
             sx={{
               position: 'absolute',
               minWidth: '200px',
-              bottom: 0,
-              right: 0
+              top: 0,
+              left: 0,
+              zIndex: 10
             }}
           >
             <Button
@@ -369,28 +370,29 @@ function Root() {
           </Box>
         )}
       </Box>
-      <AnimatedContainer 
-        entry="animate__slideInRight" 
-        exit="animate__slideOutRight" 
-        isEntering={selectedBars.length > 0 && viewport === "desktop"}
-        className={selectedBars.length === 0 ? "app-hidden" : ""}
-        sx={{
-          position: 'absolute',
-          minWidth: '200px',
-          bottom: 0,
-          right: 0
-        }}
-      >
-        <Button
-          className="open-bar-crawl-button"
-          aria-label="Open Bar Crawl"
-          sx={styles.openCrawlButton}
-          startIcon={<OpenInNewIcon />}
-          onClick={toggleDrawer(true)}
+      {viewport === 'desktop' && (
+        <AnimatedContainer 
+          entry="animate__slideInRight" 
+          exit="animate__slideOutRight" 
+          isEntering={selectedBars.length > 0}
+          sx={{
+            position: 'absolute',
+            minWidth: '200px',
+            bottom: 0,
+            right: 0
+          }}
         >
-          View Bar Crawl
-        </Button>
-      </AnimatedContainer>
+          <Button
+            className="app-absolute open-bar-crawl-button"
+            aria-label="Open Bar Crawl"
+            sx={styles.openCrawlButton}
+            startIcon={<OpenInNewIcon />}
+            onClick={toggleDrawer(true)}
+          >
+            View Bar Crawl
+          </Button>
+        </AnimatedContainer>
+      )}
       <BarCrawlBuilder
         open={drawerOpen}
         onClose={toggleDrawer(false)}
