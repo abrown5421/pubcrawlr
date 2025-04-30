@@ -3,13 +3,13 @@ import { Button, Divider, IconButton, Typography } from "@mui/material";
 import { useTheme } from '@mui/material';
 import "../styles/components/bar-card.css";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { BarCardProps } from "../types/globalTypes";
+import { BarCardProps, Place } from "../types/globalTypes";
 import { addBar, setDrawerOpen } from '../store/slices/selectedBarSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { removeBar } from "../store/slices/selectedBarSlice";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import { removeLocalBar } from "../store/slices/localBarSlice";
+import { addBars, removeLocalBar } from "../store/slices/localBarSlice";
 
 const useBarCardStyles = (theme: any) => ({
     logo: {
@@ -41,8 +41,9 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
     dispatch(setDrawerOpen(true));
   };
   
-  const handleRemoveBar = (x: string) => {
+  const handleRemoveBar = (x: string, y: Place) => {
     dispatch(removeBar(x));
+    dispatch(addBars([y]));
   };
 
   const handleLearnMore = async (name: string, vicinity: string) => {
@@ -95,7 +96,7 @@ const BarCard: React.FC<BarCardProps> = ({ bar, mode }) => {
                 )}
             </div>
             {mode === 'selected' && (
-                <IconButton color="error" sx={{height: '40px'}} onClick={() => {handleRemoveBar(bar.name)}}>
+                <IconButton color="error" sx={{height: '40px'}} onClick={() => {handleRemoveBar(bar.name, bar)}}>
                     <DeleteIcon />
                 </IconButton>
             )}
