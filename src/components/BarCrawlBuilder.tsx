@@ -390,7 +390,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
           select 
           label="Intimacy Level"
           fullWidth
-          sx={{ width: '100%', mb: 1 }}
+          sx={{ width: '100%', mb: 2 }}
           inputProps={{
             sx: { display: 'flex', alignItems: 'center' },
           }}
@@ -456,7 +456,7 @@ export default function BarCrawlBuilder({ open, onClose, drawerWidth, locationCo
               }}
             />
           </Box>
-          <Box className='app-js-between app-wrap'>
+          <Box className='app-flex app-row app-gap-1 app-jc-between app-wrap'>
             {attendees.map((att, index) => {
               if (att.UserFirstName) {
                 return (

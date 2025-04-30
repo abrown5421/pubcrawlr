@@ -9,9 +9,8 @@ const AttendeeBox: React.FC<UserBoxProps> = ({ firstName, lastName, creator, onR
   return (
     <Box
       sx={{
-        width: "48%",
-        p: 2,
-        marginBottom: '16px',
+        width: "30%",
+        p: 1,
         border: '1px solid #ccc',
         borderRadius: '12px',
         textAlign: 'center',
@@ -33,8 +32,8 @@ const AttendeeBox: React.FC<UserBoxProps> = ({ firstName, lastName, creator, onR
             onClick={onRemove}
             sx={{
             position: 'absolute',
-            top: 8,
-            right: 8,
+            top: -5,
+            right: -5,
             color: theme.palette.custom?.error,
             }}
             aria-label="remove user"

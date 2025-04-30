@@ -17,6 +17,9 @@ import BarCrawlBuilder from "../components/BarCrawlBuilder";
 import { useNavigate } from "react-router-dom";
 import { setActivePage } from "../store/slices/activePageSlice";
 import { useDispatch } from "react-redux";
+import AnimatedContainer from "./AnimatedContainer";
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { setDrawerOpen } from "../store/slices/selectedBarSlice";
 
 const useCrawlPageStyles = (theme: any) => ({
     logo: {
@@ -45,6 +48,15 @@ const useCrawlPageStyles = (theme: any) => ({
         },
         marginTop: theme.spacing(2),
     },
+    openCrawlButton: {
+        backgroundColor: theme.palette.custom?.dark,
+        color: theme.palette.custom?.light,
+        "&:hover": {
+          backgroundColor: theme.palette.custom?.light,
+          color: theme.palette.custom?.dark,
+        },
+        marginTop: theme.spacing(2),
+    },
 });
 
 const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
@@ -52,6 +64,8 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const styles = useCrawlPageStyles(theme);
+    const drawerOpen = useAppSelector(state => state.selectedBars.drawerOpen);
+    const viewport = useAppSelector(state => state.viewport.type);
     const token = useAppSelector(state => state.authentication.token);
     const isLoggedIn = useAppSelector(state => state.authentication.isAuthenticated);
     const crawl = useAppSelector(state => state.selectedBarCrawl.selectedBarCrawl);
@@ -100,13 +114,17 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
         }, 500);
     };
 
+    const toggleDrawer = (open: boolean) => () => {
+        dispatch(setDrawerOpen(open)); 
+    };
+    
     return (
       <Box className="app-flex app-row">
         {isLoggedIn ? (
             <>
                 {(crawl?.intimacyLevel ===  'Private' && isInvited) || crawl?.intimacyLevel === 'Public' ? (
                     <>
-                        <div className='app-flex app-col app-overflow-scroll app-fl-3 map-controller'>
+                        <div className={viewport === 'desktop' ? "app-flex app-col app-overflow-scroll app-fl-3 map-controller" : "app-hidden"}>
                             {ownedCrawl ? (
                                 <BarCrawlBuilder
                                     open={true} 
@@ -136,7 +154,32 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
                                 </>
                             )}
                         </div>
-                        <div className='app-flex app-col app-relative app-overflow-hidden app-h-percent-100 app-fl-8 map-container' ref={mapContainerRef} />
+                        <div className='app-flex app-col app-relative app-overflow-hidden app-h-percent-100 app-fl-8 map-container' ref={mapContainerRef} >
+                            <AnimatedContainer 
+                                entry={viewport !== 'desktop' ? "animate__slideInLeft" : "animate__slideInRight"}
+                                exit={viewport !== 'desktop' ? "animate__slideOutLeft" : "animate__slideOutRight"} 
+                                isEntering={crawl?.selectedBars.length > 0}
+                                sx={{
+                                position: 'absolute',
+                                minWidth: '200px',
+                                top: viewport !== 'desktop' ? 0 : 'unset',
+                                left: viewport !== 'desktop' ? 0 : 'unset',
+                                right: viewport !== 'desktop' ? 'unset' : -20,
+                                bottom: viewport !== 'desktop' ? 'unset' : 0,
+                                zIndex: 10
+                                }}
+                            >
+                                <Button
+                                    className="app-absolute open-bar-crawl-button"
+                                    aria-label="Open Bar Crawl"
+                                    sx={styles.openCrawlButton}
+                                    startIcon={<OpenInNewIcon />}
+                                    onClick={toggleDrawer(true)}
+                                >
+                                View Bar Crawl
+                                </Button>
+                            </AnimatedContainer>
+                            </div>
                     </>
                 ) : (
                     <div className="app-flex app-col app-jc-center app-ai-center app-w-percent-100 no-access-container">
@@ -186,6 +229,14 @@ const CrawlContainer: React.FC<CrawlContainerProps> = ({ mode }) => {
                     </Button>
                 </Box>
             </div>
+        )}
+        {viewport !== 'desktop' && (
+            <BarCrawlBuilder
+                open={drawerOpen}
+                onClose={toggleDrawer(false)}
+                drawerWidth={400}
+                locationCoords={{}}
+            />
         )}
       </Box>
     );
