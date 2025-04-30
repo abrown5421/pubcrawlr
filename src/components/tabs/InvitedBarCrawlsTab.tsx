@@ -20,7 +20,7 @@ export default function InvitedBarCrawlsTab({ mode }: { mode?: string }) {
   }, [request])
 
   return (
-    <Box sx={{ width: '100%', overflow: 'scroll' }}>
+    <Box className="app-w-percent-100 app-overflow-scroll">
         <Box className={userProfile.invitedBarCrawls.length > 0 ? "app-flex app-wrap app-gap-1 card-deck" : "disclaim-box"}>
         {userProfile.invitedBarCrawls.length < 1 && <Typography variant="caption">{mode === 'owned' ? "You aren't currently invited to any bar crawls." : "This user is not currently invited to any bar crawls."}</Typography>}
         {userProfile.invitedBarCrawls.length > 0 && userProfile.invitedBarCrawls.map((crawl) => (

@@ -11,7 +11,7 @@ export default function MyFriendsTab({ mode }: { mode?: string }) {
   );
 
   return (
-    <Box sx={{ width: '100%', overflow: 'scroll' }}>
+    <Box className="app-w-percent-100 app-overflow-scroll">
       <FriendAutocomplete />
       <Box className="app-flex app-wrap app-gap-1 card-deck">
         {filteredFriends.length < 1 && <Typography variant="caption">{mode === 'owned' ? "You don't currently have any friends." : "This user does not currently have any friends."}</Typography>}

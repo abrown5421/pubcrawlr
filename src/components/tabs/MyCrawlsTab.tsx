@@ -8,7 +8,7 @@ export default function MyCrawlsTab({ mode }: { mode?: string }) {
   const token = useAppSelector((state) => state.authentication.token);
 
   return (
-    <Box sx={{ width: '100%', overflow: 'scroll' }}>
+    <Box className="app-w-percent-100 app-overflow-scroll">
         <Box className={userProfile.barCrawls.length > 0 ? "app-flex app-wrap app-gap-1 card-deck" : "disclaim-box"}>
         {userProfile.barCrawls.length < 1 && <Typography variant="caption">{mode === 'owned' ? "You don't currently have any bar crawls saved." : "This user does not currently have any bar crawls saved."}</Typography>}
         {userProfile.barCrawls.length > 0 && userProfile.barCrawls.map((crawl) => (

@@ -23,6 +23,7 @@ import InvitedBarCrawlsTab from "../components/tabs/InvitedBarCrawlsTab";
 import MyFriendsTab from "../components/tabs/MyFriendsTab";
 import PendingFriendsTab from "../components/tabs/PendingFriendsTab";
 import RequestedFriendsTab from "../components/tabs/RequestedFriendsTab";
+import PublicCrawlsTab from '../components/tabs/PublicBarCrawlsTab';
 import AnimatedContainer from './AnimatedContainer';
 import { getFriends, isAlreadyFriend, requestFriend, subscribeToFriends } from '../services/friendService';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -178,7 +179,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
             <TabManager tabs={['Crawls', 'Invites', 'Discover']}>
               <MyCrawlsTab mode="owned" />
               <InvitedBarCrawlsTab mode="owned" />
-              <div>Discover new crawls content here</div>
+              <PublicCrawlsTab />
             </TabManager>
           );
         } else {
