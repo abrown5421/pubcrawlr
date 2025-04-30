@@ -15,7 +15,6 @@ import BarCard from "../components/BarCard";
 import { Button, CircularProgress, Collapse, Typography } from "@mui/material";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import BarCrawlBuilder from "../components/BarCrawlBuilder";
-import MapLibreGlDirections, { LoadingIndicatorControl } from "@maplibre/maplibre-gl-directions";
 import { getMarkerPopup } from "../utils/getMarkerPopup";
 import { setModal } from "../store/slices/modalSlice";
 
@@ -56,7 +55,6 @@ function Root() {
   const [visibleBars, setVisibleBars] = useState<Place[]>([]);
   const [drawerWidth, setDrawerWidth] = useState<number>(400);
   const [locationCoords, setLocationCoords] = useState<object>({Lat: '', Lng: ''});
-  const [directions, setDirections] = useState<MapLibreGlDirections | null>(null);
 
   const normalizePlace = async (place: any): Promise<Place | null> => {
     const name = place.tags?.name;
@@ -68,7 +66,7 @@ function Root() {
     let vicinity = '';
   
     try {
-      const response = await fetch(`/api/reverse-geocode?lat=${lat}&lng=${lng}`);
+      const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
       const data = await response.json();
       const { city, state, zipCode } = data.address;
   
@@ -180,13 +178,6 @@ function Root() {
         });
         mapInstance.addControl(new maplibregl.NavigationControl(), "top-right");
         mapInstance.addControl(new SearchHereButton(SearchHereClicked), "top-right");
-        mapInstance.on('load', () => {
-          const newDirections = new MapLibreGlDirections(mapInstance, {
-            profile: 'foot'
-          });
-          mapInstance.addControl(new LoadingIndicatorControl(newDirections));
-          setDirections(newDirections);
-        });
 
         // Add original clocked location pin
         new maplibregl.Marker({
@@ -242,12 +233,6 @@ function Root() {
         .addTo(map);
         setLocationCoords({Lat: lat, Lng: lng})
       
-      marker.getElement().addEventListener('click', () => {
-        map.flyTo({
-          center: [lng, lat],
-          speed: 0.5,
-        });
-      });
     })
 
     visibleBars.forEach(bar => {
@@ -260,17 +245,10 @@ function Root() {
         .setLngLat([lng, lat])
         .setPopup(new maplibregl.Popup().setHTML(getMarkerPopup({
           name: bar.name,
-          includeAddBtn: true
+          includeAddBtn: false
         })))        
         .addTo(map);
         setLocationCoords({Lat: lat, Lng: lng})
-
-      marker.getElement().addEventListener('click', () => {
-        map.flyTo({
-          center: [lng, lat],
-          speed: 0.5,
-        });
-      });
 
       markerRef.current.push(marker);
     });
@@ -287,21 +265,6 @@ function Root() {
       return () => observer.disconnect();
     }
   }, []);
-
-  useEffect(() => {
-    if (selectedBars.length > 1 && directions) {
-      directions.setWaypoints(
-        selectedBars.map((x): [number, number] => [
-          x.geometry.location.lng,
-          x.geometry.location.lat,
-        ])
-      );
-    } else {
-      if (directions) {
-        directions.setWaypoints([]);
-      }
-    }
-  }, [selectedBars, directions]);
   
   const handleClearBarResults = () => {
     dispatch(clearLocalBars())
