@@ -228,7 +228,9 @@ function Root() {
         .setLngLat([lng, lat])
         .setPopup(new maplibregl.Popup().setHTML(getMarkerPopup({
           name: bar.name,
-          includeAddBtn: true
+          vicinity: bar.vicinity,
+          includeAddBtn: false,
+          includeRemBtn: true,
         })))        
         .addTo(map);
         setLocationCoords({Lat: lat, Lng: lng})
@@ -245,7 +247,9 @@ function Root() {
         .setLngLat([lng, lat])
         .setPopup(new maplibregl.Popup().setHTML(getMarkerPopup({
           name: bar.name,
-          includeAddBtn: false
+          vicinity: bar.vicinity,
+          includeAddBtn: true,
+          includeRemBtn: false,
         })))        
         .addTo(map);
         setLocationCoords({Lat: lat, Lng: lng})

@@ -113,10 +113,10 @@ export interface SelectedBarsState {
 }
 
 export interface MarkerPopupProps {
-    imageUrl?: string;
     name: string;
-    rating?: number;
+    vicinity?: string;
     includeAddBtn: boolean;
+    includeRemBtn: boolean;
 }
 
 export interface Attendee {
