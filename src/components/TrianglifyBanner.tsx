@@ -23,6 +23,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
         seed: token || 'defaultSeed',
         xColors: xColors.length ? xColors : undefined,
         yColors: yColors.length ? yColors : undefined,
+        points: []
       });
   
       if (ref.current) {
