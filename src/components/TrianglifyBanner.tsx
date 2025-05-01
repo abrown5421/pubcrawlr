@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Trianglify from 'trianglify';
+import Delaunator from 'delaunator'; 
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { TrianglifyBannerProps } from '../types/globalTypes';
@@ -13,6 +14,8 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
 
   useEffect(() => {
     try {
+      (Trianglify as any).delaunay = Delaunator;
+
       const pattern = Trianglify({
         width: window.innerWidth,
         height: 200,
@@ -22,7 +25,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
         xColors: xColors.length ? xColors : undefined,
         yColors: yColors.length ? yColors : undefined,
       });
-  
+
       if (ref.current) {
         ref.current.innerHTML = '';
         ref.current.appendChild(pattern.toCanvas());
