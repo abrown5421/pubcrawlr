@@ -7,7 +7,7 @@ import '../styles/containers/profile-container.css';
 import { setModal } from '../store/slices/modalSlice';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import TrianglifyBanner from '../components/TrianglifyBanner';
-// import TrianglifyCustomizer from '../components/TrianglifyCustomizer';
+import TrianglifyCustomizer from '../components/TrianglifyCustomizer';
 import { useParams } from 'react-router-dom';
 import { getUserDataFromId } from '../services/userService';
 import { setBarCrawls, setProfileUser, setFriends, setInvitedBarCrawls } from '../store/slices/userProfileSlice';
@@ -148,7 +148,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
     dispatch(setModal({
       open: true,
       title: 'Update Your Banner Image',
-      body: "customizer here",
+      body: <TrianglifyCustomizer />,
     }));
   };
 
