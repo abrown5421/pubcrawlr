@@ -8,4 +8,13 @@ export default defineConfig({
       '/api': 'http://localhost:5000',
     },
   },
+  build: {
+    target: 'es2018', // Or 'es2015' if really needed
+    commonjsOptions: {
+      include: [/node_modules/],
+    },
+  },
+  optimizeDeps: {
+    include: ['trianglify'],
+  },
 });
