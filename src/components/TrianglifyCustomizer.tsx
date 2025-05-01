@@ -48,7 +48,10 @@ const TrianglifyCustomizer = () => {
   };
 
   const removeColor = (key: 'xColors' | 'yColors', index: number) => {
-    const updatedColors = trianglify[key].filter((_, i) => i !== index);
+    const updatedColors = trianglify[key].filter((e, i) => {
+      void e;
+      return i !== index;
+    });
     dispatch(setTrianglifyValue({ key, value: updatedColors }));
   };
 
@@ -155,9 +158,10 @@ const TrianglifyCustomizer = () => {
         min={20}
         max={200}
         step={10}
-        onChange={(_, val) =>
+        onChange={(e, val) => {
+          void e;
           dispatch(setTrianglifyValue({ key: 'cellSize', value: val as number }))
-        }
+        }}
       />
 
       <Typography gutterBottom>Variance</Typography>
@@ -166,9 +170,10 @@ const TrianglifyCustomizer = () => {
         min={0}
         max={1}
         step={0.05}
-        onChange={(_, val) =>
+        onChange={(e, val) => {
+          void e;
           dispatch(setTrianglifyValue({ key: 'variance', value: val as number }))
-        }
+        }}
       />
       <div className="app-flex app-row">
         <div className="app-flex app-col mr-2">
