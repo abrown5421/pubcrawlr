@@ -1,4 +1,4 @@
-import { ReactNode, Suspense, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Avatar, Box, CircularProgress, IconButton, Typography, useTheme, Button, Stack, Badge } from '@mui/material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
@@ -7,7 +7,6 @@ import '../styles/containers/profile-container.css';
 import { setModal } from '../store/slices/modalSlice';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import bannerPlaceholder from '../../public/assets/images/banner-placeholder.png'
-import TrianglifyCustomizer from '../components/TrianglifyCustomizer';
 import { useParams } from 'react-router-dom';
 import { getUserDataFromId } from '../services/userService';
 import { setBarCrawls, setProfileUser, setFriends, setInvitedBarCrawls } from '../store/slices/userProfileSlice';
