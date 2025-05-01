@@ -12,6 +12,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
   );
 
   useEffect(() => {
+
     const pattern = trianglify({
       width: window.innerWidth,
       height: 200,
@@ -21,7 +22,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
       xColors: xColors.length ? xColors : undefined,
       yColors: yColors.length ? yColors : undefined,
     });
-
+    console.log(pattern)
     if (ref.current) {
       ref.current.innerHTML = '';
       ref.current.appendChild(pattern.toCanvas());
