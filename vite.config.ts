@@ -3,17 +3,19 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    include: ['trianglify', 'delaunator'], 
+  },
   build: {
-    target: 'es2015', 
-    minify: 'esbuild', 
     commonjsOptions: {
       include: [/node_modules/],
     },
-  },
-  optimizeDeps: {
-    include: ['trianglify'],
-    esbuildOptions: {
-      target: 'es2015',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          trianglify: ['trianglify', 'delaunator'],
+        },
+      },
     },
   },
 });
