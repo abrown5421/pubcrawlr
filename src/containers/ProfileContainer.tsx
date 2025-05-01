@@ -6,8 +6,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import '../styles/containers/profile-container.css';
 import { setModal } from '../store/slices/modalSlice';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-// import TrianglifyBanner from '../components/TrianglifyBanner';
-// import TrianglifyCustomizer from '../components/TrianglifyCustomizer';
+import TrianglifyBanner from '../components/TrianglifyBanner';
+import TrianglifyCustomizer from '../components/TrianglifyCustomizer';
 import { useParams } from 'react-router-dom';
 import { getUserDataFromId } from '../services/userService';
 import { setBarCrawls, setProfileUser, setFriends, setInvitedBarCrawls } from '../store/slices/userProfileSlice';
@@ -148,7 +148,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
     dispatch(setModal({
       open: true,
       title: 'Update Your Banner Image',
-      body: "<TrianglifyCustomizer />",
+      body: <TrianglifyCustomizer />,
     }));
   };
 
@@ -307,7 +307,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
       ) : (
         <>
           <div className="app-relative app-w-percent-100 profile-container-banner">
-            {/* <TrianglifyBanner {...(token ? { token } : {})} /> */}
+            <TrianglifyBanner {...(token ? { token } : {})} />
             <Avatar
               className="app-absolute-imp profile-avatar"
               sx={{ backgroundColor: theme.palette.custom?.dark, cursor: "pointer" }}
