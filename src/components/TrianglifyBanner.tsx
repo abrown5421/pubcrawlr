@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import trianglify from 'trianglify'; 
+import Trianglify from 'trianglify';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { TrianglifyBannerProps } from '../types/globalTypes';
@@ -12,8 +12,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
   );
 
   useEffect(() => {
-
-    const pattern = trianglify({
+    const pattern = Trianglify({
       width: window.innerWidth,
       height: 200,
       cellSize,
@@ -22,7 +21,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
       xColors: xColors.length ? xColors : undefined,
       yColors: yColors.length ? yColors : undefined,
     });
-    console.log(pattern)
+
     if (ref.current) {
       ref.current.innerHTML = '';
       ref.current.appendChild(pattern.toCanvas());

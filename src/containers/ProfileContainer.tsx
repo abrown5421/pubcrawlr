@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, Suspense, useEffect, useState } from 'react';
 import { Avatar, Box, CircularProgress, IconButton, Typography, useTheme, Button, Stack, Badge } from '@mui/material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
@@ -307,7 +307,9 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
       ) : (
         <>
           <div className="app-relative app-w-percent-100 profile-container-banner">
-            <TrianglifyBanner {...(token ? { token } : {})} />
+            <Suspense fallback={<div>Loading...</div>}>
+              <TrianglifyBanner {...(token ? { token } : {})} />
+            </Suspense>
             <Avatar
               className="app-absolute-imp profile-avatar"
               sx={{ backgroundColor: theme.palette.custom?.dark, cursor: "pointer" }}
