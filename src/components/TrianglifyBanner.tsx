@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import Trianglify from 'trianglify';
+import trianglify from 'trianglify'; 
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { TrianglifyBannerProps } from '../types/globalTypes';
@@ -12,7 +12,7 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
   );
 
   useEffect(() => {
-    const pattern = Trianglify({
+    const pattern = trianglify({
       width: window.innerWidth,
       height: 200,
       cellSize,
