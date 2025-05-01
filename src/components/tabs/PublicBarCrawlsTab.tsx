@@ -7,7 +7,6 @@ import {
   Select,
   FormControl,
   InputLabel,
-  Stack,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import BarCrawlCard from '../BarCrawlCard';

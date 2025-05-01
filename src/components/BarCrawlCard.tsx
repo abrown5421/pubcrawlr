@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "../styles/components/bar-crawl-card.css";
 import { BarCrawlCardProps, Attendee } from "../types/globalTypes";
 import { useTheme } from "@emotion/react";

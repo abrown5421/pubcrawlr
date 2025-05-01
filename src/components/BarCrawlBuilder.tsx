@@ -9,7 +9,6 @@ import { clearLocalBars } from "../store/slices/localBarSlice";
 import { BcFormFormData, BcFormValidationErrors, SearchHereButtonProps, FormHandle, Attendee } from "../types/globalTypes";
 import BarCard from "./BarCard";
 import PublicIcon from '@mui/icons-material/Public';
-import GroupsIcon from '@mui/icons-material/Groups';
 import LockPersonIcon from '@mui/icons-material/LockPerson';
 import '../styles/components/bar-crawl-builder.css';
 import { saveBarCrawl, updateBarCrawl } from "../services/barCrawlService";

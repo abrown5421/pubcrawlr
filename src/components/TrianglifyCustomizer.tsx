@@ -155,7 +155,7 @@ const TrianglifyCustomizer = () => {
         min={20}
         max={200}
         step={10}
-        onChange={(e, val) =>
+        onChange={(_, val) =>
           dispatch(setTrianglifyValue({ key: 'cellSize', value: val as number }))
         }
       />
@@ -166,7 +166,7 @@ const TrianglifyCustomizer = () => {
         min={0}
         max={1}
         step={0.05}
-        onChange={(e, val) =>
+        onChange={(_, val) =>
           dispatch(setTrianglifyValue({ key: 'variance', value: val as number }))
         }
       />

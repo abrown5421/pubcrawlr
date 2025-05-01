@@ -235,6 +235,7 @@ function Root() {
         .addTo(map);
         setLocationCoords({Lat: lat, Lng: lng})
       
+        markerRef.current.push(marker);
     })
 
     visibleBars.forEach(bar => {

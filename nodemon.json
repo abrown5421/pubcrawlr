@@ -1,8 +1,0 @@
-{
-    "execMap": {
-      "ts": "ts-node"
-    },
-    "watch": ["backend"],
-    "ext": "ts"
-  }
-  
