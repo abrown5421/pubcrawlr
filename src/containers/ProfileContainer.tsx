@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import '../styles/containers/profile-container.css';
 import { setModal } from '../store/slices/modalSlice';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import TrianglifyBanner from '../components/TrianglifyBanner';
+import bannerPlaceholder from '../../public/assets/images/banner-placeholder.png'
 import TrianglifyCustomizer from '../components/TrianglifyCustomizer';
 import { useParams } from 'react-router-dom';
 import { getUserDataFromId } from '../services/userService';
@@ -148,7 +148,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
     dispatch(setModal({
       open: true,
       title: 'Update Your Banner Image',
-      body: <TrianglifyCustomizer />,
+      body: "Banner customizer will be here.",
     }));
   };
 
@@ -307,9 +307,7 @@ const ProfileContainer = ({ mode }: { children?: ReactNode, mode?: "personal" | 
       ) : (
         <>
           <div className="app-relative app-w-percent-100 profile-container-banner">
-            <Suspense fallback={<div>Loading...</div>}>
-              <TrianglifyBanner {...(token ? { token } : {})} />
-            </Suspense>
+            <img src={bannerPlaceholder} style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
             <Avatar
               className="app-absolute-imp profile-avatar"
               sx={{ backgroundColor: theme.palette.custom?.dark, cursor: "pointer" }}
