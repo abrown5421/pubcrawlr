@@ -12,19 +12,23 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
   );
 
   useEffect(() => {
-    const pattern = Trianglify({
-      width: window.innerWidth,
-      height: 200,
-      cellSize,
-      variance,
-      seed: token,
-      xColors: xColors.length ? xColors : undefined,
-      yColors: yColors.length ? yColors : undefined,
-    });
-
-    if (ref.current) {
-      ref.current.innerHTML = '';
-      ref.current.appendChild(pattern.toCanvas());
+    try {
+      const pattern = Trianglify({
+        width: window.innerWidth,
+        height: 200,
+        cellSize,
+        variance,
+        seed: token,
+        xColors: xColors.length ? xColors : undefined,
+        yColors: yColors.length ? yColors : undefined,
+      });
+  
+      if (ref.current) {
+        ref.current.innerHTML = '';
+        ref.current.appendChild(pattern.toCanvas());
+      }
+    } catch (error) {
+      console.error('Error generating trianglify pattern:', error);
     }
   }, [cellSize, variance, xColors, yColors, token]);
 
