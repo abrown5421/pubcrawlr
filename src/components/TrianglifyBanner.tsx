@@ -13,8 +13,6 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
 
   useEffect(() => {
     try {
-      console.log({ cellSize, variance, xColors, yColors, token });
-  
       const pattern = Trianglify({
         width: window.innerWidth,
         height: 200,
@@ -23,7 +21,6 @@ const TrianglifyBanner: React.FC<TrianglifyBannerProps> = ({ token = '' }) => {
         seed: token || 'defaultSeed',
         xColors: xColors.length ? xColors : undefined,
         yColors: yColors.length ? yColors : undefined,
-        points: []
       });
   
       if (ref.current) {
